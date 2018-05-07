@@ -3,12 +3,9 @@
 <head>
   <title>Join my Nebulas Team</title>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-  <link rel=stylesheet href=lib/prismjs-1.13.0/prism.css>
-  <link rel="icon shortcut" href=img/logo.png type=image/png>
-  <link rel=apple-touch-icon href=img/logo.png>
-  <link rel=stylesheet href=lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
-  <link rel=stylesheet href=css/base.css>
-  <link rel=stylesheet href=css/ui-block.css>
+  <link rel=stylesheet href=../lib/prismjs-1.13.0/prism.css>
+  <link rel=stylesheet href=../lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
+  <link rel=stylesheet href=../css/ui-block.css>
   <meta name=viewport content="width=device-width">
 </head>
 
@@ -22,7 +19,7 @@
         .ownercontainer,.usercontainer {
             overflow: hidden;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             list-style: none;
             text-align:center;
         }
@@ -42,37 +39,45 @@
             <p> My team is at  <span class="black"><span id="ownerAddress"></span> </span></p>
             <br>
             <p> My team has  <span class="black"><span id="teamSize"></span>  </span></p>
-            <table class="table table-striped" id="here_table"> <table>
+            <table class="table table-striped" id="here_table"> 
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Team Member Neublas Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
     </div>
 
     <br>
 
     <div  class = "usercontainer">
-            <p><span id="userinfo">load your Nebulas Wallet first!</span></p> 
-            <p><span id="useraddress"></p> 
-            <button type="button" onClick="joinTeam();">join</button>
+        <p><span id="userinfo">load your Nebulas Wallet first!</span></p> 
+        <p><span id="useraddress"></p>  
+        <button class="btn btn-primary btn-lg" type="submit" onClick="joinTeam();">join our team!</button>
+        <hr>
+        <div class="container select-wallet-file"></div>
     </div>
 
-    <br>
 
-
-
-    <div class="container select-wallet-file"></div>
   
 
-  <script src=lib/jquery-3.3.1.min.js></script>
-  <script src=lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
-  <script src=lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
-  <script src=lib/blockies.min.js></script>
-  <script src=lib/js-beautify-1.7.5/beautify.js></script>
-  <script src=lib/prismjs-1.13.0/prism.js></script>
-  <script src=lib/nebulas.js></script>
-  <script src=js/1-localSave.js></script>
-  <script src=js/home.v1.js></script>
-  <script src=js/i18n.js data-depends=jquery.slim></script>
-  <script src=js/ui-block.js data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script>
-  <script src=lib/codemirror/codemirror.js></script>
-  <script src=lib/codemirror/javascript.js></script>
+  <script src=../lib/jquery-3.3.1.min.js></script>
+  <script src=../lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+  <script src=../lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
+  <script src=../lib/blockies.min.js></script>
+  <script src=../lib/js-beautify-1.7.5/beautify.js></script>
+  <script src=../lib/prismjs-1.13.0/prism.js></script>
+  <script src=../lib/nebulas.js></script>
+  <script src=../js/1-localSave.js></script>
+  <script src=../js/home.v1.js></script>
+  <script src=../js/i18n.js data-depends=jquery.slim></script>
+  <script src=../js/ui-block.js data-depends="bootbox blockies jquery.slim i18n.js nebulas.js"></script>
+  <script src=../lib/codemirror/codemirror.js></script>
+  <script src=../lib/codemirror/javascript.js></script>
 
 
   <script>
@@ -87,6 +92,7 @@
             globalParams = {
                 account: null
             },
+            table_idx = 0,
             neb = new nebulas.Neb()
             
 
@@ -168,7 +174,6 @@
                         contract: contract
                     })
                     .then(function (resp) {
-                       // let text = JSON.stringify(resp);
                        for (i=0;i<resp.result;i++)
                        {
                         let getMemberContract = {"function":"getMember","args":"["+i+"]"};
@@ -183,7 +188,12 @@
                                 contract: getMemberContract
                             }).then(function (resp1) {
                                 console.log(JSON.stringify(resp1))
-                                $('#here_table').append( '<tr><td>' +  resp1.result + '</td></tr>' );
+      
+                               // $('#here_table').append( '<tr><td>' +  resp1.result + '</td></tr>' );
+                               $('#here_table').append( '<tr><th scope="row">'+table_idx+'</th>'+'<td>'+resp1.result +'</td></tr>')
+                               table_idx++;
+                    
+
                             })
                        }
                        
@@ -200,7 +210,7 @@
             var joincontract = {"function":"joinTeam","args":""};
             innerCall(function(params) {
                 params.contract = joincontract;
-                var gTx = new nebulas.Transaction(1001,
+                var gTx = new nebulas.Transaction(chainId,
                     globalParams.account,
                     params.to, params.value, params.nonce, params.gasPrice, params.gasLimit, params.contract);
                 
