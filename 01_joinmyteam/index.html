@@ -14,6 +14,8 @@
             text-align: center;
             color: black;
             font-size: 30px;
+            margin:30px;
+            color:green
         }
 
         .ownercontainer,.usercontainer {
@@ -28,17 +30,27 @@
             text-align:center;
             margin : 20px;
         } 
+
+        .image {
+            text-align :center;
+            display:inline-block;
+        }
 </style>
 
 <body>
-    <div class = "myheader"> Team Building </div>
-    <br>
+    <div class = "myheader"> Team Building on Nebulas </div>
+    <div class = "image">  
+        <img src="./img/images.png"> 
+        <img src="./img/logo-b.png"> 
+    </div>
     <div class = "ownercontainer">
-            <p> Hi there!</p>
-            <p>would you like to join my team ?</p>
-            <p> My team is at  <span class="black"><span id="ownerAddress"></span> </span></p>
+            <p> Hi there, my friend!</p>
+            <p> my name is <a id="ownerAddress"></a> </p>
+            <p>would you like to join my team on Nebulas?</p>
+            <p>your membership will be public and forever!</p>
+            <p> Check out this contract on <a id="contractAddress"></a> </p>
             <br>
-            <p> My team has  <span class="black"><span id="teamSize"></span>  </span></p>
+            <p> Now, my team has  <span class="black"><span id="teamSize"></span>  </span></p>
             <table class="table table-striped" id="here_table"> 
                 <thead>
                     <tr>
@@ -58,6 +70,7 @@
         <p><span id="userinfo">load your Nebulas Wallet first!</span></p> 
         <p><span id="useraddress"></p>  
         <button class="btn btn-primary btn-lg" type="submit" onClick="joinTeam();">join our team!</button>
+        <div>   <a id="txstatus"> </a> </div>
         <hr>
         <div class="container select-wallet-file"></div>
     </div>
@@ -96,6 +109,10 @@
             neb = new nebulas.Neb()
             
 
+            // add contract address link
+            $("#contractAddress").text(contractAddress);
+            $("#contractAddress").attr('href','https://explorer.nebulas.io/#/testnet/address/'+contractAddress);
+
             //neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
             neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
             var chainId = 1001;// test net
@@ -132,7 +149,9 @@
                        // let text = JSON.stringify(resp);
                         let address = resp.result;
                         console.log(address);
-                        $("#ownerAddress").text(address)
+                        $("#ownerAddress").text(address);
+                        $("#ownerAddress").attr('href','https://explorer.nebulas.io/#/testnet/address/'+ownerAddress);
+                       
                     })
                     .catch(function (err) {
                         console.log(text(JSON.stringify(err)));
@@ -207,6 +226,12 @@
 
 
         function joinTeam(){
+
+            if (globalParams.account ==null)
+            {
+                alert("sorry, I cannot find you!, please load your Nebulas wallet first");
+                return;
+            }
             var joincontract = {"function":"joinTeam","args":""};
             innerCall(function(params) {
                 params.contract = joincontract;
@@ -230,12 +255,14 @@
                             .getTransactionReceipt(resp.txhash)
                             .then(function (resp1) {
                                 console.log(JSON.stringify(resp1))
+                                $('#txstatus').text('your transaction ID is'+txHash)
+                                $('#txstatus').attr('href','https://explorer.nebulas.io/#/testnet/tx/'+txHash)
                                 refreshTeamSize();
-                            });
-                        
+                            });  
                     })
                     .catch(function (err) {
                         console.log(err)
+                        alert(err)
                     });
 
 
