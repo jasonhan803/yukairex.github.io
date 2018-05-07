@@ -200,7 +200,7 @@
             var joincontract = {"function":"joinTeam","args":""};
             innerCall(function(params) {
                 params.contract = joincontract;
-                var gTx = new nebulas.Transaction(chainId,
+                var gTx = new nebulas.Transaction(1001,
                     globalParams.account,
                     params.to, params.value, params.nonce, params.gasPrice, params.gasLimit, params.contract);
                 
