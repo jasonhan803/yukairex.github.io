@@ -389,6 +389,14 @@
         }
 
 
+
+        window.addEventListener('message', function(e) {
+            console.log("message received, msg.data: " + JSON.stringify(e.data));
+            if(!!e.data.data.txhash){
+                console.log( "Transaction hash:\n" +  JSON.stringify(e.data.data.txhash,null,'\t'));
+            }
+       })
+
   </script>
 
 </body>
