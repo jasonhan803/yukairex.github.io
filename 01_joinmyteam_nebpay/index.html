@@ -111,6 +111,7 @@
 
             var NebPay = require("nebpay");   
             var nebPay = new NebPay();
+            var serialNumber;
             
 
             // add contract address link
@@ -230,172 +231,100 @@
 
 
         function joinTeam(){
-
             if (globalParams.account ==null)
             {
                 alert("sorry, I cannot find you!, please load your Nebulas wallet first");
                 return;
             }
 
-
-
-
-
-            
-            var joincontract = {"function":"joinTeam","args":""};
-            innerCall(function(params) {
-                params.contract = joincontract;
-                var gTx = new nebulas.Transaction(chainId,
-                    globalParams.account,
-                    params.to, params.value, params.nonce, params.gasPrice, params.gasLimit, params.contract);
-                
-                console.log(params.gasPrice)
-                gTx.signTransaction();
-                console.log("ok so far")
-                var txHash;
-                neb.api
-                    .sendRawTransaction(gTx.toProtoString())
-                    .then(function (resp) {
-                        console.log(JSON.stringify(resp));
-                        $("#call_result").text(JSON.stringify(resp));
-                        txHash = resp.txhash;
-                        console.log(txHash)
-                        console.log("great!");
-                        neb.api
-                            .getTransactionReceipt(resp.txhash)
-                            .then(function (resp1) {
-                                console.log(JSON.stringify(resp1))
-                                $('#txstatus').text('your transaction ID is'+txHash)
-                                
-                                $('#txstatus').attr('href','https://explorer.nebulas.io/#/tx/'+txHash)
-                                refreshTeamSize();
-                            });  
-                    })
-                    .catch(function (err) {
-                        console.log(err)
-                        alert(err)
-                    });
-
-
-                        
-                
-            })
-            
-            
-
-
-        }
-
-
-
-        function onUnlockFile(swf, fileJson, account, password) {  //TODO: 对外函数不要用简称
-            var address;
-            try {
-                account.fromKey(fileJson, password);
-                address = account.getAddressString();
-                gAccount = account;
-
-                globalParams.account = account;
-
-                $(".icon-address.from input").val(address).trigger("input"); // gen icon from addr, needs trigger 'input' event if via set o.value
-                $("#unlock").hide();
-                $("#send").show();
-
-                userAccount = gAccount
-                $("#userinfo").text("wallet load successfully");
-                $("#useraddress").text("your address is at " + address);
-                neb.api.getAccountState(address)
-                    .then(function (resp) {
-                        
-                        var nas = Unit.fromBasic(resp.balance, "nas").toNumber();
-                        userNonce = parseInt(resp.nonce) + 1;
-                        //
-                        $("#balance").val(nas).trigger("input"); // add comma & unit from value, needs trigger 'input' event if via set o.value
-                        $("#nonce").val(parseInt(resp.nonce || 0) + 1);
-                    })
-                    .catch(function (e) {
-                        // this catches e thrown by nebulas.js!neb
-
-                        bootbox.dialog({
-                            backdrop: true,
-                            onEscape: true,
-                            message: i18n.apiErrorToText(e.message),
-                            size: "large",
-                            title: "Error"
-                        });
-                    });
-            } catch (e) {
-                // this catches e thrown by nebulas.js!account
-
-                bootbox.dialog({
-                    backdrop: true,
-                    onEscape: true,
-                    message: localSave.getItem("lang") == "en" ? e : "keystore 文件错误, 或者密码错误",
-                    size: "large",
-                    title: "Error"
-                });
-            }
-        }
-
-
-        function innerCall(callback) {
-            let params = {};
-
-            if (!globalParams.account) {
-                // TODO 提示钱包信息不正确
-                return;
-            }
-            params.from = globalParams.account.getAddressString();
-
-            // prepare to
-            let toAddr = contractAddress
-            if (!Account.isValidAddress(toAddr)) {
-                $("#run_to_addr").addClass("err");
-                setTimeout(function () {
-                    $("#run_to_addr").removeClass("err");
-                }, 5000);
-                return;
-            }
-            params.to = toAddr;
-
-            // prepare gasLimit
-            let gasLimit = Utils.toBigNumber(0);
-            params.gasLimit = 200000;
-
-
-
-            // prepare gasPrice
-            neb.api.gasPrice().then(function(resp){
-                params.gasPrice = resp.gas_price;
-            })
-
-
-            // prepare value
-            let value = Utils.toBigNumber(0);
-            params.value = value;
-
-            // prepare contract
-            
-
-            // prepare nonce
-            // needs refresh data on every 'test' and 'commit' call, because data update may slow,
-            // you can get different result by hit 'test' multiple times
-            neb.api.getAccountState(params.from).then(function (resp) {
-                var balance = nebulas.Unit.fromBasic(resp.balance, "nas")
-                params.nonce = parseInt(resp.nonce) + 1;
-
-                callback(params);
-            }).catch(function (err) {
-                // console.log("prepare nonce error: " + err);
-                bootbox.dialog({
-                    backdrop: true,
-                    onEscape: true,
-                    message: i18n.apiErrorToText(err.message),
-                    size: "large",
-                    title: "Error"
-                });
+            var to = contractAddress;
+            var value = "0";
+            var callFunction = "joinTeam"
+            var callArgs = ""
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: cbPush        //设置listener, 处理交易返回信息
             });
+
+            intervalQuery = setInterval(function () {
+                funcIntervalQuery();
+            }, 5000);
         }
+        
+
+
+
+
+
+        //     var joincontract = {"function":"joinTeam","args":""};
+        //     innerCall(function(params) {
+        //         params.contract = joincontract;
+        //         var gTx = new nebulas.Transaction(chainId,
+        //             globalParams.account,
+        //             params.to, params.value, params.nonce, params.gasPrice, params.gasLimit, params.contract);
+                
+        //         console.log(params.gasPrice)
+        //         gTx.signTransaction();
+        //         console.log("ok so far")
+        //         var txHash;
+        //         neb.api
+        //             .sendRawTransaction(gTx.toProtoString())
+        //             .then(function (resp) {
+        //                 console.log(JSON.stringify(resp));
+        //                 $("#call_result").text(JSON.stringify(resp));
+        //                 txHash = resp.txhash;
+        //                 console.log(txHash)
+        //                 console.log("great!");
+        //                 neb.api
+        //                     .getTransactionReceipt(resp.txhash)
+        //                     .then(function (resp1) {
+        //                         console.log(JSON.stringify(resp1))
+        //                         $('#txstatus').text('your transaction ID is'+txHash)
+                                
+        //                         $('#txstatus').attr('href','https://explorer.nebulas.io/#/tx/'+txHash)
+        //                         refreshTeamSize();
+        //                     });  
+        //             })
+        //             .catch(function (err) {
+        //                 console.log(err)
+        //                 alert(err)
+        //             });
+
+
+                        
+                
+        //     })
+            
+            
+
+
+        // }
+
+
+
+        var intervalQuery
+
+        function funcIntervalQuery() {
+            nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
+                .then(function (resp) {
+                    console.log("tx result: " + resp)   //resp is a JSON string
+                    var respObject = JSON.parse(resp)
+                    if(respObject.code === 0){
+                        console.log('transaction success')
+                        clearInterval(intervalQuery)
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                });
+        }
+
+        function cbPush(resp) {
+            console.log("response of push: " + JSON.stringify(resp))
+        }
+
+
+
+       
 
   </script>
 
