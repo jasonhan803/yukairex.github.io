@@ -71,8 +71,7 @@
         <p><span id="useraddress"></p>  
         <button class="btn btn-primary btn-lg" type="submit" onClick="joinTeam();">join our team!</button>
         <div>   <a id="txstatus"> </a> </div>
-        <hr>
-        <div class="container select-wallet-file"></div>
+      
     </div>
 
 
@@ -121,15 +120,6 @@
 
             neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
             var chainId = 1;// test net
-
-            uiBlock.insert({
-                footer: ".footer",
-                header: ".header",
-                iconAddress: ".icon-address",
-                logoMain: ".logo-main",
-                numberComma: ".number-comma",
-                selectWalletFile: [".select-wallet-file", onUnlockFile]
-            });
 
             var testcontract = {"function":"getOwner","args":""};
             
