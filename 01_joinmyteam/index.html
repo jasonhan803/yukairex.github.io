@@ -95,8 +95,8 @@
 
 
   <script>
-            const contractAddress = "n1hUkunTCQEnYFk4EdYyVvMuhaKgDzv3QsV";
-            const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+            const contractAddress = "n1zWzgfRP1pdrXeobViapjfymb9XRWzdtBH";
+            const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
             var userAccount;
             var userNonce;
             var nebulas = require("nebulas"),
@@ -112,11 +112,11 @@
 
             // add contract address link
             $("#contractAddress").text(contractAddress);
-            $("#contractAddress").attr('href','https://explorer.nebulas.io/#/testnet/address/'+contractAddress);
+            $("#contractAddress").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
 
-            //neb.setRequest(new nebulas.HttpRequest(localSave.getItem("apiPrefix") || "https://testnet.nebulas.io/"));
-            neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
-            var chainId = 1001;// test net
+
+            neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+            var chainId = 1;// test net
 
             uiBlock.insert({
                 footer: ".footer",
@@ -151,7 +151,7 @@
                         let address = resp.result;
                         console.log(address);
                         $("#ownerAddress").text(address);
-                        $("#ownerAddress").attr('href','https://explorer.nebulas.io/#/testnet/address/'+ownerAddress);
+                        $("#ownerAddress").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+ownerAddress);
                        
                     })
                     .catch(function (err) {
@@ -257,7 +257,8 @@
                             .then(function (resp1) {
                                 console.log(JSON.stringify(resp1))
                                 $('#txstatus').text('your transaction ID is'+txHash)
-                                $('#txstatus').attr('href','https://explorer.nebulas.io/#/testnet/tx/'+txHash)
+                                
+                                $('#txstatus').attr('href','https://explorer.nebulas.io/#/tx/'+txHash)
                                 refreshTeamSize();
                             });  
                     })
