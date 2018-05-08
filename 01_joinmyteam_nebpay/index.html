@@ -221,12 +221,6 @@
 
 
         function joinTeam(){
-            if (globalParams.account ==null)
-            {
-                alert("sorry, I cannot find you!, please load your Nebulas wallet first");
-                return;
-            }
-
             var to = contractAddress;
             var value = "0";
             var callFunction = "joinTeam"
