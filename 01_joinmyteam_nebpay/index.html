@@ -3,7 +3,6 @@
 <head>
   <title>Join my Nebulas Team</title>
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-  <link rel=stylesheet href=../lib/prismjs-1.13.0/prism.css>
   <link rel=stylesheet href=../lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
   <link rel=stylesheet href=../css/ui-block.css>
   <meta name=viewport content="width=device-width">
@@ -94,6 +93,8 @@
 
 
   <script>
+            // const contractAddress = "n1hUkunTCQEnYFk4EdYyVvMuhaKgDzv3QsV";
+            // const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
             const contractAddress = "n1zWzgfRP1pdrXeobViapjfymb9XRWzdtBH";
             const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
             var userAccount;
@@ -233,82 +234,31 @@
                 funcIntervalQuery();
             }, 5000);
         }
-        
-
-
-
-
-
-        //     var joincontract = {"function":"joinTeam","args":""};
-        //     innerCall(function(params) {
-        //         params.contract = joincontract;
-        //         var gTx = new nebulas.Transaction(chainId,
-        //             globalParams.account,
-        //             params.to, params.value, params.nonce, params.gasPrice, params.gasLimit, params.contract);
-                
-        //         console.log(params.gasPrice)
-        //         gTx.signTransaction();
-        //         console.log("ok so far")
-        //         var txHash;
-        //         neb.api
-        //             .sendRawTransaction(gTx.toProtoString())
-        //             .then(function (resp) {
-        //                 console.log(JSON.stringify(resp));
-        //                 $("#call_result").text(JSON.stringify(resp));
-        //                 txHash = resp.txhash;
-        //                 console.log(txHash)
-        //                 console.log("great!");
-        //                 neb.api
-        //                     .getTransactionReceipt(resp.txhash)
-        //                     .then(function (resp1) {
-        //                         console.log(JSON.stringify(resp1))
-        //                         $('#txstatus').text('your transaction ID is'+txHash)
-                                
-        //                         $('#txstatus').attr('href','https://explorer.nebulas.io/#/tx/'+txHash)
-        //                         refreshTeamSize();
-        //                     });  
-        //             })
-        //             .catch(function (err) {
-        //                 console.log(err)
-        //                 alert(err)
-        //             });
-
-
-                        
-                
-        //     })
-            
-            
-
-
-        // }
-
-
 
         var intervalQuery
-
         function funcIntervalQuery() {
             nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
                 .then(function (resp) {
                     console.log("tx result: " + resp)   //resp is a JSON string
                     var respObject = JSON.parse(resp)
+                    console.log(respObject)
                     if(respObject.code === 0){
                         console.log('transaction success')
                         clearInterval(intervalQuery)
+                        refreshTeamSize();
+                        refreshTeamTable();
                     }
                 })
                 .catch(function (err) {
                     console.log(err);
+                    clearInterval(intervalQuery)
+
                 });
         }
 
         function cbPush(resp) {
             console.log("response of push: " + JSON.stringify(resp))
         }
-
-
-
-       
 
   </script>
 
