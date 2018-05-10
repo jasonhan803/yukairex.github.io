@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Long Live Message Board</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel=stylesheet href=../lib/bootstrap-4.0.0-dist/css/bootstrap.min.css>
+    <link rel=stylesheet href=../css/ui-block.css>
+    <meta name=viewport content="width=device-width">
+</head>
+
+<style>
+    .table {
+        text-align: center;
+        margin: 20px;
+        padding: 50px;
+    }
+
+    .image {
+        text-align: center;
+        display: inline-block;
+    }
+</style>
+
+<body>
+
+    <div class="container">
+        <div class="header clearfix">
+            <h3 class="text-muted">Anti-Censorship on Nebulas</h3>
+        </div>
+
+        <div class="jumbotron" style="background-color:#CFD8DC;">
+            <h1 class="display-3">Long-live Message Board</h1>
+            <p class="lead"> We use nebulas blockchain to fight against censorship</p>
+            <p class="lead">Even if this site force to shutdown, your message is still on the Nebulas Blockchain</p>
+            <p class="lead">
+                <a id="address"> Checkout the contract address on Nebulas Explorer</a>
+            </p>
+            <p> call "getFullMessage(index)" method with message index</p>
+        </div>
+
+        <h3 class="class=" col-lg-1 col-offset-6 centered "">Message Board</h3>
+        <p> type in the message index to check out the message</p>
+        <p class="class=" col-lg-1 col-offset-6 centered "">
+            <span id="number"></span>
+        </p>
+        <p> by default, it shows the latest message</p>
+
+        <form class="form-inline">
+            <label class="sr-only" for="inlineFormInput">Name</label>
+            <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="messageIndex" placeholder="type in the index of message">
+            <button type="button" id="getMessageButton" class="btn btn-primary" onClick="readMessageByIndex();">Check</button>
+        </form>
+
+        <br>
+        <div class="form-group">
+            <textarea readonly class="form-control rounded-0" id="messageBoard" rows="10"> </textarea>
+        </div>
+
+        <br>
+        <br>
+        <h3 class="class=" col-lg-1 col-offset-6 centered "">New Message</h3>
+        <form>
+            <div white-space="pre-wrap">
+                <label> You can post a new message here! The max number of character is about 680</label>
+                <p> <a href ="https://github.com/ChengOrangeJu/WebExtensionWallet" target="_blank" > check out the Nebpay if you don't have a Nebulas Wallet</a></p>
+                <textarea class="form-control rounded-0" id="newMessage" rows="10">use this area to post a new message</textarea>
+                <br>
+                <p id ="count"></p>
+                <button type="button" class="btn btn-primary" id="postbutton" onClick="postNewMessage();">Post</button>
+            </div>
+        </form>
+
+    </div>
+    <!-- /container -->
+
+    <script src=../lib/jquery-3.3.1.min.js></script>
+    <script src=../lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=../lib/bootbox.min.js data-depends="bootstrap jquery.slim"></script>
+    <script src=../lib/js-beautify-1.7.5/beautify.js></script>
+    <script src=../lib/nebpay.js></script>
+    <script src=../lib/nebulas.js></script>
+
+    <script>
+
+        var nebulas = require("nebulas"),
+            neb = new nebulas.Neb();
+        var NebPay = require("nebpay");
+        var nebPay = new NebPay();
+        var serialNumber;
+
+
+        // test net 
+        // const contractAddress = "n1hC3URsHEskkKny6orqTw6VRB7ztQgeXin";
+        // const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+        // $("#address").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress);
+        // neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+        // var chainId = 1001;// test net
+
+
+        // main net 
+        const contractAddress = "n1oLGfZsanDzNDsPb5q5EbHE7k5YwZmzicE";
+        const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
+        $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
+        neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+        var chainId = 1;// mainnet net
+
+
+        var messageNumber;
+        getMessageNumber();
+
+
+        function getMessageNumber() {
+            let testcontract = { "function": "itemSize", "args": "" };
+            neb.api.call({
+                from: ownerAddress, // get address string
+                to: contractAddress, // get the contract string
+                value: "0",
+                nonce: 0,
+                gasPrice: "200000",
+                gasLimit: "1000000",
+                contract: testcontract
+            })
+                .then(function (resp) {
+                    // let text = JSON.stringify(resp);
+                    messageNumber = resp.result;
+                    $("#number").text("we have " + (messageNumber-1) + " messages on this message board");
+                    showMessage(messageNumber-1);
+
+                })
+                .catch(function (err) {
+                    console.log(JSON.stringify(err));
+                });
+        }
+
+
+      
+
+        function readMessageByIndex() {
+            let index = $('#messageIndex').val().trim();
+            console.log(index)
+
+            if ((parseInt(index) + 1) <= parseInt(messageNumber)) {
+                showMessage(index);
+            } else {
+                alert('the message index does not exist')
+            }
+        }
+
+
+        function showMessage(index){
+            console.log(index)
+            let testcontract = { "function": "getFullMessage", "args": "[" + index + "]" };
+                neb.api.call({
+                    from: ownerAddress, // get address string
+                    to: contractAddress, // get the contract string
+                    value: "0",
+                    nonce: 0,
+                    gasPrice: "200000",
+                    gasLimit: "1000000",
+                    contract: testcontract
+                })
+                    .then(function (resp) {
+                     
+                        let result = resp.result;
+                       let showText = result.substring(1,result.length-1);
+                       showText = showText.replace(/\\n/g,"\n")
+                       
+                        //showText = showText.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace("\n","&#13;")
+                        console.log(showText)
+                        
+                        
+                        // var respObj=JSON.parse(resp)
+                        // var fullMessage = respObj.result;
+                        $("#messageBoard").val(showText);
+                    })
+                    .catch(function (err) {
+                        console.log(JSON.stringify(err));
+                    });
+        }
+
+
+         $('#newMessage').bind('input propertychange', function(){
+         $('#count').text('character:' + ($('#newMessage').val().length));
+        })
+        
+        function postNewMessage() {
+
+             let content = JSON.stringify($('#newMessage').val())
+            //let content = $('#newMessage').val()
+            //console.log(content)
+            var to = contractAddress;
+            var value = "0";
+            var callFunction = "newMessage"
+            //var callArgs = "[\"" + " " + "\",\"" + content + "\"]"
+            var callArgs = "[\"" + " " + "\"," + content + "]" //JSON.stringfy
+            //console.log(callArgs)
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: cbPush        //设置listener, 处理交易返回信息
+            });
+
+            intervalQuery = setInterval(function () {
+                funcIntervalQuery();
+            }, 5000);
+        }
+
+
+        var intervalQuery
+        function funcIntervalQuery() {
+            nebPay.queryPayInfo(serialNumber)   //search transaction result from server (result upload to server by app)
+                .then(function (resp) {
+                    //console.log("tx result: " + resp)   //resp is a JSON string
+                    var respObject = JSON.parse(resp)
+                    //console.log(respObject)
+                    if(respObject.code === 0){
+                        console.log('transaction success')
+                        if( confirm('post success! your message index is: ' + messageNumber) )
+                        {
+                            clearInterval(intervalQuery)
+                            setTimeout(function(){
+                                $(this).scrollTop(0);
+                                window.location.reload();
+                            }, 3000);
+
+                        }
+                        
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    clearInterval(intervalQuery)
+
+                });
+        }
+
+        function cbPush(resp) {
+            console.log("response of push: " + JSON.stringify(resp))
+        }
+
+    </script>
+
+</body>
+
+
+</html>
