@@ -100,7 +100,7 @@
         // var chainId = 1001;// test net
 
 
-        // main net 
+        //main net 
         const contractAddress = "n1oLGfZsanDzNDsPb5q5EbHE7k5YwZmzicE";
         const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
         $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
@@ -203,7 +203,7 @@
 
             intervalQuery = setInterval(function () {
                 funcIntervalQuery();
-            }, 5000);
+            }, 10000);
         }
 
 
@@ -213,7 +213,7 @@
                 .then(function (resp) {
                     //console.log("tx result: " + resp)   //resp is a JSON string
                     var respObject = JSON.parse(resp)
-                    //console.log(respObject)
+                    console.log(respObject)
                     if(respObject.code === 0){
                         console.log('transaction success')
                         if( confirm('post success! your message index is: ' + messageNumber) )
