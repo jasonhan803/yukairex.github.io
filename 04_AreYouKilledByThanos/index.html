@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Are you killed by Thanos</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="icon" href="./img/thanos.jpg">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<style>
+</style>
+
+
+<body>
+    <!-- <div>
+        <img style="align-self: ceter;" src="./img/thanos.jpg">
+    </div> -->
+
+    <div style="width: 100%; height: 100%;">
+        
+        <span id="display" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: sans-serif; font-size: 4em; text-align: center;">Check if you are slain by Thanos on Nebulas Blockchain</span>
+    </div>
+
+  
+    <div id="form" class="col-xs-5" style="position:fixed; top:80%; left:30%;font-family: sans-serif">
+        <label for="input" id="input" style="position: relative;font-family: sans-serif;text-align:center;"> type in your NAS wallet address to check</label>
+        <input class="form-control" id="address" type="text" placeholder="your NAS address" style="font-family: sans-serif">
+        <br>
+        <button id="button" type="button" class="btn btn-primary" style="position:relative; top:40%;left:40%;margin-bottom: 10px;font-family: sans-serif" onClick="check()">CHECK</button>
+        <br>
+        <p <span id="save" style="text-align:center;font-family: sans-serif"></span> </p>  
+    </div>
+
+
+    
+    <script src=../lib/jquery-3.3.1.min.js></script>
+    <script src=../lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=../lib/js-beautify-1.7.5/beautify.js></script>
+    <script src=../lib/nebpay.js></script>
+    <script src=../lib/nebulas.js></script>
+
+    <script>
+
+        const killed = "You were slain by Thanos, for the good of the Universe."
+        const unkilled = "You were spared by Thanos."
+
+
+        var nebulas = require("nebulas"),
+            neb = new nebulas.Neb();
+        var NebPay = require("nebpay");
+        var nebPay = new NebPay();
+        var serialNumber;
+
+        var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
+        testnetUrl = "https://pay.nebulas.io/api/pay";
+
+
+        // // test net
+        // const contractAddress = "n1ug4rddipk3aU3FhVtuwfTF6jW6t16Da9F";
+        // const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+        // var user;
+        // neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+        // var chainId = 1001;// test net
+        // var callbackUrl = testnetUrl;
+
+        //main net 
+        const contractAddress = "n1ge8uSwAQydvajytr2eJQWFjFc3BFUig82";
+        const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
+        $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
+        neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+        var chainId = 1;// mainnet net
+        var callbackUrl = mainnetUrl;
+        ////341b9046769341b4c2210b65907389839bbae78cb530e782f4834849f70f64c3
+
+        function check(){
+            var address =$('#address').val().trim();
+            user = address;
+            console.log(address);
+            getStatus(address);
+        };
+
+
+        function getStatus(userAddress) {
+            // return user deposit
+             let testcontract = { "function": "getStatus", "args": "[\""+userAddress+"\"]" };
+            neb.api.call({
+                from: ownerAddress, // get address string
+                to: contractAddress, // get the contract string
+                value: "0",
+                nonce: 0,
+                gasPrice: "200000",
+                gasLimit: "1000000",
+                contract: testcontract
+            })
+                .then(function (resp) {
+                    var result = resp.result;
+                    console.log(result);
+                    if(result=="null"){
+                        if(confirm("you have not checked your status. Do you want to check on Nebulas Blockchain?")){
+                            // if confirm, run the check on Nebulas blockchain
+                            checkOnNebulas();
+                        }
+                    }else{
+                        if(result==1){
+                            $('#display').text(killed)
+                            // change the button to save
+                            $('#address').hide();
+                            $('#input').hide();
+                            $('#button').text("SAVE");
+                            $("#button").attr("onclick","save()");
+                            $('#save').text("burn 0.01 NAS to save from Thanos");
+
+                        }
+                        else{
+                            $('#display').text(unkilled)
+                            $('#form').hide();
+                        }
+                    }
+              
+                })
+                .catch(function (err) {
+                    console.log(JSON.stringify(err));
+                });
+        }
+
+
+       
+
+
+
+        var intervalQuery;
+        function checkOnNebulas(){ // check the number on Nebulas network
+
+            var to = contractAddress;
+            var value = "0";// need to change
+            var callFunction = "check";
+            var callArgs = "";
+         
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: cbPush,        //设置listener, 处理交易返回信息
+                callback: callbackUrl
+            });
+            console.log(serialNumber)
+
+            intervalQuery = setInterval(function () {
+                funcIntervalQuery();
+            }, 20000);
+        }
+
+        function save(){ // check the number on Nebulas network
+            var to = contractAddress;
+            var value = "0.0101";// need to change
+            var callFunction = "save";
+            var callArgs = "";
+         
+            
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: cbPush,        //设置listener, 处理交易返回信息
+                callback: callbackUrl
+            });
+            console.log(serialNumber)
+
+            intervalQuery = setInterval(function () {
+                funcIntervalQuery();
+            }, 20000);
+        }
+
+
+
+        function funcIntervalQuery() {
+            nebPay.queryPayInfo(serialNumber,{callback:callbackUrl})   //search transaction result from server (result upload to server by app)
+                .then(function (resp) {
+                    //console.log("tx result: " + resp)   //resp is a JSON string
+                    var respObject = JSON.parse(resp)
+                    console.log(respObject)
+                    if(respObject.code === 0){
+                        console.log('transaction success')
+                        setTimeout('', 5000);
+                        checkStatusInquiry(user);  
+                        clearInterval(intervalQuery);                                
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    clearInterval(intervalQuery)
+
+                });
+        }
+
+
+        function cbPush(resp) {
+            console.log("response of push: " + JSON.stringify(resp))
+        }
+
+
+        function checkStatusInquiry(userAddress) {
+            // return user deposit
+             let testcontract = { "function": "getStatus", "args": "[\""+userAddress+"\"]" };
+            neb.api.call({
+                from: ownerAddress, // get address string
+                to: contractAddress, // get the contract string
+                value: "0",
+                nonce: 0,
+                gasPrice: "200000",
+                gasLimit: "1000000",
+                contract: testcontract
+            })
+                .then(function (resp) {
+                    var result = resp.result;
+                    console.log(result);
+                    if(result=="null"){
+                        setTimeout('', 10000);
+                        checkStatusInquiry(userAddress);
+  
+                    }else{
+                        if(result==1){
+                            $('#display').text(killed)
+                            // change the button to save
+                            $('#address').hide();
+                            $('#input').hide();
+                            $('#button').text("SAVE");
+                            $("#button").attr("onclick","save()");
+                            $('#save').text("burn 0.01 NAS to save from Thanos");
+
+                        }
+                        else{
+                            $('#display').text(unkilled)
+                            $('#form').hide();
+                        }
+                    }
+              
+                })
+                .catch(function (err) {
+                    console.log(JSON.stringify(err));
+                });
+        }
+
+
+    </script>
+    
+</body>
+
