@@ -5,9 +5,8 @@
     <title>Nebulas Alarm</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" media="screen"
-     href="../lib/datepicker/bootstrap-datetimepicker.min.css">
-    
+    <link rel="stylesheet" type="text/css" media="screen" href="../lib/datepicker/bootstrap-datetimepicker.min.css">
+
     <meta name=viewport content="width=device-width">
 </head>
 
@@ -15,7 +14,7 @@
     .myheader {
         text-align: center;
         color: black;
-        font-size: 50px;
+        font-size: 40px;
         margin: 30px;
         color: brown
     }
@@ -41,39 +40,42 @@
 </style>
 
 <body onload="startTime()">
-    <div class="myheader"> Nebulas Alarm </div>
-
-
+    <div class="myheader">
+        <div>
+            <h1>Nebulas Alarm </h1>
+        </div>
+        <div>
+            <h1>Your Local Time is:
+                <span id="datetime"></span>
+            </h1>
+        </div>
+    </div>
 
 
     <div class="ownercontainer">
-            <div class="image">
-                    <img src="./img/alarm.jpeg">
-                    <img src="./img/logo-b.png">
-                </div>
+        <div class="image">
+            <img src="./img/alarm.jpeg">
+            <img src="./img/logo-b.png">
+        </div>
+    <div>
+            <br>
+            <br>
 
-        <div>
-            <div>
-                <p>Date/Time: <span id="datetime"></span></p>
+            <div class="form-group">
+                <form style="font-family: sans-serif">
+                    <label>type in your NAS address to check your current ALARM</label>
+                    <input type="text" id="address" placeholder="your NAS address">
+                    <div>
+                        <button type="button" id="getMessageButton" class="btn btn-primary" onClick="checkStatus();">Check</button>
+                    </div>
+                </form>
             </div>
 
-            <form>
-                <input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0" id="address" placeholder="your NAS address">
-                <div>
-
-
-                <button type="button" id="getMessageButton" class="btn btn-primary" onClick="checkStatus();">Check</button>
-                </div>
-            </form>
-
-            <div>
-                <span id="alarmStatus"></span>
-            </div>
-            <div>
-                <span id="alarmTime"></span>
-            </div>
-            <div>
-                <span id="alarmDeposit">
+            <div style="color:brown;">
+                <h3><span id="userName"></span></h3>
+                <h3><span id="alarmStatus"></span></h3>
+                <h3><span id="alarmTime"></span></h3>
+                <h3><span id="alarmDeposit"></span></h3>                
             </div>
 
             <br>
@@ -83,19 +85,19 @@
             <div id="datetimepicker" class="input-append date">
                 <input type="text"></input>
                 <span class="add-on">
-                  <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+                    <i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
                 </span>
             </div>
-                <br>
-                <div>
-                    <button type="button" id="setAlarm" class="btn btn-primary" onClick="set();">SET </button>
-                    <button type="button" id="stopAlarm" class="btn btn-primary" onClick="stopAlarm();">RESET</button>
-                </div>
-                <br>
-                <div>
-                    
-                </div>
-            
+            <br>
+            <div>
+                <button type="button" id="setAlarm" class="btn btn-primary" onClick="set();">SET </button>
+                <button type="button" id="stopAlarm" class="btn btn-primary" onClick="stopAlarm();">RESET</button>
+            </div>
+            <br>
+            <div>
+
+            </div>
+
 
         </div>
 
@@ -107,13 +109,13 @@
             <br>
             <hr>
             <h3>How to use Nebulas Alarm</h3>
-                <p> You can setup an alarm on Nebulas </p>
-                <p> You need to deposit at least 0.01 NAS to setup the alarm </p>
-                <p> if you clear the alarm at time, your deposit will return to your wallet</p>
-                <p> if you fail to clear the alarm at time, your will lose your deposit forever!</p>
-                <p> 
-                    <a id="contractAddress">Checkout the contract address on Nebulas Explorer</a>
-                </p>
+            <p> You can setup an alarm on Nebulas </p>
+            <p> You need to deposit at least 0.01 NAS to setup the alarm </p>
+            <p> if you clear the alarm at time, your deposit will return to your wallet</p>
+            <p> if you fail to clear the alarm at time, your will lose your deposit forever!</p>
+            <p>
+                <a id="contractAddress">Checkout the contract address on Nebulas Explorer</a>
+            </p>
 
         </div>
 
@@ -146,14 +148,14 @@
         var nebPay = new NebPay();
         var serialNumber;
         var user;
+        var userAlarmStatus = false;
 
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
-        testnetUrl = "https://pay.nebulas.io/api/pay";
+            testnetUrl = "https://pay.nebulas.io/api/pay";
 
         // test net 
         // const contractAddress = "n1vawkkMkFpcJkHvjCBn6j9jaYxtUttnYwm";
         // const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
-        // 
         // $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress);
         // neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
         // var chainId = 1001;// test net
@@ -167,42 +169,47 @@
         neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         var chainId = 1;// mainnet net
         var callbackUrl = mainnetUrl;
-        
+
         //contract HASH: 6e5f94ceeb0902ad8a885d2cb937f1241cb63a9d53fa662830baee78a06ff5ea
 
 
+
         var AlarmTime;
+        setInterval(checkStatus,5000)
+
 
         function startTime() {
             var today = new Date();
             var y = today.getFullYear();
-            var mon = (today.getMonth()+1);
+            var mon = (today.getMonth() + 1);
             var d = today.getDate();
             var h = today.getHours();
             var m = today.getMinutes();
             var s = today.getSeconds();
             m = checkTime(m);
             s = checkTime(s);
-            
-           $('#datetime').text(y+"/"+mon+"/"+d+"   "+h + ":" + m + ":" + s)
-            
+
+            $('#datetime').text(mon + "/" + d + "/" + y + "   " + h + ":" + m + ":" + s)
+
             var t = setTimeout(startTime, 500);
         }
         function checkTime(i) {
-            if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+            if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
             return i;
         }
 
 
-        function checkStatus(){
-            var address =$('#address').val().trim();
+        function checkStatus() {
+            var address = $('#address').val().trim();
+            user = address;
             // getUserDeposit(address);
             // getUserAlarmTime(address);
             console.log(address);
+            console.log("checking status");
             getUserAlarmStatus(address);
         }
 
-        function set(){
+        function set() {
             var picker = $('#datetimepicker').data('datetimepicker');
             console.log(picker);
             // console.log(picker.viewDate)
@@ -218,7 +225,7 @@
 
         function getContractTime() {
             // return user deposit
-             let testcontract = { "function": "getNow", "args": "" };
+            let testcontract = { "function": "getNow", "args": "" };
             neb.api.call({
                 from: ownerAddress, // get address string
                 to: contractAddress, // get the contract string
@@ -229,9 +236,9 @@
                 contract: testcontract
             })
                 .then(function (resp) {
-                    
+
                     var temp = resp.result;
-                    
+
                     console.log(temp);
                     // show value
                 })
@@ -241,11 +248,11 @@
         }
 
 
-        
+
 
         function getUserDeposit(userAddress) {
             // return user deposit
-             let testcontract = { "function": "getDeposit", "args": "[\""+userAddress+"\"]" };
+            let testcontract = { "function": "getDeposit", "args": "[\"" + userAddress + "\"]" };
             neb.api.call({
                 from: ownerAddress, // get address string
                 to: contractAddress, // get the contract string
@@ -256,12 +263,12 @@
                 contract: testcontract
             })
                 .then(function (resp) {
-                    
-                    var temp = resp.result;
-                    var value = temp.substring(1,temp.length-1);
-                    console.log(value);
 
-                    $('#alarmDeposit').text("your deposit is " + String(parseInt(value)/1e18) +"NAS")
+                    var temp = resp.result;
+                    var value = temp.substring(1, temp.length - 1);
+                    //console.log(value);
+
+                    $('#alarmDeposit').text("your deposit is " + String(parseInt(value) / 1e18) + "NAS")
                     // show value
                 })
                 .catch(function (err) {
@@ -270,8 +277,9 @@
         }
 
         function getUserAlarmTime(userAddress) {
+
             // return user deposit
-             let testcontract = { "function": "getAlarmTime", "args": "[\""+userAddress+"\"]" };
+            let testcontract = { "function": "getAlarmTime", "args": "[\"" + userAddress + "\"]" };
             neb.api.call({
                 from: ownerAddress, // get address string
                 to: contractAddress, // get the contract string
@@ -284,22 +292,22 @@
                 .then(function (resp) {
                     // let text = JSON.stringify(resp);
                     var value = resp.result;
-                    
-                    console.log(value)
-                    AlarmTime = value.substring(1,value.length-1);;
-                    let temp = new Date(parseInt(AlarmTime));
-                    console.log(temp)
 
-    
+                   // console.log(value)
+                    AlarmTime = value.substring(1, value.length - 1);;
+                    let temp = new Date(parseInt(AlarmTime));
+                   // console.log(temp)
+
+
                     var y = temp.getFullYear();
-                    var mon = (temp.getMonth()+1);
+                    var mon = (temp.getMonth() + 1);
                     var d = temp.getDate();
                     var h = temp.getHours();
                     var m = temp.getMinutes();
                     var s = temp.getSeconds();
-                    $('#alarmTime').text("your set alarm time is " + y+"/"+mon+"/"+d+"   "+h + ":" + m)
-
-
+                    m = checkTime(m);
+                    s = checkTime(s);
+                    $('#alarmTime').text("your set alarm time is " + y + "/" + mon + "/" + d + "   " + h + ":" + m)
 
 
                 })
@@ -311,9 +319,14 @@
 
         function getUserAlarmStatus(userAddress) {
             // return user deposit
-            user = userAddress;
-             let testcontract = { "function": "getAlarmStatus", "args": "[\""+userAddress+"\"]" };
-             console.log(testcontract)
+            
+            if (userAddress==""){
+                console.log("in if loop")
+                return;
+            }
+            console.log(userAddress)
+            let testcontract = { "function": "getAlarmStatus", "args": "[\"" + userAddress + "\"]" };
+            console.log(testcontract)
             neb.api.call({
                 from: ownerAddress, // get address string
                 to: contractAddress, // get the contract string
@@ -327,20 +340,20 @@
                     // let text = JSON.stringify(resp);
                     var value = resp.result;
                     console.log(value)
-
+                    $('#userName').text("hello, "+userAddress)
                     if (value == "true") {
                         $('#alarmStatus').text("your alarm is ACTIVE")
                         $('#alarmTime').show();
                         $('#alarmDeposit').show();
                         getUserAlarmTime(userAddress);
                         getUserDeposit(userAddress);
-
-                        
+                        userAlarmStatus = true;
                     }
                     else {
                         $('#alarmStatus').text("your alarm is NOT ACTIVE")
                         $('#alarmTime').hide();
                         $('#alarmDeposit').hide();
+                        userAlarmStatus = false;
 
                     }
                     // if return true;
@@ -356,15 +369,15 @@
 
 
 
-  function setAlarm(time) {
+        function setAlarm(time) {
             // return user deposit
             var to = contractAddress;
             var value = "0.015";// need to change
             var callFunction = "setAlarm"
-            var callArgs = "[\""+time+"\"]";
+            var callArgs = "[\"" + time + "\"]";
 
             AlarmTime = time;
-         
+
             console.log(callArgs)
             serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
                 listener: cbPush,        //设置listener, 处理交易返回信息
@@ -376,18 +389,18 @@
             }, 20000);
         }
 
-    function stopAlarm() {
+        function stopAlarm() {
             // return user deposit
-                   
+
             var to = contractAddress;
             var value = "0";// need to change
             var callFunction = "stopAlarm"
             var callArgs = ""
-         
+
             //console.log(callArgs)
             serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
                 listener: cbPush,        //设置listener, 处理交易返回信息
-                callback:callbackUrl
+                callback: callbackUrl
             });
 
             intervalQuery2 = setInterval(function () {
@@ -400,20 +413,26 @@
         var intervalQuery1, intervalQuery2
 
         function funcIntervalQuery1() {
-            nebPay.queryPayInfo(serialNumber,{callback:callbackUrl})   //search transaction result from server (result upload to server by app)
+            nebPay.queryPayInfo(serialNumber, { callback: callbackUrl })   //search transaction result from server (result upload to server by app)
                 .then(function (resp) {
                     //console.log("tx result: " + resp)   //resp is a JSON string
                     var respObject = JSON.parse(resp)
                     console.log(respObject)
-                    if(respObject.code === 0){
+                    let userPreAlarmStatus = userAlarmStatus;
+                    if (respObject.code === 0) {
                         console.log('transaction success')
-                        if( confirm('your alarm is set!')) 
-                        {
+                        if (confirm('your alarm is set! \r wait for seconds and the alarm status will be updated')) {
                             clearInterval(intervalQuery1);
-                            window.location.reload();
-                            getUserAlarmStatus(user);
+
+                            setTimeout(checkAlarm(user),10000)
+                            // window.location.reload();
+                            //  while(userPreAlarmStatus===userAlarmStatus)
+                            //  {
+                            //     setTimeout(checkAlarm(user),10000)
+                            //  }
+                            
                         }
-                        
+
                     }
                 })
                 .catch(function (err) {
@@ -425,24 +444,30 @@
 
 
         function funcIntervalQuery2() {
-            nebPay.queryPayInfo(serialNumber,{callback:callbackUrl})   //search transaction result from server (result upload to server by app)
+            nebPay.queryPayInfo(serialNumber, { callback: callbackUrl })   //search transaction result from server (result upload to server by app)
                 .then(function (resp) {
                     //console.log("tx result: " + resp)   //resp is a JSON string
                     var respObject = JSON.parse(resp)
                     console.log(respObject)
-                    if(respObject.code === 0){
+                    let userPreAlarmStatus = userAlarmStatus;
+                    if (respObject.code === 0) {
                         console.log('transaction success')
-                            clearInterval(intervalQuery2)
-                            var now = new Date().getTime();
-                            if((now-parseInt(AlarmTime))>=600000)
-                            {
-                                confirm('Sorry, your Alarm is expired, your NAS is gone!')
-                            }else {
-                                confirm('your Alarm cleared, you get your NAS back!')
-                            }
-                            window.location.reload();
-                            getUserAlarmStatus(user);
+                        clearInterval(intervalQuery2)
+                        var now = new Date().getTime();
+                        if ((now - parseInt(AlarmTime)) >= 600000) {
+                            confirm('Sorry, your Alarm is expired, your NAS is gone!\r Wait for seconds and the alarm status will be updated')
+                        } else {
+                            confirm('your Alarm cleared, you get your NAS back! \r Wait for seconds and the alarm status will be updated')
+                        }
+                        // window.location.reload();
+                        setTimeout(checkAlarm(user),10000)
+                        // while(userPreAlarmStatus===userAlarmStatus)
+                        //     {   
+                        //         setTimeout(checkAlarm(user),10000)
+                                
+                        //     }
                         
+
                     }
                 })
                 .catch(function (err) {
@@ -457,25 +482,55 @@
             console.log("response of push: " + JSON.stringify(resp))
         }
 
+
+
+
+        function checkAlarm(userAddress) {
+            // return user deposit
+            user = userAddress;
+            let testcontract = { "function": "getAlarmStatus", "args": "[\"" + userAddress + "\"]" };
+            console.log(testcontract)
+            neb.api.call({
+                from: ownerAddress, // get address string
+                to: contractAddress, // get the contract string
+                value: "0",
+                nonce: 0,
+                gasPrice: "200000",
+                gasLimit: "1000000",
+                contract: testcontract
+            })
+                .then(function (resp) {
+                    // let text = JSON.stringify(resp);
+                    var value = resp.result;
+                    console.log(userAlarmStatus)
+                    userAlarmStatus=value;
+                    // if return true;
+                    // show alarm time and deposit
+
+                    // if return false:
+                    // show error message
+                })
+                .catch(function (err) {
+                    console.log(JSON.stringify(err));
+                });
+        }
+
     </script>
 
-    <script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js">
-    </script> 
-    <script type="text/javascript"
-    src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.3/jquery.min.js">
     </script>
-    <script type="text/javascript"
-    src="../lib/datepicker/bootstrap-datetimepicker.min.js">
+    <script type="text/javascript" src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js">
+    </script>
+    <script type="text/javascript" src="../lib/datepicker/bootstrap-datetimepicker.min.js">
     </script>
     <!-- <script type="text/javascript"
     src="https://tarruda.github.com/bootstrap-datetimepicker/assets/js/bootstrap-datetimepicker.pt-BR.js">
     </script> -->
     <script type="text/javascript">
-    $('#datetimepicker').datetimepicker({
-    format: 'MM/dd/yyyy hh:mm',
-    language: 'en'
-    });
+        $('#datetimepicker').datetimepicker({
+            format: 'MM/dd/yyyy hh:mm',
+            language: 'en'
+        });
     </script>
 
 </body>
