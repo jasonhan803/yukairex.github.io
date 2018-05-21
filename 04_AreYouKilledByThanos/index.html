@@ -6,11 +6,14 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="icon" href="./img/thanos.jpg">
+    <link rel="stylesheet" href="css/skel.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/style-xlarge.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
 </head>
 
 <style>
@@ -22,7 +25,7 @@
         <img style="align-self: ceter;" src="./img/thanos.jpg">
     </div> -->
 
-    <div style="width: 100%; height: 100%;">
+    <!-- <div style="width: 100%; height: 100%;">
         
         <span id="display" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: sans-serif; font-size: 4em; text-align: center;">Check if you are slain by Thanos on Nebulas Blockchain</span>
     </div>
@@ -35,7 +38,26 @@
         <button id="button" type="button" class="btn btn-primary" style="position:relative; top:40%;left:40%;margin-bottom: 10px;font-family: sans-serif" onClick="check()">CHECK</button>
         <br>
         <p <span id="save" style="text-align:center;font-family: sans-serif"></span> </p>  
-    </div>
+    </div> -->
+
+    <!-- Banner -->
+    <section id="banner">
+        <div class="inner">
+            <h2 style="margin-left:20%;margin-right:20%"><span id="display">Check if you are slain by Thanos on Nebulas Blockchain</span></h2>
+            <br>
+            <div id="myform">
+                <div style="margin-left:20%;margin-right:20%">
+                    <input id="address" type="text" placeholder="your NAS address" style="font-family: sans-serif">
+                </div>
+                <br>
+                <br>
+                <ul class="actions">
+                    <li><a href="#one" id="button" class="button big scrolly" onClick="check()">CHECK</a></li>
+                </ul>
+                <p <span id="save" style="text-align:center;font-family: sans-serif"></span> </p>  
+            </div>
+        </div>
+    </section>
 
 
     
@@ -46,7 +68,6 @@
     <script src=../lib/nebulas.js></script>
 
     <script>
-
         const killed = "You were slain by Thanos, for the good of the Universe."
         const unkilled = "You were spared by Thanos."
 
@@ -61,8 +82,8 @@
         testnetUrl = "https://pay.nebulas.io/api/pay";
 
 
-        // // test net
-        // const contractAddress = "n1ug4rddipk3aU3FhVtuwfTF6jW6t16Da9F";
+        // test net
+        // const contractAddress = "n1ytd1oGJJX5DXoRnEisDKR1uesKVjZLQoi";
         // const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
         // var user;
         // neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
@@ -76,12 +97,11 @@
         neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         var chainId = 1;// mainnet net
         var callbackUrl = mainnetUrl;
-        ////341b9046769341b4c2210b65907389839bbae78cb530e782f4834849f70f64c3
+        // ////341b9046769341b4c2210b65907389839bbae78cb530e782f4834849f70f64c3
 
         function check(){
             var address =$('#address').val().trim();
             user = address;
-            console.log(address);
             getStatus(address);
         };
 
@@ -102,7 +122,7 @@
                     var result = resp.result;
                     console.log(result);
                     if(result=="null"){
-                        if(confirm("you have not checked your status. Do you want to check on Nebulas Blockchain?")){
+                        if(confirm("No status found on Nebulas Blockchain. \r Would you like submit an inquiry?")){
                             // if confirm, run the check on Nebulas blockchain
                             checkOnNebulas();
                         }
@@ -119,7 +139,7 @@
                         }
                         else{
                             $('#display').text(unkilled)
-                            $('#form').hide();
+                            $('#myform').hide();
                         }
                     }
               
@@ -153,7 +173,14 @@
             }, 20000);
         }
 
+
+        var priorStatus;
+        var currentStatus;
+        var checkQuery;
         function save(){ // check the number on Nebulas network
+            priorStatus = 1;// killed
+            currentStatus = 1;
+
             var to = contractAddress;
             var value = "0.0101";// need to change
             var callFunction = "save";
@@ -169,6 +196,15 @@
             intervalQuery = setInterval(function () {
                 funcIntervalQuery();
             }, 20000);
+
+            // expect to see the difference
+            checkQuery = setInterval(function () {
+                checkStatusInquiry(user);
+                if (priorStatus!==currentStatus){
+                    clearInterval(checkQuery);
+                }
+            }, 4000);
+            
         }
 
 
@@ -181,7 +217,7 @@
                     console.log(respObject)
                     if(respObject.code === 0){
                         console.log('transaction success')
-                        setTimeout('', 5000);
+                        setTimeout('', 20000);
                         checkStatusInquiry(user);  
                         clearInterval(intervalQuery);                                
                     }
@@ -214,8 +250,9 @@
                 .then(function (resp) {
                     var result = resp.result;
                     console.log(result);
+                    currentStatus = result;
                     if(result=="null"){
-                        setTimeout('', 10000);
+                        setTimeout('', 20000);
                         checkStatusInquiry(userAddress);
   
                     }else{
@@ -231,7 +268,7 @@
                         }
                         else{
                             $('#display').text(unkilled)
-                            $('#form').hide();
+                            $('#myform').hide();
                         }
                     }
               
