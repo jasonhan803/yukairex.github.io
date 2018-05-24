@@ -19,6 +19,10 @@ var DiceContract = function() { // contract initialization
     LocalContractStorage.defineProperty(this,"numberOfPlays");// save how many time this game is activated;
     LocalContractStorage.defineProperty(this,"totalPayout");// save how many NAS has been sent out
 
+    LocalContractStorage.defineMapProperty(this,{
+         userNumber: null
+    })
+
 };
 
 DiceContract.prototype = {
@@ -48,8 +52,15 @@ DiceContract.prototype = {
         }
 
         this.balance = this.balance+value;
-        return randomNumber;
+
+        this.userNumber.set(from,randomNumber)
     },
+
+
+    getUserNumber: function(address){
+        return this.userNumber(address);
+    },
+
 
     donate: function() {
         var value = Blockchain.transaction.value;

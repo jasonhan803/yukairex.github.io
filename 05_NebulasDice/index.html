@@ -40,11 +40,63 @@
         </div>
     </div>
 
+    <button type="button" class="btn btn-primary" onClick="donate()">Donate"</button>
+      
 
+    <script src=../lib/jquery-3.3.1.min.js></script>
+    <script src=../lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=../lib/js-beautify-1.7.5/beautify.js></script>
+    <script src=../lib/nebpay.js></script>
+    <script src=../lib/nebulas.js></script>
     
     <script>
 
-            /*
+
+
+    </script>
+            
+            
+
+
+
+
+
+    
+  
+
+    <script>
+
+   
+        var nebulas = require("nebulas"),
+            neb = new nebulas.Neb();
+        var NebPay = require("nebpay");
+        var nebPay = new NebPay();
+        var serialNumber;
+
+        var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
+        testnetUrl = "https://pay.nebulas.io/api/pay";
+
+
+        // // test net
+        const contractAddress = "n1haYJ4zitQujf4gUpTkgqkJ45d7zBQHbod";
+        const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+       
+        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+        var chainId = 1001;// test net
+        var callbackUrl = testnetUrl;
+
+        //main net 
+        // const contractAddress = "n1ge8uSwAQydvajytr2eJQWFjFc3BFUig82";
+        // const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
+        // $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
+        // neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+        // var chainId = 1;// mainnet net
+        // var callbackUrl = mainnetUrl;
+        ////341b9046769341b4c2210b65907389839bbae78cb530e782f4834849f70f64c3
+        
+
+
+                    /*
             JavaScript dice (by JavaScript Kit, http://javascriptkit.com)
             Over 200+ free scripts here!
             */
@@ -63,57 +115,94 @@
             var face5=new Image()
             face5.src="./img/d6.gif"
 
-            function throwdice(){
+            function throwdice(number){
+
+                var to = contractAddress;
+                var value = "0.01";// need to change
+                var callFunction = "play";
+                var callArgs = "[1]";
+         
+            
+                serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                    listener: cbPush,        //设置listener, 处理交易返回信息
+                    callback: callbackUrl
+                });
+
+
+                intervalQuery = setInterval(function () {
+                    funcIntervalQuery();
+                }, 20000);
+
+
                 //create a random integer between 0 and 5
-                var randomdice=Math.round(Math.random()*5)
+                var randomdice = Math.round(Math.random()*5)
                 document.images["mydice"].src=eval("face"+randomdice+".src")
             }
 
-    </script>
-            
-            
+
+            var intervalQuery;
+
+            function funcIntervalQuery() {
+            nebPay.queryPayInfo(serialNumber,{callback:callbackUrl})   //search transaction result from server (result upload to server by app)
+                .then(function (resp) {
+                    //console.log("tx result: " + resp)   //resp is a JSON string
+                    var respObject = JSON.parse(resp)
+                    console.log(respObject)
+                    if(respObject.code === 0){
+                        console.log('transaction success')
+                        // setTimeout('', 5000);
+                        // checkStatusInquiry(user);  
+                        clearInterval(intervalQuery);                                
+                    }
+                })
+                .catch(function (err) {
+                    console.log(err);
+                    clearInterval(intervalQuery)
+
+                });
+        }
+
+
+
+
+            function donate(number){
+
+                var to = contractAddress;
+                var value = "0.01";// need to change
+                var callFunction = "donate";
+                var callArgs = "";
+
+
+                serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                    listener: cbPush,        //设置listener, 处理交易返回信息
+                    callback: callbackUrl
+                });
+
+
+                intervalQuery = setInterval(function () {
+                    funcIntervalQuery();
+                }, 20000);
+
+                }
+
+
+
+            function cbPush(resp) {
+                console.log("resp of function is  " + JSON.stringify(resp));
+                console.log("transaction hash:"+resp.txhash);
+                neb.api.getTransactionReceipt({
+                    hash: resp.txhash
+                })
+                .then(function(receipt) {
+                    console.log("receipt is:"+JSON.stringify(receipt))
+                })
+            }
 
 
 
 
 
-    
-    <script src=../lib/jquery-3.3.1.min.js></script>
-    <script src=../lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
-    <script src=../lib/js-beautify-1.7.5/beautify.js></script>
-    <script src=../lib/nebpay.js></script>
-    <script src=../lib/nebulas.js></script>
 
-    <script>
-
-   
-        var nebulas = require("nebulas"),
-            neb = new nebulas.Neb();
-        var NebPay = require("nebpay");
-        var nebPay = new NebPay();
-        var serialNumber;
-
-        var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
-        testnetUrl = "https://pay.nebulas.io/api/pay";
-
-
-        // // test net
-        const contractAddress = "n1ug4rddipk3aU3FhVtuwfTF6jW6t16Da9F";
-        const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
-       
-        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
-        var chainId = 1001;// test net
-        var callbackUrl = testnetUrl;
-
-        //main net 
-        // const contractAddress = "n1ge8uSwAQydvajytr2eJQWFjFc3BFUig82";
-        // const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
-        // $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
-        // neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
-        // var chainId = 1;// mainnet net
-        // var callbackUrl = mainnetUrl;
-        ////341b9046769341b4c2210b65907389839bbae78cb530e782f4834849f70f64c3
-        
         getBalance(contractAddress);
 
 
@@ -211,11 +300,7 @@
         }
 
 
-       
-
-
-
-        var intervalQuery;
+    
         function checkOnNebulas(){ // check the number on Nebulas network
 
             var to = contractAddress;
@@ -254,30 +339,27 @@
 
 
 
-        function funcIntervalQuery() {
-            nebPay.queryPayInfo(serialNumber,{callback:callbackUrl})   //search transaction result from server (result upload to server by app)
-                .then(function (resp) {
-                    //console.log("tx result: " + resp)   //resp is a JSON string
-                    var respObject = JSON.parse(resp)
-                    console.log(respObject)
-                    if(respObject.code === 0){
-                        console.log('transaction success')
-                        setTimeout('', 5000);
-                        checkStatusInquiry(user);  
-                        clearInterval(intervalQuery);                                
-                    }
-                })
-                .catch(function (err) {
-                    console.log(err);
-                    clearInterval(intervalQuery)
+        // function funcIntervalQuery() {
+        //     nebPay.queryPayInfo(serialNumber,{callback:callbackUrl})   //search transaction result from server (result upload to server by app)
+        //         .then(function (resp) {
+        //             //console.log("tx result: " + resp)   //resp is a JSON string
+        //             var respObject = JSON.parse(resp)
+        //             console.log(respObject)
+        //             if(respObject.code === 0){
+        //                 console.log('transaction success')
+        //                 setTimeout('', 5000);
+        //                 checkStatusInquiry(user);  
+        //                 clearInterval(intervalQuery);                                
+        //             }
+        //         })
+        //         .catch(function (err) {
+        //             console.log(err);
+        //             clearInterval(intervalQuery)
 
-                });
-        }
+        //         });
+        // }
 
 
-        function cbPush(resp) {
-            console.log("response of push: " + JSON.stringify(resp))
-        }
 
 
         function checkStatusInquiry(userAddress) {
