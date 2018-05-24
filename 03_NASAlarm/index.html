@@ -39,13 +39,13 @@
     }
 
     .fa {
-    cursor: pointer;
-    font-size: 50px;
-    }
-    .fa-hide{
-        display:none
+        cursor: pointer;
+        font-size: 50px;
     }
 
+    .fa-hide {
+        display: none
+    }
 </style>
 
 <body onload="startTime()">
@@ -66,10 +66,13 @@
             <img src="./img/alarm.jpeg">
             <img src="./img/logo-b.png">
         </div>
-    <div>
-            <br>
-            <br>
 
+        <div>
+            <br>
+            <br>
+            <p>
+                    <a href="https://github.com/ChengOrangeJu/WebExtensionWallet" target="_blank"> <span>Checkout the Nebpay Chrome Extension if you don't have a Nebulas Wallet</span></a>
+            </p>
             <div class="form-group">
                 <form style="font-family: sans-serif">
                     <label>type in your NAS address to check your current ALARM</label>
@@ -80,11 +83,20 @@
                 </form>
             </div>
 
+
             <div style="color:brown;">
-                <h3><span id="userName"></span></h3>
-                <h3><span id="alarmStatus"></span></h3>
-                <h3><span id="alarmTime"></span></h3>
-                <h3><span id="alarmDeposit"></span></h3>                
+                <h3>
+                    <span id="userName"></span>
+                </h3>
+                <h3>
+                    <span id="alarmStatus"></span>
+                </h3>
+                <h3>
+                    <span id="alarmTime"></span>
+                </h3>
+                <h3>
+                    <span id="alarmDeposit"></span>
+                </h3>
             </div>
 
             <br>
@@ -104,7 +116,7 @@
             </div>
             <br>
             <div>
-                    <i class="fa fa-hide"></i>
+                <i class="fa fa-hide"></i>
             </div>
 
 
@@ -126,7 +138,6 @@
             <p>
                 <a id="contractAddress">Checkout the contract address on Nebulas Explorer</a>
             </p>
-            <p> <a href ="https://github.com/ChengOrangeJu/WebExtensionWallet" target="_blank" > Checkout the Nebpay Chrome Extension if you don't have a Nebulas Wallet</a></p>     
         </div>
 
 
@@ -175,26 +186,26 @@
         // //main net 
         const contractAddress = "n1eQMSLNFjoTB2DU4GGkRoGpCiZETt6F8B7";
         const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
-        $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
+        $("#address").attr('href', 'https://explorer.nebulas.io/#/mainnet/address/' + contractAddress);
         neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         var chainId = 1;// mainnet net
         var callbackUrl = mainnetUrl;
 
         //contract HASH: 6e5f94ceeb0902ad8a885d2cb937f1241cb63a9d53fa662830baee78a06ff5ea
-        
+
 
         // set up current time
         var today = new Date();
-            var y = today.getFullYear();
-            var mon = (today.getMonth() + 1);
-            var d = today.getDate();
-            var h = today.getHours();
-            var m = today.getMinutes();
-            var s = today.getSeconds();
-            m = checkTime(m);
-            s = checkTime(s);
-            mon =checkTime(mon)
-            $('#time').val(mon + "/" + d + "/" + y + "  " + h + ":" + m)
+        var y = today.getFullYear();
+        var mon = (today.getMonth() + 1);
+        var d = today.getDate();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        var s = today.getSeconds();
+        m = checkTime(m);
+        s = checkTime(s);
+        mon = checkTime(mon)
+        $('#time').val(mon + "/" + d + "/" + y + "  " + h + ":" + m)
 
 
         var AlarmTime;
@@ -202,27 +213,27 @@
 
         var testcontract;
         var callJSONs = {
-                from: ownerAddress, // get address string
-                to: contractAddress, // get the contract string
-                value: "0",
-                nonce: 0,
-                gasPrice: "200000",
-                gasLimit: "1000000",
-                contract: testcontract
-            }
+            from: ownerAddress, // get address string
+            to: contractAddress, // get the contract string
+            value: "0",
+            nonce: 0,
+            gasPrice: "200000",
+            gasLimit: "1000000",
+            contract: testcontract
+        }
 
 
         function checkStatus() {
             var address = $('#address').val().trim();
-            if (address.substring(0, 2)!=="n1" || address.length!==35){
+            if (address.substring(0, 2) !== "n1" || address.length !== 35) {
                 alert('Check your address!')
                 return;
-            }else {
+            } else {
                 user = address;
                 console.log(address);
                 console.log("checking status");
                 getUserAlarmStatus(address);
-            }       
+            }
         }
 
         function set() {
@@ -233,16 +244,16 @@
             var now = new Date().getTime();
             console.log("the browser time now is", now);
             console.log("the alarm time to set", alarmTime);
-            
-            if (userAlarmStatus==true){
+
+            if (userAlarmStatus == true) {
                 alert("you already has a alarm set! please clear before setting the new alarm");
                 return;
             }
 
-            if (alarmTime<(now-5*1000*60)){ // if it is set for
+            if (alarmTime < (now - 5 * 1000 * 60)) { // if it is set for
                 alert("cannot set alarm as past time")
                 return;
-            }else{
+            } else {
                 getContractTime();
                 setAlarm(alarmTime);
             }
@@ -275,10 +286,10 @@
                 .then(function (resp) {
                     // let text = JSON.stringify(resp);
                     var value = resp.result;
-                   // console.log(value)
+                    // console.log(value)
                     AlarmTime = value.substring(1, value.length - 1);;
                     let temp = new Date(parseInt(AlarmTime));
-                   // console.log(temp)
+                    // console.log(temp)
                     var y = temp.getFullYear();
                     var mon = (temp.getMonth() + 1);
                     var d = temp.getDate();
@@ -297,8 +308,8 @@
 
         function getUserAlarmStatus(userAddress) {
             // return user deposit
-            
-            if (userAddress==""){
+
+            if (userAddress == "") {
                 console.log("in if loop")
                 return;
             }
@@ -310,8 +321,8 @@
                 .then(function (resp) {
                     // let text = JSON.stringify(resp);
                     var value = resp.result;
-                    console.log("alarm status："+JSON.stringify(resp))
-                    $('#userName').text("Hello, "+userAddress)
+                    console.log("alarm status：" + JSON.stringify(resp))
+                    $('#userName').text("Hello, " + userAddress)
                     userPreAlarmStatus = userAlarmStatus;
                     if (value == "true") {
                         $('#alarmStatus').text("your alarm is ACTIVE")
@@ -320,7 +331,7 @@
                         getUserAlarmTime(userAddress);
                         getUserDeposit(userAddress);
                         userAlarmStatus = true;
-                       
+
                     }
                     else {
                         $('#alarmStatus').text("your alarm is NOT ACTIVE")
@@ -328,9 +339,9 @@
                         $('#alarmDeposit').hide();
                         userAlarmStatus = false;
                     }
-                    if (userAlarmStatus!==userPreAlarmStatus){
+                    if (userAlarmStatus !== userPreAlarmStatus) {
                         stopSpin();
-                        clearInterval(refresh); 
+                        clearInterval(refresh);
                     }
                 })
                 .catch(function (err) {
@@ -355,7 +366,7 @@
                 callback: callbackUrl
             });
 
-            setQuery = setInterval(function() {
+            setQuery = setInterval(function () {
                 setAlarmQuery();
             }, 20000);
         }
@@ -364,10 +375,10 @@
         function setAlarmListner(resp) {
             txhash = resp.txhash;
             neb.api.getTransactionReceipt({
-                    hash: resp.txhash
-                })
-                .then(function(receipt) {
-                    console.log("receipt is:"+JSON.stringify(receipt))
+                hash: resp.txhash
+            })
+                .then(function (receipt) {
+                    console.log("receipt is:" + JSON.stringify(receipt))
                     txSender = receipt.from;
                     $('#address').val(txSender);
                 })
@@ -375,7 +386,7 @@
 
 
         function setAlarmQuery() {
-            nebPay.queryPayInfo(serialNumber, { callback: callbackUrl})   //search transaction result from server (result upload to server by app)
+            nebPay.queryPayInfo(serialNumber, { callback: callbackUrl })   //search transaction result from server (result upload to server by app)
                 .then(function (resp) {
                     //console.log("tx result: " + resp)   //resp is a JSON string
                     var respObject = JSON.parse(resp)
@@ -383,11 +394,11 @@
                     if (respObject.code === 0) {
                         console.log('transaction success')
                         //this.setInterval(this.getUserAlarmStatus(txSender),10000);
-                        clearInterval(setQuery);  
-                        refresh=setInterval(function(){
+                        clearInterval(setQuery);
+                        refresh = setInterval(function () {
                             getUserAlarmStatus(txSender)
                             alert('your alarm is set!');
-                        },10000);   
+                        }, 10000);
                     }
                 })
                 .catch(function (err) {
@@ -400,9 +411,9 @@
 
         //  ------------------  set alarm functionality ends-------------------------------------------
         var stopQuery;
-       function stopAlarm() {
-        userPreAlarmStatus = userAlarmStatus;
-           spin();
+        function stopAlarm() {
+            userPreAlarmStatus = userAlarmStatus;
+            spin();
             // return user deposit
             var to = contractAddress;
             var value = "0";// need to change
@@ -428,10 +439,10 @@
                     console.log(respObject)
                     if (respObject.code === 0) {
                         console.log('transaction success')
-                        
+
                         //this.setInterval(getUserAlarmStatus(txSender),10000)
-                        clearInterval(stopQuery) ;
-                        refresh = setInterval(function(){
+                        clearInterval(stopQuery);
+                        refresh = setInterval(function () {
                             getUserAlarmStatus(txSender)
                             var now = new Date().getTime();
                             if ((now - parseInt(AlarmTime)) >= 600000) {
@@ -439,7 +450,7 @@
                             } else {
                                 alert('your Alarm cleared, you get your NAS back!')
                             }
-                        },10000);                     
+                        }, 10000);
                     }
                 })
                 .catch(function (err) {
@@ -468,7 +479,7 @@
                     // let text = JSON.stringify(resp);
                     var value = resp.result;
                     console.log(userAlarmStatus)
-                    userAlarmStatus=value;
+                    userAlarmStatus = value;
                     // if return true;
                     // show alarm time and deposit
 
@@ -503,7 +514,7 @@
             $('#datetime').text(mon + "/" + d + "/" + y + "   " + h + ":" + m + ":" + s)
             var t = setTimeout(startTime, 500);
         }
-        
+
         function checkTime(i) {
             if (i < 10) { i = "0" + i };  // add zero in front of numbers < 10
             return i;
