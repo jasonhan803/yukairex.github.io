@@ -30,6 +30,15 @@ AlarmContract.prototype = {
     this.alarmTime.set(from, mytime);
     this.alarmActive.set(from, true);
     this.deposit.set(from, value);
+
+    // return the state at the end of transaction to avoid unnessary delay
+    var result = {
+      "alarmTime":this.alarmTime.get(from),
+    "alarmActive":this.alarmActive.get(from),
+    "alarmDeposit":this.deposit.get(from)}
+
+    return result;
+    
   },
 
   stopAlarm: function () {
@@ -42,21 +51,28 @@ AlarmContract.prototype = {
     }
 
     var now = Date.now();
-    
     if ((now - parseInt(this.alarmTime.get(from)))>600000) {
       console.log("alarm expires,you cannot get your deposit back");
       this.alarmActive.set(from, false);
       this.deposit.set(from, 0);
-      return false;
+     
     }
     else {
       console.log('alarm clear')
       this.alarmActive.set(from, false);
       var value = this.deposit.get(from);
       Blockchain.transfer(from, value);
-      this.deposit.set(from, 0);
-      return true;
+      this.deposit.set(from, 0); 
     }
+
+    var result = {
+      "alarmTime":this.alarmTime.get(from),
+    "alarmActive":this.alarmActive.get(from),
+    "alarmDeposit":this.alarmActive.get(from)}
+
+    return result;
+
+
   },
 
   getNow: function(){

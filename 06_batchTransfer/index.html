@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Nebulas Dice</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<style>
+        .myheader {
+        text-align: center;
+        color: black;
+        font-size: 40px;
+        margin: 30px;
+        color: brown
+    }
+</style>
+
+
+<body>
+    <div class="myheader">
+        <div>
+            <h1>NAS batch Distribution</h1>
+        </div>
+        <div><span id="balance"></span></div>
+    </div>
+
+
+    <!-- load file -->
+    <div class="container" style="text-align: center">
+
+    </div>
+
+    <button type="button" class="btn btn-primary" onClick="distribute()">distribute"</button>
+      
+
+    <script src=../lib/jquery-3.3.1.min.js></script>
+    <script src=../lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=../lib/js-beautify-1.7.5/beautify.js></script>
+    <script src=../lib/nebpay.js></script>
+    <script src=../lib/nebulas.js></script>
+    
+    <script>
+    </script>
+            
+
+
+    <script>
+        var fs = require('fs');
+        var csv = require('fast-csv');
+        var BigNumber = require('bignumber.js');
+        let BATCH_SIZE = process.argv.slice(2)[1];
+        if(!BATCH_SIZE) BATCH_SIZE = 80;
+        let distribData = new Array();
+        let allocData = new Array();
+
+
+        var nebulas = require("nebulas"),
+            neb = new nebulas.Neb();
+        var NebPay = require("nebpay");
+        var nebPay = new NebPay();
+        var serialNumber;
+
+        var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
+        testnetUrl = "https://pay.nebulas.io/api/pay";
+
+
+        // // test net
+        const contractAddress = "n1haYJ4zitQujf4gUpTkgqkJ45d7zBQHbod";
+        const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+        var chainId = 1001;// test net
+        var callbackUrl = testnetUrl;
+
+        //main net 
+        // const contractAddress = "n1ge8uSwAQydvajytr2eJQWFjFc3BFUig82";
+        // const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
+        // $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
+        // neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+        // var chainId = 1;// mainnet net
+        // var callbackUrl = mainnetUrl;
+        ////341b9046769341b4c2210b65907389839bbae78cb530e782f4834849f70f64c3
+        
+
+        function readFile(){ // read the file from csv
+
+        }
+
+
+        function distribute() {
+            
+        }
+
+
+    </script>
+    
+</body>
+

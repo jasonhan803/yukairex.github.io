@@ -117,6 +117,7 @@
             <br>
             <div>
                 <i class="fa fa-hide"></i>
+                <div style="color:brown;"><h3 id="txstatus"></h3></div>
             </div>
 
 
@@ -169,13 +170,11 @@
         var nebPay = new NebPay();
         var serialNumber;
         var user;
-        var userAlarmStatus = false;
-        var userPreAlarmStatus = userAlarmStatus;
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
             testnetUrl = "https://pay.nebulas.io/api/pay";
 
         // test net 
-        // const contractAddress = "n1vawkkMkFpcJkHvjCBn6j9jaYxtUttnYwm";
+        // const contractAddress = "n1xCZKD3grsDeEJsM9ZvB2XNrPR3jpqJftR";
         // const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
         // $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress);
         // neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
@@ -184,14 +183,14 @@
 
 
         // //main net 
-        const contractAddress = "n1eQMSLNFjoTB2DU4GGkRoGpCiZETt6F8B7";
+        const contractAddress = "n1vo7fhXivQkWRzbcm7XANCT1i6L1KZbB1d";
         const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
         $("#address").attr('href', 'https://explorer.nebulas.io/#/mainnet/address/' + contractAddress);
         neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         var chainId = 1;// mainnet net
         var callbackUrl = mainnetUrl;
 
-        //contract HASH: 6e5f94ceeb0902ad8a885d2cb937f1241cb63a9d53fa662830baee78a06ff5ea
+        //contract HASH: 530d60c5d3104c3d32f5235f42a2455e871611dfb55f5166f0f35d4cb08cff35
 
 
         // set up current time
@@ -245,18 +244,21 @@
             console.log("the browser time now is", now);
             console.log("the alarm time to set", alarmTime);
 
-            if (userAlarmStatus == true) {
-                alert("you already has a alarm set! please clear before setting the new alarm");
-                return;
-            }
+            // if (userAlarmStatus == true) {
+            //     alert("you already has a alarm set! please clear before setting the new alarm");
+            //     return;
+            // }
 
-            if (alarmTime < (now - 5 * 1000 * 60)) { // if it is set for
-                alert("cannot set alarm as past time")
-                return;
-            } else {
-                getContractTime();
-                setAlarm(alarmTime);
-            }
+            // if (alarmTime < (now - 5 * 1000 * 60)) { // if it is set for
+            //     alert("cannot set alarm as past time")
+            //     return;
+            // } else {
+            //     getContractTime();
+            //     setAlarm(alarmTime);
+            // }
+
+ 
+            setAlarm(alarmTime);
 
         }
 
@@ -323,26 +325,19 @@
                     var value = resp.result;
                     console.log("alarm status：" + JSON.stringify(resp))
                     $('#userName').text("Hello, " + userAddress)
-                    userPreAlarmStatus = userAlarmStatus;
                     if (value == "true") {
                         $('#alarmStatus').text("your alarm is ACTIVE")
                         $('#alarmTime').show();
                         $('#alarmDeposit').show();
                         getUserAlarmTime(userAddress);
                         getUserDeposit(userAddress);
-                        userAlarmStatus = true;
-
                     }
                     else {
                         $('#alarmStatus').text("your alarm is NOT ACTIVE")
                         $('#alarmTime').hide();
                         $('#alarmDeposit').hide();
-                        userAlarmStatus = false;
                     }
-                    if (userAlarmStatus !== userPreAlarmStatus) {
-                        stopSpin();
-                        clearInterval(refresh);
-                    }
+
                 })
                 .catch(function (err) {
                     console.log(JSON.stringify(err));
@@ -353,7 +348,6 @@
         var setQuery;
         function setAlarm(time) {
             // return user deposit
-            userPreAlarmStatus = userAlarmStatus;
             spin();
             var to = contractAddress;
             var value = "0.015";// need to change
@@ -365,10 +359,6 @@
                 listener: setAlarmListner,        //设置listener, 处理交易返回信息
                 callback: callbackUrl
             });
-
-            setQuery = setInterval(function () {
-                setAlarmQuery();
-            }, 20000);
         }
 
         var txhash;
@@ -381,38 +371,63 @@
                     console.log("receipt is:" + JSON.stringify(receipt))
                     txSender = receipt.from;
                     $('#address').val(txSender);
+                    setQuery = setInterval(function () {
+                        setAlarmQuery();
+                    }, 10000);
                 })
         }
 
 
+        var resultStatus;
+        var resultDeposit;
+        var resultTime;
         function setAlarmQuery() {
-            nebPay.queryPayInfo(serialNumber, { callback: callbackUrl })   //search transaction result from server (result upload to server by app)
-                .then(function (resp) {
-                    //console.log("tx result: " + resp)   //resp is a JSON string
-                    var respObject = JSON.parse(resp)
-                    console.log(respObject)
-                    if (respObject.code === 0) {
-                        console.log('transaction success')
-                        //this.setInterval(this.getUserAlarmStatus(txSender),10000);
+            neb.api.getTransactionReceipt({
+                hash: txhash
+            })
+                .then(function (receipt) {
+                    console.log(receipt.status);
+                    if (receipt.status == 1){
                         clearInterval(setQuery);
-                        refresh = setInterval(function () {
-                            getUserAlarmStatus(txSender)
-                            alert('your alarm is set!');
-                        }, 10000);
-                    }
-                })
-                .catch(function (err) {
-                    console.log(err);
-                    clearInterval(setQuery)
-                    stopSpin();
+                        resultStatus = JSON.parse(receipt.execute_result).alarmStatus;
+                        resultDeposit = JSON.parse(receipt.execute_result).alarmDeposit;
+                        resultTime = JSON.parse(receipt.execute_result).alarmTime;
 
-                });
+                        
+                        $('#alarmStatus').text("your alarm is ACTIVE")
+                        $('#alarmTime').show();
+                        $('#alarmDeposit').show();
+
+                        AlarmTime = resultTime; //value.substring(1, value.length - 1);;
+                        let temp = new Date(parseInt(AlarmTime));
+                        // console.log(temp)
+                        let y = temp.getFullYear();
+                        let mon = (temp.getMonth() + 1);
+                        let d = temp.getDate();
+                        let h = temp.getHours();
+                        let m = temp.getMinutes();
+                        let s = temp.getSeconds();
+                        m = checkTime(m);
+                        s = checkTime(s);
+                        $('#alarmTime').text("your set alarm time is " + y + "/" + mon + "/" + d + "   " + h + ":" + m)
+
+                        $('#alarmDeposit').text("your deposit is " + (resultDeposit/1e18) + "NAS")
+                        
+                        stopSpin();
+                        $("#txstatus").text("Your Alarm has been set!");
+                    } // transaction finished        
+                })
+                .catch(function (err){
+                    stopSpin();
+                    $("#txstatus").text("Something was wrong. Transaction failed")
+                })
         }
+
+
 
         //  ------------------  set alarm functionality ends-------------------------------------------
         var stopQuery;
         function stopAlarm() {
-            userPreAlarmStatus = userAlarmStatus;
             spin();
             // return user deposit
             var to = contractAddress;
@@ -421,79 +436,62 @@
             var callArgs = ""
             //console.log(callArgs)
             serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
-                listener: setAlarmListner,        //设置listener, 处理交易返回信息
+                listener: stopAlarmListner,        //设置listener, 处理交易返回信息
                 callback: callbackUrl
             });
-
-            stopQuery = setInterval(function () {
-                stopAlarmQuery();
-            }, 20000);
         }
 
-        var refresh;
+
+        function stopAlarmListner(resp) {
+            txhash = resp.txhash;
+            neb.api.getTransactionReceipt({
+                hash: resp.txhash
+            })
+                .then(function (receipt) {
+                    console.log("receipt is:" + JSON.stringify(receipt))
+                    txSender = receipt.from;
+                    $('#address').val(txSender);
+                    stopQuery = setInterval(function () {
+                        stopAlarmQuery();
+                    }, 10000);
+                })
+        }
+
+
         function stopAlarmQuery() {
-            nebPay.queryPayInfo(serialNumber, { callback: callbackUrl })   //search transaction result from server (result upload to server by app)
-                .then(function (resp) {
-                    //console.log("tx result: " + resp)   //resp is a JSON string
-                    var respObject = JSON.parse(resp)
-                    console.log(respObject)
-                    if (respObject.code === 0) {
-                        console.log('transaction success')
-
-                        //this.setInterval(getUserAlarmStatus(txSender),10000)
+            neb.api.getTransactionReceipt({
+                hash: txhash
+            })
+                .then(function (receipt) {
+                    console.log(receipt.status);
+                    if (receipt.status == 1){
                         clearInterval(stopQuery);
-                        refresh = setInterval(function () {
-                            getUserAlarmStatus(txSender)
-                            var now = new Date().getTime();
-                            if ((now - parseInt(AlarmTime)) >= 600000) {
-                                alert('Sorry, your Alarm is expired, your NAS is gone!')
-                            } else {
-                                alert('your Alarm cleared, you get your NAS back!')
-                            }
-                        }, 10000);
-                    }
+
+                        $('#alarmStatus').text("your alarm is NOT ACTIVE")
+                        $('#alarmTime').hide();
+                        $('#alarmDeposit').hide();
+
+                        stopSpin();
+                        resultTime = JSON.parse(receipt.execute_result).alarmTime;
+                        var now = new Date().getTime();
+                        if ((now - resultTime) >= 600000) {
+                            $("#txstatus").text('Sorry, your Alarm is expired, your NAS is gone!')
+                        } else {
+                            $("#txstatus").text('your Alarm is cleared, you get your NAS back!')
+                        }
+
+                    } // transaction finished  
+                          
                 })
-                .catch(function (err) {
-                    console.log(err);
-                    clearInterval(intervalQuery2)
-
-                });
-        }
-
-
-        function cbPush(resp) {
-            console.log("response of push: " + JSON.stringify(resp))
-        }
-
-
-
-
-        function checkAlarm(userAddress) {
-            // return user deposit
-            user = userAddress;
-            testcontract = { "function": "getAlarmStatus", "args": "[\"" + userAddress + "\"]" };
-            callJSONs.contract = testcontract;
-            console.log(testcontract)
-            neb.api.call(callJSONs)
-                .then(function (resp) {
-                    // let text = JSON.stringify(resp);
-                    var value = resp.result;
-                    console.log(userAlarmStatus)
-                    userAlarmStatus = value;
-                    // if return true;
-                    // show alarm time and deposit
-
-                    // if return false:
-                    // show error message
+                .catch(function (err){
+                    stopSpin();
+                    $("#txstatus").text("Something was wrong. Transaction failed")
                 })
-                .catch(function (err) {
-                    console.log(JSON.stringify(err));
-                });
         }
-
 
         function spin() {
             $(".fa").removeClass().addClass('fa fa-cog fa-spin')
+            $("#txstatus").text("waiting for transaction...")
         }
 
         function stopSpin() {
@@ -520,20 +518,20 @@
             return i;
         }
 
-        function getContractTime() {
-            // return user deposit
-            testcontract = { "function": "getNow", "args": "" };
-            callJSONs.contract = testcontract;
-            neb.api.call(callJSONs)
-                .then(function (resp) {
-                    var temp = resp.result;
-                    console.log(temp);
-                    // show value
-                })
-                .catch(function (err) {
-                    console.log(JSON.stringify(err));
-                });
-        }
+        // function getContractTime() {
+        //     // return user deposit
+        //     testcontract = { "function": "getNow", "args": "" };
+        //     callJSONs.contract = testcontract;
+        //     neb.api.call(callJSONs)
+        //         .then(function (resp) {
+        //             var temp = resp.result;
+        //             console.log(temp);
+        //             // show value
+        //         })
+        //         .catch(function (err) {
+        //             console.log(JSON.stringify(err));
+        //         });
+        // }
 
     </script>
 
