@@ -249,16 +249,15 @@
             //     return;
             // }
 
-            // if (alarmTime < (now - 5 * 1000 * 60)) { // if it is set for
-            //     alert("cannot set alarm as past time")
-            //     return;
-            // } else {
-            //     getContractTime();
-            //     setAlarm(alarmTime);
-            // }
+            if (alarmTime < (now - 5 * 1000 * 60)) { // if it is set for
+                alert("cannot set alarm as past time")
+                return;
+            } else {
+                setAlarm(alarmTime);
+            }
 
  
-            setAlarm(alarmTime);
+            // setAlarm(alarmTime);
 
         }
 
@@ -393,7 +392,7 @@
                         resultDeposit = JSON.parse(receipt.execute_result).alarmDeposit;
                         resultTime = JSON.parse(receipt.execute_result).alarmTime;
 
-                        
+                        $('#userName').text("Hello, " + txSender);
                         $('#alarmStatus').text("your alarm is ACTIVE")
                         $('#alarmTime').show();
                         $('#alarmDeposit').show();
@@ -466,7 +465,7 @@
                     console.log(receipt.status);
                     if (receipt.status == 1){
                         clearInterval(stopQuery);
-
+                        $('#userName').text("Hello, " + txSender);
                         $('#alarmStatus').text("your alarm is NOT ACTIVE")
                         $('#alarmTime').hide();
                         $('#alarmDeposit').hide();
