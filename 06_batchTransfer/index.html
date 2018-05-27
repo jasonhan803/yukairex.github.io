@@ -125,8 +125,8 @@
             <p>A: The addresses are sent to the contract as argument. Currently, there is a size limit for the arguments.</p>
             <p class="q">Q: Can you have a feature to distribute NRC-20 token as well?</p>
             <p>A: This feature will be added in the future.</p>
-            <p class="q">Q: Why my received NAS is not dsiplayed on Nebulas Explorer?</p>
-            <p>A: Currently, any Transfer Event inside of a smart contract is not captured by Nebulas Explorer. The NAS team will fix the bug in the future. Your NAS amount that received in the target addresses should be correct</p>
+            <p class="q">Q: Why my received NAS is not displayed on Nebulas Explorer?</p>
+            <p>A: Currently, the internal NAS transfer is not supported by Nebulas Explorer. However, your NAS amount that received in the target addresses should be correct</p>
             <p class="q">Q: Why not use a script for a batch transfer?</p>
             <p>A: One can make a script to realize similar functionality, but it needs multiple transactions and extra gas costs. Using this dapp enables significant gas reduction</p>     
             </div>
@@ -195,8 +195,13 @@
                     reader.onload = function(e){
                         $("#csvLoad").text(""); 
                         csvResult = e.target.result.split(/\r|\n|\r/);
-                        removeElement(csvResult,"");
-                        removeElement(csvResult,"");
+                       // remove all the empty result
+                       for (var i = 0; i < csvResult.length; i++) {
+                            if (csvResult[i] == "") {         
+                                csvResult.splice(i, 1);
+                                i--;
+                            }
+                        }
                         
                         if(csvResult.length>15){
                             alert("Sorry, the max addresses you can load is 15!")
