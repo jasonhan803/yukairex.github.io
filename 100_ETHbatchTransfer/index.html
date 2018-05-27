@@ -57,9 +57,9 @@
         <!-- <div class="image">
         <img src="./img/logo-b.png" style="margin-bottom:10px">
          -->
-        <!-- <p>
-            <a id="address"> check the contract on Nebulas Explorer </a>
-        </p> -->
+        
+            <a id="address"> check the contract on Etherscan </a>
+  
         <div style="margin-bottom: 20px">
             <br>
             <br>
@@ -140,7 +140,7 @@
                     the targeted addresses. </p>
                 <p class="q">Q: Why use this tool? </p>
                 <p>A: It can be trivial to send ETH to multiple addresses. This might be useful for developers to send ETH to
-                    multiple testing addresses. This can also be useful if someone would like to airdrop NAS to a list of
+                    multiple testing addresses. This can also be useful if someone would like to airdrop ETH to a list of
                     addresses.</p>
                 <p class="q">Q: How to use this tool?</p>
                 <p>A: Follow the steps as shown at the top of the page. load the addresses using CSV format.</p>
@@ -153,8 +153,9 @@
                 <p>A: One can make a script to realize similar functionality, but it needs multiple transactions and extra gas
                     costs. Using this dapp enables significant gas reduction</p>
             </div>
-            <p class="q">weibo:crypto_investor</p>
-            <p class="q">contact author: kewell@live.com</p>
+            <p class="q">weibo account:   crypto_investor</p>
+            <p class="q">contact:  author: kewell@live.com</p>
+            <p class="q">donation:  0xACcb02cd5d0fF27858Ed279c676bE242d1431BDe                </p>
         </div>
 
 
@@ -166,6 +167,7 @@
         <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
 
         <script>
+
 
             // this script uses the web3 v.0.20 version!
             const CONTRACT_ABI = [
@@ -207,29 +209,34 @@
 
 
             // use test net
-            const CONTRACT_ADDRESSES = "0xb89f85c4033eced82fa35d7fffd5dbb2df81be62";
+            // const CONTRACT_ADDRESSES = "0xb89f85c4033eced82fa35d7fffd5dbb2df81be62";
+            // const explorerTx = "https://rinkeby.etherscan.io/tx/";
+            //const networkId = 4;
+            
+
+            const CONTRACT_ADDRESSES = "0xfea71f436ec963507c26f424d93168e4285cd822";
             const explorerTx = "https://rinkeby.etherscan.io/tx/";
-            const networkId = 4;
-
-
-            const GAS_LIMIT = 1000000;
+            //const GAS_LIMIT = 1000000;
 
             var MyContract = web3.eth.contract(CONTRACT_ABI);
             var contractInstance = MyContract.at(CONTRACT_ADDRESSES);
             var accounts = web3.eth.accounts;
-
+            
+            $("#address").attr('href',"https://etherscan.io/address/"+CONTRACT_ADDRESSES).attr("target","_blank");
+        
 
             window.addEventListener('load', function () {
                 // Checking if Web3 has been injected by the browser (Mist/MetaMask)
                 if (typeof web3 !== 'undefined') {
                     // Use Mist/MetaMask's provider
-                    web3 = new Web3(web3.currentProvider);
-                    // if(web3.version.network == networkId){
-
-                    // }
-                    // else(
-                    //     alert("switch to mainnet first")
-                    // )
+                    
+                    
+                     if(web3.version.network == "1"){
+                        web3 = new Web3(web3.currentProvider);
+                    }
+                    else(
+                        alert("switch to mainnet first")
+                    )
                 }
                 else {
                     Alert('PLease install/load your Metamask First')
@@ -239,7 +246,7 @@
 
 
             // change the google example
-            $("#csvExample").attr('href', 'https://drive.google.com/open?id=1KXhRC8IBjcFHcPvU3o_unAY0KDrgC-dh').attr('target', "_blank");
+            $("#csvExample").attr('href', 'https://drive.google.com/file/d/1zZxuwlaRJH2bT-_S2fU_ltnAFWKSgH0b/view?usp=sharing').attr('target', "_blank");
 
             var csvResult;
             var isVerified;
@@ -258,8 +265,17 @@
                     reader.onload = function (e) {
                         $("#csvLoad").text("");
                         csvResult = e.target.result.split(/\r|\n|\r/);
-                        removeElement(csvResult, "");
-                        removeElement(csvResult, "");
+                        
+                        // remove all the empty result
+                        for (var i = 0; i < csvResult.length; i++) {
+                            if (csvResult[i] == "") {         
+                                csvResult.splice(i, 1);
+                                i--;
+                            }
+                        }
+
+                        // removeElement(csvResult, "");
+                        // removeElement(csvResult, "");
                         showAddress(csvResult);
                     }
                     reader.readAsText(csvFile);
@@ -390,9 +406,6 @@
             function stopSpin() {
                 $(".fa").removeClass().addClass('fa fa-hide')
             }
-
-
-
 
         </script>
 
