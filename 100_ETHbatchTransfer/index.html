@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Batch Transfer</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<style>
+    .myheader {
+        text-align: center;
+        color: black;
+        font-size: 40px;
+        margin: 30px;
+        color: brown
+    }
+
+    .ownercontainer {
+        overflow: hidden;
+        margin: 0;
+        padding: 20px;
+        list-style: none;
+        text-align: center;
+    }
+
+    .fa {
+        cursor: pointer;
+        font-size: 50px;
+    }
+
+    .fa-hide {
+        display: none
+    }
+
+    .q {
+        font-weight: bold;
+    }
+</style>
+
+
+<body>
+    <div class="myheader">
+        <div>
+            <h1>Ethereum Batch Transfer Machine </h1>
+
+        </div>
+    </div>
+
+    <div class="ownercontainer">
+        <!-- <div class="image">
+        <img src="./img/logo-b.png" style="margin-bottom:10px">
+         -->
+        <!-- <p>
+            <a id="address"> check the contract on Nebulas Explorer </a>
+        </p> -->
+        <div style="margin-bottom: 20px">
+            <br>
+            <br>
+
+            <div>
+                <p>
+                    <span> Step1: load your ETH addresses</span>
+                </p>
+                <p>
+                    <span> Group your addresses in a csv file.</span>
+                    <a id="csvExample">Example</a>
+                </p>
+            </div>
+            <center style="border: blue; margin-bottom: 10px">
+                <input type="file" name="filename" id="filename" style="text-align: center">
+                <button id="upload" onClick="upload()">upload</button>
+            </center>
+            <div>
+                <p>
+                    <span style="color:brown;" id="csvLoad"></span>
+                </p>
+            </div>
+        </div>
+
+        <br>
+
+
+
+        <div>
+            <div>
+                <p>
+                    <span> Step2: type in the amount of ETH to transfer in total</span>
+                </p>
+            </div>
+            <input type="text" id="amount" placeholder="0" style="margin-bottom: 10px"> ETH
+            <div>
+                <button type="button" id="button1" class="btn btn-primary" onClick="distribute()">Distribute</button>
+            </div>
+
+            <div style="margin:10px">
+                <i class="fa fa-hide"></i>
+                <br>
+                <p>
+                    <span style="color:brown;" id="txstatus"></span>
+                </p>
+                <a id="txonexplorer"> </a>
+            </div>
+
+        </div>
+
+
+        <br>
+
+
+        <table class="table table-striped table-hover" id="here_table" style="margin:30px">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col"> Ethereum Address</th>
+                    <th scope="col"> Verified?</th>
+                </tr>
+            </thead>
+            <tbody id="tbody">
+            </tbody>
+        </table>
+
+        <div style="margin:20px; ">
+            <br>
+            <br>
+            <br>
+            <br>
+            <hr>
+            <h3>FAQ</h3>
+            <div style="text-align: left">
+                <p class="q">Q: What is Batch Transfer Machine?</p>
+                <p>A: This a tool for Ethereum users to send ETH to multiple addresses within one transaction. A smart contract
+                    is deployed on the Ethereum mainnet, which evenly distributes the amount received by the contract to the
+                    targeted addresses. </p>
+                <p class="q">Q: Why use this tool? </p>
+                <p>A: It can be trivial to send ETH to multiple addresses. This might be useful for developers to send ETH to multiple
+                    testing addresses. This can also be useful if someone would like to airdrop NAS to a list of addresses.</p>
+                <p class="q">Q: How to use this tool?</p>
+                <p>A: Follow the steps as shown at the top of the page. load the addresses using CSV format.</p>
+                <p class="q">Q: Can you have a feature to distribute ERC-20 token as well?</p>
+                <p>A: This feature will be added in the future.</p>
+                <p class="q">Q: Why my received ETH is not dsiplayed on Nebulas Explorer?</p>
+                <p>A:Under investigation. However, the amount of ETH that received in the target addresses should be
+                    correct</p>
+                <p class="q">Q: Why not use a script for a batch transfer?</p>
+                <p>A: One can make a script to realize similar functionality, but it needs multiple transactions and extra gas
+                    costs. Using this dapp enables significant gas reduction</p>
+            </div>
+            <p class="q">weibo:crypto_investor</p>
+            <p class="q">contact author: kewell@live.com</p>
+        </div>
+
+
+
+       
+        <!-- <script src=../lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+        <script src=../lib/js-beautify-1.7.5/beautify.js></script> -->
+        <!-- <script src='../lib/bignumber.min.js'></script> -->
+        <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+
+        <script>
+
+            // this script uses the web3 v.0.20 version!
+          const CONTRACT_ABI = [
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "myAddresses",
+				"type": "address[]"
+			}
+		],
+		"name": "distribute",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "i",
+				"type": "uint256"
+			}
+		],
+		"name": "otherTest",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [],
+		"name": "test",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+]
+        
+            // use test net
+            const CONTRACT_ADDRESSES = "0x37171452a4896a4cf127c3417b3cf5681f1e29db";
+            const explorerTx = "https://rinkeby.etherscan.io/tx/";
+            const networkId = 4;
+      
+         
+        const GAS_LIMIT = 1000000;
+
+            var MyContract = web3.eth.contract(CONTRACT_ABI);
+            var contractInstance = MyContract.at(CONTRACT_ADDRESSES);
+            var accounts = web3.eth.accounts;
+ 
+
+            window.addEventListener('load', function() {
+                // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+                if (typeof web3 !== 'undefined') {
+                // Use Mist/MetaMask's provider
+                    web3 = new Web3(web3.currentProvider);
+                    // if(web3.version.network == networkId){
+                        
+                    // }
+                    // else(
+                    //     alert("switch to mainnet first")
+                    // )
+                }
+                else {
+                Alert('PLease install/load your Metamask First')
+                // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+                }
+            })  
+
+
+            // change the google example
+            $("#csvExample").attr('href', 'https://drive.google.com/open?id=1KXhRC8IBjcFHcPvU3o_unAY0KDrgC-dh').attr('target', "_blank");
+
+            var csvResult;
+            var isVerified;
+            var readytoTransfer;
+            function upload() {
+                $("#txstatus").val();
+                var csv = $('#filename');
+                var csvFile = csv[0].files[0];
+                var ext = csv.val().split(".").pop().toLowerCase();
+                if ($.inArray(ext, ["csv"]) === -1) {
+                    alert('not CSV file');
+                    return false;
+                }
+                if (csvFile != undefined) {
+                    reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#csvLoad").text("");
+                        csvResult = e.target.result.split(/\r|\n|\r/);
+                        removeElement(csvResult, "");
+                        removeElement(csvResult, "");
+                        showAddress(csvResult);
+                    }
+                    reader.readAsText(csvFile);
+                }
+            }
+
+
+            function removeElement(arrayName, arrayElement) {
+                for (var i = 0; i < arrayName.length; i++) {
+                    if (arrayName[i] == arrayElement)
+                        arrayName.splice(i, 1);
+                }
+            }
+
+
+
+            function showAddress(address) {
+                $("#tbody").empty();
+                table_idx = 0;
+                var statuses = new Array(address.length);
+                
+                for (i = 0; i < address.length; i++) {
+                  if(web3.isAddress(address[i])){
+                        isVerified = "Yes"
+                        statuses[i] = true;
+                  }
+                  else{
+                        isVerified = "No"
+                        statuses[i] = false;
+                    }
+                    console.log(isVerified)
+
+                    $('#here_table').append('<tr><th scope="row">' + table_idx + '</th>' + '<td>' + address[i] + '</td>' + '<td>' + isVerified + '</td></tr>');
+                    table_idx++;
+                }
+
+
+                 if (statuses.every(element => element === true)){
+                     $("#csvLoad").text("Great! all addresses are verified. Ready to batch transfer");
+                     readytoTransfer = true;
+                 }
+                 else{
+                    $("#csvLoad").text("Sorry, some of your addresses do not look right")
+                    readytoTransfer = false;
+                 }
+            }
+
+
+
+            var txhash;
+            async function distribute() {
+                
+                $("#txstatus").text("");
+
+                // check if all the addresses are valid
+                showAddress(csvResult);
+                if (readytoTransfer === false) {
+                    alert("Some of your addresses do not look right");
+                    return
+                }
+
+                var amount = $('#amount').val().trim();
+                //
+                // check amount
+                if (isNaN(amount)) {
+                    alert("The amount you send is NOT a number!");
+                    return false;
+                }
+
+                if (amount <= 0) {
+                    alert("The amount you send needs to be more than zero!");
+                    return false;
+                }
+
+                var addresses = csvResult;
+                
+                console.log(amount)
+                contractInstance.distribute.sendTransaction(addresses,{
+                  from: accounts[0],
+                  value: web3.toWei(amount,'ether')
+                  }, function(err, result){
+                      if(err){
+                          console.log(err)
+                      }
+                      else{
+                          spin();
+                          txhash = result;
+                          setQuery = setInterval(function () {
+                            setTxQuery();
+                          }, 10000);
+                          $("#txonexplorer").text("check your transaction here").attr("href", explorerTx + txhash).attr("target", "_blank")
+                      }
+                    })
+                }
+
+
+            function setTxQuery() {
+                web3.eth.getTransactionReceipt(txhash,function(err,receipt){
+                    if (err){
+                        console.log(err);
+                        stopSpin();
+                        $("#txstatus").text("Something is wrong")
+                    }else{
+                        console.log(receipt);
+                        if (receipt){ // get receipt
+                            clearInterval(setQuery);
+                            console.log(receipt.status);
+                            if(receipt.status=="0x1"){ // success
+                                stopSpin();
+                                $("#txstatus").text("Success! See your transaction on explorer")
+                            }
+                            if(receipt.status=="0x0"){
+                                stopSpin();
+                                $("#txstatus").text("Transaction Failed!")
+                            }
+                            $("#csvLoad").text("");
+                        }
+                    }  
+                })
+            }
+
+
+            function spin() {
+                $(".fa").removeClass().addClass('fa fa-cog fa-spin')
+                $("#txstatus").text("waiting for transaction...")
+            }
+
+            function stopSpin() {
+                $(".fa").removeClass().addClass('fa fa-hide')
+            }
+
+
+
+
+        </script>
+
+</body
