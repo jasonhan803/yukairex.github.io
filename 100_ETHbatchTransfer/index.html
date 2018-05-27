@@ -215,14 +215,15 @@
             
 
             const CONTRACT_ADDRESSES = "0xfea71f436ec963507c26f424d93168e4285cd822";
-            const explorerTx = "https://etherscan.io/tx";
+            const explorerTx = "https://etherscan.io/tx/";
+            const explorer = "https://etherscan.io/address/"
             //const GAS_LIMIT = 1000000;
 
             var MyContract = web3.eth.contract(CONTRACT_ABI);
             var contractInstance = MyContract.at(CONTRACT_ADDRESSES);
             var accounts = web3.eth.accounts;
             
-            $("#address").attr('href',"https://etherscan.io/address/"+CONTRACT_ADDRESSES).attr("target","_blank");
+            $("#address").attr('href',explorer+CONTRACT_ADDRESSES).attr("target","_blank");
         
 
             window.addEventListener('load', function () {
@@ -308,7 +309,7 @@
                     }
                     console.log(isVerified)
 
-                    $('#here_table').append('<tr><th scope="row">' + table_idx + '</th>' + '<td>' + address[i] + '</td>' + '<td>' + isVerified + '</td></tr>');
+                    $('#here_table').append('<tr><th scope="row">'+table_idx+'</th>'+'<td>'+'<a target=_blank href='+explorer+address[i]+'>'+address[i]+'</a>' +'</td>'+'<td>'+isVerified +'</td></tr>');
                     table_idx++;
                 }
 

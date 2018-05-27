@@ -162,7 +162,7 @@
         // $("#address").attr('href','https://explorer.nebulas.io/#/testnet/address/'+contractAddress).attr('target',"_blank");
         // var chainId = 1001;// test net
         // var callbackUrl = testnetUrl;
-        // explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+        // var explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
 
         //main net 
         const contractAddress = "n1kU44RRFoFvQbe8A6FAHDCC5APnfn89m2P";
@@ -172,7 +172,8 @@
         var chainId = 1;// mainnet net
         var callbackUrl = mainnetUrl;
         //2ff9c00e3050f44dad190b1f5a6eb296ae6cdbed9007569db56fe2a054fc451c
-        explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
+        var explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
+        var explorer = "https://explorer.nebulas.io/#/address/";
         
         $("#csvExample").attr('href','https://drive.google.com/open?id=1KXhRC8IBjcFHcPvU3o_unAY0KDrgC-dh').attr('target',"_blank");
 
@@ -242,7 +243,7 @@
                 }
                 console.log(isVerified)
 
-                $('#here_table').append( '<tr><th scope="row">'+table_idx+'</th>'+'<td>'+address[i] +'</td>'+'<td>'+isVerified +'</td></tr>');
+                $('#here_table').append('<tr><th scope="row">'+table_idx+'</th>'+'<td>'+'<a target=_blank href='+explorer+address[i]+'>'+address[i]+'</a>' +'</td>'+'<td>'+isVerified +'</td></tr>');
                 table_idx++;
              }
 
