@@ -183,14 +183,15 @@
 
 
         // //main net 
-        const contractAddress = "n1sfTNRk5cL9EHbxeWgeDtBk16ZSyANB76J";
+        const contractAddress = "n1ei4htLaUMoCCY4bcd3XptLFENg6UBaf7q"; //"n1sfTNRk5cL9EHbxeWgeDtBk16ZSyANB76J";
         const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
-        $("#address").attr('href', 'https://explorer.nebulas.io/#/mainnet/address/' + contractAddress);
+        $("#address").attr('href', 'https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
         neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         var chainId = 1;// mainnet net
         var callbackUrl = mainnetUrl;
 
-        //contract HASH: 530d60c5d3104c3d32f5235f42a2455e871611dfb55f5166f0f35d4cb08cff35
+        //OLD contract HASH: 530d60c5d3104c3d32f5235f42a2455e871611dfb55f5166f0f35d4cb08cff35
+        // 5/29 contract hash: 2862332e3711f624af9cf8c69ffc23fb443fb48dcd367eff621cf510e8955cfc
 
 
         // set up current time
@@ -347,7 +348,7 @@
         var setQuery;
         function setAlarm(time) {
             // return user deposit
-            spin();
+            
             var to = contractAddress;
             var value = "0.015";// need to change
             var callFunction = "setAlarm"
@@ -367,6 +368,7 @@
                 hash: resp.txhash
             })
                 .then(function (receipt) {
+                    spin();
                     console.log("receipt is:" + JSON.stringify(receipt))
                     txSender = receipt.from;
                     $('#address').val(txSender);
@@ -427,7 +429,6 @@
         //  ------------------  set alarm functionality ends-------------------------------------------
         var stopQuery;
         function stopAlarm() {
-            spin();
             // return user deposit
             var to = contractAddress;
             var value = "0";// need to change
