@@ -185,7 +185,7 @@
         // //main net 
         const contractAddress = "n1ei4htLaUMoCCY4bcd3XptLFENg6UBaf7q"; //"n1sfTNRk5cL9EHbxeWgeDtBk16ZSyANB76J";
         const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
-        $("#address").attr('href', 'https://explorer.nebulas.io/#/mainnet/address/'+contractAddress);
+        $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr('target',"_blank");
         neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         var chainId = 1;// mainnet net
         var callbackUrl = mainnetUrl;
@@ -448,6 +448,7 @@
                 hash: resp.txhash
             })
                 .then(function (receipt) {
+                    spin();
                     console.log("receipt is:" + JSON.stringify(receipt))
                     txSender = receipt.from;
                     $('#address').val(txSender);
