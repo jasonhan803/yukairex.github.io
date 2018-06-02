@@ -1,8 +1,24 @@
+var account;
+
+
+function loadPlayers(){
+
+  // read how many players that the account owns, using balanceOf method to read
+
+
+  //
+
+
+}
+
 App = {
-
-
     init: function() {
-        console.log("test")
+        console.log(account)
+
+
+
+
+
       // Load pets.
       $.getJSON('./players.json', function(data) {
         var playersRow = $('#playersRow');
@@ -64,6 +80,20 @@ App = {
 
 $(function() {
     $(window).load(function() {
+
+      window.postMessage({
+        "target": "contentscript",
+        "data":{},
+        "method": "getAccount",
+     }, "*");
+     
+     window.addEventListener('message', function(e) {
+    
+     console.log(e.data.data.account);
+     var account = e.data.data.account;
+     });
+
+
       App.init();
     });
   });

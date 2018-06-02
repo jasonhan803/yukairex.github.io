@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<title>Nabulas WorldCup</title>
+<title>Nebulas Fantasy</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,28 +10,41 @@
 <style>
 body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
 .w3-bar-block .w3-bar-item {padding:20px}
+.buyPlayer {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+}
+img {
+    display:block;
+    margin:auto;
+}
+.howtoplay{
+    font-weight: bold;
+}
 </style>
 <body>
-
     <!-- Sidebar (hidden by default) -->
     <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left" style="display:none;z-index:2;width:40%;min-width:300px" id="mySidebar">
     <a href="javascript:void(0)" onclick="w3_close()"
-    class="w3-bar-item w3-button">Close Menu</a>
-    <a href="#food" onclick="w3_close()" class="w3-bar-item w3-button">Food</a>
+    class="w3-bar-item w3-button">Close</a>
+    <a href="./players.html" onclick="w3_close()" class="w3-bar-item w3-button">Players</a>
+    <a href="#howToPlay" onclick="w3_close()" class="w3-bar-item w3-button">How to Play</a>
     <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
+    <a href="#FAQ" onclick="w3_close()" class="w3-bar-item w3-button">FAQ</a>
     </nav>
-
+    
     <div class="container">
         <!-- Top menu -->
         <!-- <div class="w3-top"> -->
-        <div class="w3-white w3-xlarge" style="max-width:1200px;margin:auto">
+        <div class="w3-white w3-xlarge" style="max-width:1200px;">
             <div class="w3-button w3-padding-16 w3-left" onclick="w3_open()">☰</div>
-            <div class="w3-right w3-padding-16">Mail</div>
-            <div class="w3-center w3-padding-16">Fantasy Worldcup</div>
+            <div class="w3-right w3-padding-16"> <a href="./players.html" style="text-decoration:none;color:black">My Players</a></div>
+            <div class="w3-center w3-padding-16">Nebulas Fantasy</div>
         </div>
         <!-- </div> -->
 
-        <header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
+        <header class="w3-display-container w3-content w3-wide" style="max-width:2000px;min-width:500px" id="home">
             <img class="w3-image" src="./img/banner0.png">
             <!-- <div class="w3-display-bottomleft w3-padding-large w3-opacity">
                 <h1 class="w3-xxlarge">Le Catering</h1>
@@ -39,100 +52,70 @@ body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
         </header>
 
 
-
-        <div class=class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
-            <div id="playersRow" class="row">
-                    <!-- PETS LOAD HERE -->
-            </div>
-
-
-            <div id="playersTemplate" style="display: none;">
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <div class="panel panel-default panel-pet">
-                    <div class="panel-heading">
-                        <h3 id="name"></h3>
-                    </div>
-                    <div class="panel-body">
-                        <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
-                        <br/><br/>
-                        <strong>Breed</strong>: <span class="pet-breed">Golden Retriever</span><br/>
-                        <strong>Age</strong>: <span class="pet-age">3</span><br/>
-                        <strong>Location</strong>: <span class="pet-location">Warren, MI</span><br/><br/>
-                        <button class="btn btn-default btn-adopt" type="button" data-id="0">Adopt</button>
-                    </div>
-                    </div>
+        <div style="max-width:2000px;margin-top:50px">   
+                <div class="buyPlayer">
+                      <div style="justify-content: center;">
+                          <img  class="img-center" id="randomPlayerCard" style="width:50%; height:50%;" src="./img/default card.png">
+                          <br/>
+                          <br/>
+                          <button id="buyPlayer" type="button" class="btn btn-primary" style="display: block; margin: 0 auto;"><h6> CREATE!</h6></button>
+                          <br>
+                          <center>
+                              <p> you will need at least 0.01 NAS to buy a player</p>
+                              <p> the higher you pay, the higher value star you will get</p>
+                          </center>
+                      </div>
                 </div>
-            </div>
-        </div>>
+              <div>
+        </div>
 
 
-  <!-- Pagination -->
-  <div class="w3-center w3-padding-32">
-    <div class="w3-bar">
-      <a href="#" class="w3-bar-item w3-button w3-hover-black">«</a>
-      <a href="#" class="w3-bar-item w3-black w3-button">1</a>
-      <a href="#" class="w3-bar-item w3-button w3-hover-black">2</a>
-      <a href="#" class="w3-bar-item w3-button w3-hover-black">3</a>
-      <a href="#" class="w3-bar-item w3-button w3-hover-black">4</a>
-      <a href="#" class="w3-bar-item w3-button w3-hover-black">»</a>
-    </div>
-  </div>
+
   
-  <hr id="about">
-
+  <hr id="howToPlay">
   <!-- About Section -->
   <div class="w3-container w3-padding-32 w3-center">  
-    <h3>About Me, The Food Man</h3><br>
-    <img src="/w3images/chef.jpg" alt="Me" class="w3-image" style="display:block;margin:auto" width="800" height="533">
-    <div class="w3-padding-32">
-      <h4><b>I am Who I Am!</b></h4>
-      <h6><i>With Passion For Real, Good Food</i></h6>
-      <p>Just me, myself and I, exploring the universe of unknownment. I have a heart of love and an interest of lorem ipsum and mauris neque quam blog. I want to share my world with you. Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum, porta lectus vitae, ultricies congue gravida diam non fringilla. Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum, porta lectus vitae, ultricies congue gravida diam non fringilla.</p>
-    </div>
-  </div>
+      <h3>How To Play ?</h3><br>
+      <div>
+          <div class="col-md-4">
+              <h4 class="howtoplay"> Get Your Players</h4>
+              <br>
+              <img  class="img-center" src="./img/home/create.png">
+              <br/>
+              <p> you need at least 1 players to join the game</p>
+              <p> the amount of NAS you purchase will be placed to the total prize pool </p>
+          </div>
+          <div class="col-md-4"> 
+               <h4 class="howtoplay">Enjoy game with your players</h4>
+               <br/>
+               <img  class="img-center" src="./img/home/game.png">
+               <br/>
+               <p> your players will grow with real performance in the World Cup, e.g. more wins, more goals, etc..</p>
+          </div>
+          <div class="col-md-4"> 
+               <h4 class="howtoplay">Share the final prize</h4>
+               <br/>
+               <img  class="img-center" src="./img/home/win.png">
+               <br/>
+               <p> When the World Cup ends, players with high scores share the total prize pool</p>
+          </div>
+      </div>
   <hr>
-  
-  <!-- Footer -->
-  <footer class="w3-row-padding w3-padding-32">
-    <div class="w3-third">
-      <h3>FOOTER</h3>
-      <p>Praesent tincidunt sed tellus ut rutrum. Sed vitae justo condimentum, porta lectus vitae, ultricies congue gravida diam non fringilla.</p>
-      <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
-    </div>
-  
-    <div class="w3-third">
-      <h3>BLOG POSTS</h3>
-      <ul class="w3-ul w3-hoverable">
-        <li class="w3-padding-16">
-          <img src="/w3images/workshop.jpg" class="w3-left w3-margin-right" style="width:50px">
-          <span class="w3-large">Lorem</span><br>
-          <span>Sed mattis nunc</span>
-        </li>
-        <li class="w3-padding-16">
-          <img src="/w3images/gondol.jpg" class="w3-left w3-margin-right" style="width:50px">
-          <span class="w3-large">Ipsum</span><br>
-          <span>Praes tinci sed</span>
-        </li> 
-      </ul>
-    </div> 
 
-    <div class="w3-third w3-serif">
-      <h3>POPULAR TAGS</h3>
-      <p>
-        <span class="w3-tag w3-black w3-margin-bottom">Travel</span> <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">New York</span> <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Dinner</span>
-        <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Salmon</span> <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">France</span> <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Drinks</span>
-        <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Ideas</span> <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Flavors</span> <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Cuisine</span>
-        <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Chicken</span> <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Dressing</span> <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Fried</span>
-        <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Fish</span> <span class="w3-tag w3-dark-grey w3-small w3-margin-bottom">Duck</span>
-      </p>
-    </div>
-  </footer>
+  <hr id="about">
+  <div class="w3-container w3-padding-48 w3-center">
+     <h3>What is Nebulas Fantasy?</h3><br>
+     <p>here is some random words here is some random words here is some random words here is some random words here is some random words here is some random words</p>
+  </div>
 
 <!-- End page content -->
 </div>
 <script src=./lib/jquery-3.3.1.min.js></script>
 <script src= "bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src=../lib/nebpay.js></script>
+<script src=../lib/nebulas.js></script>   
+<script src='../lib/bignumber.min.js'></script>   
  
 <script>
 // Script to open and close sidebar
@@ -144,7 +127,8 @@ function w3_close() {
     document.getElementById("mySidebar").style.display = "none";
 }
 </script>
-<script src='/app.js'></script>    
+<script src='/home.js'></script>
+<!-- <script src='/app.js'></script>     -->
 
 </body>
 </html>
