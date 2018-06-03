@@ -1,65 +1,52 @@
 [
     {
-      "id": 0,
-      "name": "Christiano Ronaldo",
-      "picture": "img/01.png",
-      "stars": 5,
-      "nation": "Portugal"
+        "id": 0,
+        "name": "Christiano Ronaldo",
+        "picture": "img/00.png"
     },
     {
         "id": 1,
-        "name": "James Rodriguez",
-        "picture": "img/01.png",
-        "stars": 4,
-        "nation": "Columbia"
+        "name": "Andres Iniesta",
+        "picture": "img/01.png"
     },
     {
         "id": 2,
-        "name": "Messi",
-        "picture": "img/01.png",
-        "stars": 5,
-        "nation": "Argentina"
+        "name": "Eden Hazard",
+        "picture": "img/02.png"
     },
     {
-        "id": 0,
-        "name": "Christiano Ronaldo",
-        "picture": "img/01.png",
-        "stars": 5,
-        "nation": "Portugal"
-      },
-      {
-          "id": 1,
-          "name": "James Rodriguez",
-          "picture": "img/01.png",
-          "stars": 4,
-          "nation": "Columbia"
-      },
-      {
-          "id": 2,
-          "name": "Messi",
-          "picture": "img/01.png",
-          "stars": 5,
-          "nation": "Argentina"
-      },
-      {
-        "id": 0,
-        "name": "Christiano Ronaldo",
-        "picture": "img/01.png",
-        "stars": 5,
-        "nation": "Portugal"
-      },
-      {
-          "id": 1,
-          "name": "James Rodriguez",
-          "picture": "img/01.png",
-          "stars": 4,
-          "nation": "Columbia"
-      },
-      {
-          "id": 2,
-          "name": "Messi",
-          "picture": "img/01.png",
-          "stars": 5,
-          "nation": "Argentina"
-      }      
+        "id": 3,
+        "name": "Harry Kane",
+        "picture": "img/03.png"
+    },
+    {
+        "id": 4,
+        "name": "James Rodriguez",
+        "picture": "img/04.png"
+    },
+    {
+        "id": 5,
+        "name": "Manuel Neuer",
+        "picture": "img/05.png"
+    },
+    {
+        "id": 6,
+        "name": "Lionel Messi",
+        "picture": "img/06.png"
+    },
+    {
+        "id": 7,
+        "name": "Neymar Jr",
+        "picture": "img/07.png"
+    },
+    {
+        "id": 8,
+        "name": "Paul Pogba",
+        "picture": "img/08.png"
+    },
+    {
+        "id": 9,
+        "name": "Robert Lewandowski",
+        "picture": "img/09.png"
+    }
 ]

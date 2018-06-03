@@ -50,10 +50,14 @@ var Players = function () {
     LocalContractStorage.defineProperties(this, {
         totalPlayer: null,
         owner:null,
+        prizePool:null,
+        uniquePlayersAmount:null,
+        _name:null,
     });
 
     LocalContractStorage.defineMapProperties(this, {
         "tokenOwner": null,
+        
         "ownedTokensCount": {
             parse: function (value) {
                 return new BigNumber(value);
@@ -73,9 +77,9 @@ var Players = function () {
         },
         // a single player properties
         "playerId":null,
-        "playerTeamId":null,
         "playerWin":null,
         "playerGoal":null,
+        "playerTime":null,
 
         // store the data to find 
         
@@ -86,48 +90,78 @@ Players.prototype = {
     init: function () {
         this.totalPlayer = 0;
         this.owner = Blockchain.transaction.from;
+        this.uniquePlayersAmount = 9; // this is how manu unique players that we create
+        this._name ="Players";
     },
 
-    name: function () {
+    name:function() {
         return this._name;
+    },
+// get function for local storage
+    getTotalPlayer:function(){
+        return this.totalPlayer; // return the user number;
+    },
+
+    getPrizePool:function(){
+        return this.prizePool; // return the user number;
+    },
+
+    getUniquePlayerAmount:function(){
+        return this.uniquePlayersAmount; // return the user number;
+    },
+
+    getOwnerByTokenId:function(id){
+        return this.tokenOwner.get(id);
+    },
+
+    getPlayerInfoByTokenId:function(tokenId){
+        var id = this.playerId.get(tokenId);
+        var win = this.playerWin.get(tokenId);
+        var goal = this.playerGoal.get(tokenId);
+        var min = this.playerTime.get(tokenId);
+        return {"id":id,
+                "win":win,
+                "goal":goal,
+                "time":min}
+    },
+
+    getOwnedTokensCount:function(owner){
+        return this.ownedTokensCount.get(owner)
     },
 
 // function to create a new Player
     createPlayer: function() {
-        var playerId = _generateNewPlayerId();
-        var teamId = _generateTeamId(); 
+        var playerId = this._generateNewPlayerId();
         var numberOfPlayer = this.totalPlayer;
-        _initializePlayer(this.totalPlayer,playerId,teamId);
+        this._initializePlayer(this.totalPlayer,playerId);
         this.totalPlayer++;
-        return numberOfPlayer;
+        return playerId;
     },
 
-    _initializePlayer: function (tokenId,playerId,teamId){
+    _initializePlayer: function (tokenId,playerId){
         this.playerId.set(tokenId,playerId);
-        this.playerTeamId.set(tokenId,teamId);
         this.playerWin.set(tokenId,0);
         this.playerGoal.set(tokenId,0);
+        this.playerTime.set(tokenId,0);
     },
 
 
     _generateNewPlayerId: function() {
         // need to update this algorithm, return randomNumber this is a number from 0-32
-        var playerId = parseInt(Math.random()*23);
+        var playerId = parseInt(Math.random()*this.uniquePlayersAmount);
         return playerId;
-    },
-
-    _generateTeamId:function(){
-        var teamId = parseInt(Math.random()*32);
-        return teamId;
     },
 
 
     mint: function() {
         // overwrite the mint function, not using tokenId
         var from = Blockchain.transaction.from;
-        var id = createPlayer();
-        this.addTokenTo(from, id);
-        this.transferEvent(true, "", from, id);
+        var id = this.createPlayer(); // return the unique playerId
+        this.addTokenTo(from, this.totalPlayer-1);
+        this.transferEvent(true, "", from, this.totalPlayer-1);
+        var value = Blockchain.transaction.value;
+        this.prizePool = this.prizePool + value;
+        return id;
     },
 
 
@@ -136,18 +170,25 @@ Players.prototype = {
         var counter = 0;
         for (var i=0;i<this.totalPlayer;i++) {
             if(this.tokenOwner.get(i) == owner){
-                myPlayer[counter]=i;
+                myPlayers[counter]=i;
                 counter++;
             }
         }
         return myPlayers;
     },
     
-// update team data
+// update team data, owner only methods
+    increaseUniquePlayerAmount: function(addition){
+        if(Blockchain.transaction.from!==owner){
+            throw new Error("your are not game owner")
+        }
+        this.uniquePlayersAmount = this.uniquePlayersAmount + addition;
+    },
+
     updateWin: function(tokenIds) { // load an array of tokenIds, 
         var from = Blockchain.transaction.from;
         if (from !== this.owner){
-            throw new Error('cannot change, you are not owner!')
+            throw new Error("your are not game owner")
         }
 
         for (var i=0;i<tokenIds.length;i++){
@@ -158,7 +199,7 @@ Players.prototype = {
     updateGoal: function(tokenIds) { // load an array of tokenIds, 
         var from = Blockchain.transaction.from;
         if (from !== this.owner){
-            throw new Error('cannot change, you are not owner!')
+            throw new Error("your are not game owner")
         }
 
         for (var i=0;i<tokenIds.length;i++){
@@ -166,7 +207,32 @@ Players.prototype = {
         }
     },
 
-//
+    updateTime: function(tokenIds) { // load an array of tokenIds, 
+        var from = Blockchain.transaction.from;
+        if (from !== this.owner){
+            throw new Error("your are not game owner")
+        }
+
+        for (var i=0;i<tokenIds.length;i++){
+            this.playerTime.set(i,this.playerTime.get(i)+1); // needs to modify here
+        }
+    },
+
+    withdraw: function() {
+        var from = Blockchain.transaction.from;
+        if (from !== this.owner){
+            throw new Error("your are not game owner")
+        }
+        Blockchain.transfer(from,this.prizePool)
+    },
+
+// player experience points calculation
+    getExpPointsByTokenId: function(tokenId){
+        var win = this.playerWin.get(tokenId);
+        var goal = this.playerGoal.get(tokenId);
+        var min = this.playerTime.get(tokenId);
+        var ExpPoint = win*300+goal*300+min;
+    },
 
     balanceOf: function (_owner) {
         var balance = this.ownedTokensCount.get(_owner);
@@ -296,4 +362,3 @@ Players.prototype = {
 };
 
 module.exports = Players;
-//n1pzuxQ5DhLLCQt82EneocV1wXDKYaAN1Cr

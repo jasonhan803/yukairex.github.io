@@ -22,7 +22,11 @@
         .howtoplay{
             font-weight: bold;
         }
-        </style>
+        .sectionTitle {
+        font-weight: bold;
+        padding: 20px; 
+    }
+</style>
 <body>
 
         <!-- Sidebar (hidden by default)
@@ -41,7 +45,7 @@
                         <a href="./index.html" class="w3-bar-item w3-button w3-mobile">Home</a>
                         <a href="./players.html" class="w3-bar-item w3-button w3-mobile">Portfolio</a>
                         <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
-                        <a href="./about.html"  class="w3-bar-item w3-button w3-mobile">About</a>
+                        <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
                 </div>
         </div>
 
@@ -55,6 +59,7 @@
 
 
         <div class=class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
+            <h2 class="sectionTitle">Open Market, Players Available until 06/14</h2>
             <div id="playersRow" class="row">
                     <!-- PETS LOAD HERE -->
             </div>
@@ -67,17 +72,13 @@
                         <h3 id="name"></h3>
                     </div>
                     <div class="panel-body">
-                        <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
-                        <br/><br/>
-                        <strong>Breed</strong>: <span class="pet-breed">Golden Retriever</span><br/>
-                        <strong>Age</strong>: <span class="pet-age">3</span><br/>
-                        <strong>Location</strong>: <span class="pet-location">Warren, MI</span><br/><br/>
-                        <button class="btn btn-default btn-adopt" type="button" data-id="0">Adopt</button>
+                        <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;margin-bottom: 10px" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
+                        <button class="btn btn-default btn-adopt" type="button" style="margin:auto">CLAIM</button>
                     </div>
                     </div>
                 </div>
             </div>
-        </div>>
+        </div>
 
 
   <!-- Pagination -->
@@ -200,60 +201,79 @@ function w3_close() {
 
     function init(){
         console.log("in the initial function");
-        setInterval(function(){
-            loadPlayersByUser(account)
-        }
-        ,1000);
+        loadAllPlayers();
+        // setInterval(function(){
+        //     loadPlayersByUser(account)
+        // }
+        // ,1000);
         
     }
 
 
-        var tokenIds;   
-        function loadPlayersByUser(address) {
 
-            var testcontract;
-            var callJSONs = {
-                from: ownerAddress, // get address string
-                to: contractAddress, // get the contract string
-                value: "0",
-                nonce: 0,
-                gasPrice: "200000",
-                gasLimit: "1000000",
-                contract: testcontract
-            }
-
-            // get the token Id owned by the address
-            testcontract = { "function": "getPlayersByOwner", "args": "[\"" + address + "\"]" };
-            callJSONs.contract = testcontract;
-            neb.api.call(callJSONs)
-                .then(function (resp) {
-                    tokenIds = JSON.parse(resp.result);
-                    console.log(tokenIds);
-                   
-                    if (tokenIds.length>0){
-                        $.getJSON('./players.json', function(data) {
-                                var playersRow = $('#playersRow');
-                                var playersTemplate = $('#playersTemplate');
-                        
-                                playersRow.empty();
-                                for (i = 0; i < tokenIds.length; i ++) {
-                                let id = tokenIds[i];
-                                playersTemplate.find('#name').text(data[id].name);
-                                playersTemplate.find('img').attr('src', data[id].picture);
-                                //   playersTemplate.find('.pet-breed').text(data[i].breed);
-                                //   playersTemplate.find('.pet-age').text(data[i].age);
-                                //   playersTemplate.find('.pet-location').text(data[i].location);
-                                //   playersTemplate.find('.btn-adopt').attr('data-id', data[i].id);
-                                playersRow.append(playersTemplate.html());
-                                }
-                        });
+        function loadAllPlayers(){
+            $.getJSON('./players.json', function(data) {
+                    var playersRow = $('#playersRow');
+                    var playersTemplate = $('#playersTemplate');
+                    playersRow.empty();
+                    for (i = 0; i < data.length; i ++) {
+                    playersTemplate.find('#name').text(data[i].name);
+                    playersTemplate.find('img').attr('src', data[i].picture);
+                    //   playersTemplate.find('.pet-breed').text(data[i].breed);
+                    //   playersTemplate.find('.pet-age').text(data[i].age);
+                    //   playersTemplate.find('.pet-location').text(data[i].location);
+                    //   playersTemplate.find('.btn-adopt').attr('data-id', data[i].id);
+                    playersRow.append(playersTemplate.html());
                     }
+            });
+        }
 
-                })
-                .catch(function (err) {
-                    console.log(JSON.stringify(err));
-                });
-       }
+    //     var tokenIds;   
+    //     function loadPlayersByUser(address) {
+
+    //         var testcontract;
+    //         var callJSONs = {
+    //             from: ownerAddress, // get address string
+    //             to: contractAddress, // get the contract string
+    //             value: "0",
+    //             nonce: 0,
+    //             gasPrice: "200000",
+    //             gasLimit: "1000000",
+    //             contract: testcontract
+    //         }
+
+    //         // get the token Id owned by the address
+    //         testcontract = { "function": "getPlayersByOwner", "args": "[\"" + address + "\"]" };
+    //         callJSONs.contract = testcontract;
+    //         neb.api.call(callJSONs)
+    //             .then(function (resp) {
+    //                 tokenIds = JSON.parse(resp.result);
+    //                 console.log(tokenIds);
+                   
+    //                 if (tokenIds.length>0){
+    //                     $.getJSON('./players.json', function(data) {
+    //                             var playersRow = $('#playersRow');
+    //                             var playersTemplate = $('#playersTemplate');
+                        
+    //                             playersRow.empty();
+    //                             for (i = 0; i < tokenIds.length; i ++) {
+    //                             let id = tokenIds[i];
+    //                             playersTemplate.find('#name').text(data[id].name);
+    //                             playersTemplate.find('img').attr('src', data[id].picture);
+    //                             //   playersTemplate.find('.pet-breed').text(data[i].breed);
+    //                             //   playersTemplate.find('.pet-age').text(data[i].age);
+    //                             //   playersTemplate.find('.pet-location').text(data[i].location);
+    //                             //   playersTemplate.find('.btn-adopt').attr('data-id', data[i].id);
+    //                             playersRow.append(playersTemplate.html());
+    //                             }
+    //                     });
+    //                 }
+
+    //             })
+    //             .catch(function (err) {
+    //                 console.log(JSON.stringify(err));
+    //             });
+    //    }
 
         
 

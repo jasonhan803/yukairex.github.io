@@ -66,13 +66,11 @@ AlarmContract.prototype = {
     }
 
     var result = {
-      "alarmTime":this.alarmTime.get(from),
+    "alarmTime":this.alarmTime.get(from),
     "alarmActive":this.alarmActive.get(from),
     "alarmDeposit":this.alarmActive.get(from)}
 
     return result;
-
-
   },
 
   getNow: function(){
