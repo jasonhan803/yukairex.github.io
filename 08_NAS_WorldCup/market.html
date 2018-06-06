@@ -60,6 +60,7 @@
 
         <div class=class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
             <h2 class="sectionTitle">Open Market, Players Available until 06/14</h2>
+
             <div id="playersRow" class="row">
                     <!-- PETS LOAD HERE -->
             </div>
@@ -73,7 +74,8 @@
                     </div>
                     <div class="panel-body">
                         <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;margin-bottom: 10px" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
-                        <button class="btn btn-default btn-adopt" type="button" style="margin:auto">CLAIM</button>
+                        <br>
+                        <button class="btn btn-default" type="button" style="display:block;margin:auto">CLAIM</button>
                     </div>
                     </div>
                 </div>
@@ -102,16 +104,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src=../lib/nebpay.js></script>
 <script src=../lib/nebulas.js></script>
-<script>
-// Script to open and close sidebar
-function w3_open() {
-    document.getElementById("mySidebar").style.display = "block";
-}
- 
-function w3_close() {
-    document.getElementById("mySidebar").style.display = "none";
-}
-</script>
+
 
 <script>
         var nebulas = require("nebulas"),
@@ -125,7 +118,7 @@ function w3_close() {
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
         testnetUrl = "https://pay.nebulas.io/api/pay";
 
-        const contractAddress = "n1yfeTXC8gMs2bJytb1nW2DnxUbgi911mm4";
+        const contractAddress = "n22iCUBEWLNZSAr4AucFvPfK27J4ecbUjDP";
         const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
         neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
         $("#address").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
@@ -149,83 +142,103 @@ function w3_close() {
 
 
 
-//         function buy() {
-//             var to = contractAddress;
-//             var value = 0;// need to change
-//             var callFunction = "mint";
-//             var callArgs = "";
-//             serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
-//                 listener: mintListener,        //设置listener, 处理交易返回信息
-//             });
-//         }
 
-//         var txhash;
+                function claim(id){
+                    console.log("in buy, id=",id)
+                    var to = contractAddress;
+                    var value = 0.01;// need to change
+                    // var callFunction = "mint";
+                    // var callArgs = "";
+                    var callFunction = "mintPlayerById";
+                    var callArgs = "[\"" + id + "\"]";
+                    serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                        listener: mintListener,        //设置listener, 处理交易返回信息
+                    });
+                }
+            
 
-//         function mintListener(resp) {
-//             txhash = resp.txhash;
-//             neb.api.getTransactionReceipt({
-//                 hash: resp.txhash
-//             })
-//                 .then(function (receipt) {
-//                     console.log("receipt is:" + JSON.stringify(receipt))
-//                     setQuery = setInterval(function () {
-//                         setTxQuery();
-//                     }, 10000);
-//                 })
-//         }
+                var txhash;
 
-//             function setTxQuery() {
-//             neb.api.getTransactionReceipt({
-//                 hash: txhash
-//             })
-//                 .then(function (receipt) {
-//                     console.log(receipt)
-//                     if (receipt.status ==1){
-//                         console.log("tx success")
-//                         var playerId = JSON.parse(receipt.execute_result);
-//                         console.log(playerId)
-//                         loadPlayerPicsById(playerId);
-//                         clearInterval(setQuery);
-//                     }
+                function mintListener(resp) {
+                    txhash = resp.txhash;
+                    neb.api.getTransactionReceipt({
+                        hash: resp.txhash
+                    })
+                        .then(function (receipt) {
+                            console.log("receipt is:" + JSON.stringify(receipt))
+                            setQuery = setInterval(function () {
+                                setTxQuery();
+                            }, 10000);
+                        })
+                }
 
-//                    if (receipt.status ==0){
-//                         console.log("tx fail")
-//                         clearInterval(setQuery);
-//                     }
-                    
-//                 })
-//                 .catch(function (err) {
-//                     console.log("didn't get a receipt")
-//                 })
-//         }
+                function setTxQuery() {
+                neb.api.getTransactionReceipt({
+                    hash: txhash
+                })
+                    .then(function (receipt) {
+                        console.log(receipt)
+                        if (receipt.status ==1){
+                            console.log("tx success")
+                            var playerId = JSON.parse(receipt.execute_result);
+                            console.log(playerId)
+                            clearInterval(setQuery);
+                        }
 
-    function init(){
-        console.log("in the initial function");
-        loadAllPlayers();
-        // setInterval(function(){
-        //     loadPlayersByUser(account)
-        // }
-        // ,1000);
+                    if (receipt.status ==0){
+                            console.log("tx fail")
+                            clearInterval(setQuery);
+                        }
+                        
+                    })
+                    .catch(function (err) {
+                        console.log("didn't get a receipt")
+                    })
+                }
+
+        var claim;
         
-    }
+        function init(){
+            console.log("in the initial function");
+            loadAllPlayers();
+        }
+        
 
-
-
+        var totalPlayer;
+        var temp = [];
         function loadAllPlayers(){
             $.getJSON('./players.json', function(data) {
                     var playersRow = $('#playersRow');
                     var playersTemplate = $('#playersTemplate');
                     playersRow.empty();
-                    for (i = 0; i < data.length; i ++) {
-                    playersTemplate.find('#name').text(data[i].name);
-                    playersTemplate.find('img').attr('src', data[i].picture);
-                    //   playersTemplate.find('.pet-breed').text(data[i].breed);
-                    //   playersTemplate.find('.pet-age').text(data[i].age);
-                    //   playersTemplate.find('.pet-location').text(data[i].location);
-                    //   playersTemplate.find('.btn-adopt').attr('data-id', data[i].id);
-                    playersRow.append(playersTemplate.html());
+                    totalPlayer = data.length;
+                    for (var i = 0; i < data.length; i ++) {
+                        playersTemplate.find('#name').text(data[i].name);
+                        playersTemplate.find('img').attr('src', data[i].picture);
+                       // $('#claimButton').attr("id","claimButton"+i);
+                       console.log("Button"+i)
+                       playersTemplate.find('button').attr("id","Button"+i);
+                      
+                        // $('#claimButton'+i).click(function(){console.log('here')});
+                        
+                        //   playersTemplate.find('.pet-breed').text(data[i].breed);
+                        //   playersTemplate.find('.pet-age').text(data[i].age);
+                        //   playersTemplate.find('.pet-location').text(data[i].location);
+                        //   playersTemplate.find('.btn-adopt').attr('data-id', data[i].id);
+                        playersRow.append(playersTemplate.html());
+                       
+                    }
+                    
+                    
+                    for(var i = 0;i<totalPlayer;i++){
+                        $('#Button'+i).click(function() {
+                            let temp = parseInt($(this).attr('id').substring(6));
+                            console.log("here! "+ temp);
+                            claim(temp);
+                        })
                     }
             });
+            
         }
 
     //     var tokenIds;   
@@ -281,20 +294,24 @@ function w3_close() {
         
         $(window).load(function () {
             // executes when complete page is fully loaded, including all frames, objects and images
-                window.postMessage({
-                "target": "contentscript",
-                "data":{},
-                "method": "getAccount",
-                }, "*");
+                // window.postMessage({
+                // "target": "contentscript",
+                // "data":{},
+                // "method": "getAccount",
+                // }, "*");
      
-                window.addEventListener('message', function(e) {
-                    if(!!e.data.data.account){
-                        account = e.data.data.account;
-                    } 
-                    // console.log(account)
-                });  
+                // window.addEventListener('message', function(e) {
+                //     if(!!e.data.data.account){
+                //         account = e.data.data.account;
+                //         console.log(account)
+                        
+                //     } // console.log(account)
+                //     // else{
+                //     //     alert('please load your NAS wallet')
+                //     // }
+                // });  
                 
-                init();
+                init();    
         });
     </script>
 
