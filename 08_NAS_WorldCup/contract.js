@@ -208,7 +208,7 @@ Players.prototype = {
         
         this.totalTokens = this.totalTokens+1; 
         this.prizePool = this.prizePool.plus(value);
-        return playerId;
+        return {"playerId":playerId,"talent":this.playerTalent.get(this.totalTokens-1)};
     },
 
 // ========== function to create a specific player
@@ -241,7 +241,7 @@ Players.prototype = {
         this.totalTokens = this.totalTokens+1;
 
         this.prizePool = this.prizePool.plus(value);
-        return playerId;
+        return {"playerId":playerId,"talent":this.playerTalent.get(this.totalTokens-1)};
     },
 
     getPlayersByOwner:function(owner) { // return the a id array
@@ -263,7 +263,7 @@ Players.prototype = {
             var goal = this.playerGoal.get(tokenId);
             var min = this.playerTime.get(tokenId);
             var talent = this.playerTalent.get(tokenId);
-            var expPoint = win*100+goal*200+min*talent;
+            var expPoint = win*100+goal*300+min*talent;
             return expPoint;
         }
         else{
@@ -287,7 +287,7 @@ Players.prototype = {
         while (!done) {
           done = true;
           for (var i = 1; i < array.length; i += 1) {
-            if (array[i - 1].points > array[i].points) {
+            if (array[i - 1].points < array[i].points) {
               done = false;
               var tmp = array[i - 1];
               array[i - 1] = array[i];
@@ -298,19 +298,22 @@ Players.prototype = {
         return array;
     },
 
+
+
+
     sortTokensByPoints:function(){
        var result= this.calculatePointsForAllTokens();
-       var sortedResult = this.bubbleSort(result);
+       var sortResult = this.bubbleSort(result);
        var top20Owners = [];
        for (var i=0;i<20;i++){
            if (i>=this.totalTokens){
-            top20Owner[i] = this.owner; // fill the blank with owner address;
+            top20Owners[i] = this.owner; // fill the blank with owner address;
            }
            else{
-            top20Owner[i] = this.ownerOf(sortResult[0].tokenId);
+            top20Owners[i] = this.ownerOf(sortResult[i].tokenId);
            } 
        }
-       return top20Owner;
+       return top20Owners;
     },
 
 
@@ -384,10 +387,11 @@ Players.prototype = {
             throw new Error("you are not game owner")
         }
 
-        var winner = this.sortTokensByPoints();
+        var winners = this.sortTokensByPoints();
         var balance = this.prizePool;
         var amount = this.prizePool.div(100).mul(10);
-        Blockchain.transfer(owner,amount);
+
+        Blockchain.transfer(this.owner,amount);
         balance = balance.sub(amount);
 
         var amount = this.prizePool.div(100).mul(30);
@@ -409,7 +413,10 @@ Players.prototype = {
             balance = balance.sub(amount);
         }
 
+        this.prizePool = 0;
         Blockchain.transfer(winners[19],balance);
+
+        
     },
 
     balanceOf: function (_owner) {

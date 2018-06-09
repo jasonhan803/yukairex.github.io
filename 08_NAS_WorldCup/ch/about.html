@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<title>Nebulas Fantasy</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<style>
+        body,h1,h2,h3,h4,h5,h6 {font-family: Tahoma, SimSun, "Karma"}
+        .w3-bar-block .w3-bar-item {padding:20px}
+        .buyPlayer {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+        img {
+            display:block;
+            margin:auto;
+        }
+        .sectionTitle {
+        font-weight: bold;
+        padding: 20px;
+        } 
+    
+</style>
+<body>
+
+        <!-- Sidebar (hidden by default)
+        <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left" style="display:none;z-index:2;width:40%;min-width:300px" id="mySidebar">
+                <a href="javascript:void(0)" onclick="w3_close()"
+        class="w3-bar-item w3-button">Close</a>
+        <a href="./index.html" onclick="w3_close()" class="w3-bar-item w3-button">Home</a>
+        <a href="./index.html#howToPlay" onclick="w3_close()" class="w3-bar-item w3-button">How to Play</a>
+        <a href="./index.html#about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
+        <a href="./index.html#FAQ" onclick="w3_close()" class="w3-bar-item w3-button">FAQ</a>
+        </nav> -->
+
+    <div class="container">
+        <div class="w3-white w3-xlarge" style="max-width:1200px;">
+                <div class="w3-bar">
+                        <a href="../index.html" class="w3-bar-item w3-button w3-mobile">主页</a>
+                        <a href="../players.html" class="w3-bar-item w3-button w3-mobile">我的球员</a>
+                        <a href="../market.html" class="w3-bar-item w3-button w3-mobile">市场</a>
+                        <a href="../about.html" class="w3-bar-item w3-button w3-mobile">介绍</a>
+                        <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">合约</a>
+                        <a href="./about.html" class="w3-bar-item w3-button w3-mobile" style="float:right">English</a>
+                        <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
+                </div>
+        </div>
+
+        <header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
+            <img class="w3-image" src="../img/banner0.png">
+        </header>
+
+
+
+        <div class=class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
+            <h2 class="sectionTitle"> Nebulas Fantasy 是什么</h2>
+            <ul>
+                <li><h3> Nebulas Fantasy 是在星云链上的去中心化应用(dAPP）</h3></li>                  
+                <li><h3> 我们在星云链上搭建了一个2018世界杯范特西平台 </h3></li>
+                <li><h3> 球迷能够拥有在星云链上的世界杯球星，并根据球星在实际比赛中的表现而获得积分，最终分享星云大奖!</h3></li>
+            </ul>
+           
+    
+            <br>
+            <h2 class="sectionTitle"> Nebulas Fantasy 怎么玩</h2>
+            <ul>
+                <li><h3>第一步：获得球员. 你可以通过花费一定的NAS获得Nebulas Fantasy上的球员。这一笔花费会自动进入最终奖池.</h3></li>
+                <li><h3>第二步：获得积分. 每个球员将根据实际比赛中的表现获得相应积分(比如上场时间，赢球，进球).</h3></li>
+                <li><h3>第三步:获得奖励. 在世界杯结束以后，积分最高的20位球员的拥有者将分享奖池.</h3></li>
+                <li><h3>另外，拥有的球员可以在星云链上自由交易(trade)和发送(transfer)</h3></li>
+            </ul>
+
+            <br>
+            <h2 class="sectionTitle"> Nebulas Fantasy 球员</h2>
+            <ul>
+                <li><h3> 每个球员都是一个存在于星云链上的独立的NRC721 token。就像普通的token一样, 球员拥有者可以在星云链上查看自己球员的记录。球员可以在星云链上自由转移.</h3></li>
+                <li><h3> 我们提供了两种办法来获得球员。你可以花0.1NAS来参与一次随机球员抽奖，也可以花费0.3NAS来选择你喜欢的球员。 </h3></li>   
+                <li><h3> 可以在世界杯结束前任意时刻获得球员。不过球员无法得到在其被创造之前的积分</h3></li>   
+                <li><h3> 每个球员诞生时将被赋予（1-5）的天赋值.</h3></li>
+                <li><h3> 每个球员将获得天赋x出场时间的积分 </h3></li>
+                <li><h3> 每个球员将额外获得100分的赢球奖励 </h3></li>
+                <li><h3> 每个球员将额外获得300分的赢球奖励 </h3></li>
+                <li><h3> 最终，球员的得分 = 进球数×300+赢球数×100+出场时间×天赋 </h3></li>
+            </ul>
+
+            <br>
+            <h2 class="sectionTitle"> 奖励规则</h2>
+            <ul>
+                <li><h3>在世界杯结束以后，根据球员的积分进行分奖 </h3></li>
+                <li><h3> 总积分的前三名分别获得30%,20% 和10%的奖池 </h3></li>   
+                <li><h3> 第4-20名平分剩余奖池</h3></li>
+                <li><h3> Nebulas Fantasy 团队将获得10%的奖池作为管理费用.</h3></li>
+            </ul>
+        </div>
+
+
+          
+
+
+  
+ 
+
+<!-- End page content -->
+</div>
+<script src=../lib/jquery-3.3.1.min.js></script>
+<script src= "../bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src=../lib/nebpay.js></script>
+<script src=../lib/nebulas.js></script>
+<script src=../address.js></script>
+
+<script>
+        var nebulas = require("nebulas"),
+        neb = new nebulas.Neb();
+        var NebPay = require("nebpay");
+        var nebPay = new NebPay();
+        var serialNumber;
+        Account = nebulas.Account;
+        var account;
+
+        var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
+        testnetUrl = "https://pay.nebulas.io/api/pay";
+
+        // const contractAddress = "n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
+        const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+        $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
+        var chainId = 1001;// test net
+        var callbackUrl = testnetUrl;
+        var explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+
+
+
+
+    function init(){
+        console.log("in the initial function");
+        getTotalPrize();        
+    }
+
+        
+        // check the prize pool
+        function getTotalPrize() {
+                var testcontract;
+                var callJSONs = {
+                    from: ownerAddress, // get address string
+                    to: contractAddress, // get the contract string
+                    value: "0",
+                    nonce: 0,
+                    gasPrice: "200000",
+                    gasLimit: "1000000",
+                    contract: testcontract
+                }
+
+                // get the token Id owned by the address
+                testcontract = { "function": "getPrizePool", "args": "" };
+                callJSONs.contract = testcontract;
+                neb.api.call(callJSONs)
+                .then(function (resp){
+                    // $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
+                    $("#pool").show().text(String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS in pool");
+                    }   
+                )
+        };
+
+        
+        $(window).load(function () {
+            // executes when complete page is fully loaded, including all frames, objects and images
+                // window.postMessage({
+                // "target": "contentscript",
+                // "data":{},
+                // "method": "getAccount",
+                // }, "*");
+     
+                // window.addEventListener('message', function(e) {
+                //     if(!!e.data.data.account){
+                //         account = e.data.data.account;
+                //     } 
+                //     // console.log(account)
+                // });  
+                
+                init();
+        });
+    </script>
+
+</body>
+</html>

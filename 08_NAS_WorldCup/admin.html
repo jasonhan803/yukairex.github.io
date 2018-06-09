@@ -44,6 +44,7 @@
                         <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
                         <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
                         <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
+                        <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
                 </div>
         </div>
 
@@ -79,7 +80,7 @@
 
                     <div class="form-row" style="margin-top:30px"></div>
                         <button type="button" class="btn btn-primary"> Stop Token Distribution</button>
-                        <button type="button" class="btn btn-primary"> Distribute Reward</button>
+                        <button type="button" class="btn btn-primary" onClick="distributeReward()"> Distribute Reward</button>
                     </div>
             </form>
 
@@ -112,7 +113,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src=../lib/nebpay.js></script>
 <script src=../lib/nebulas.js></script>
-
+<script src='address.js'></script>
 
 <script>
         var nebulas = require("nebulas"),
@@ -126,7 +127,7 @@
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
         testnetUrl = "https://pay.nebulas.io/api/pay";
 
-        const contractAddress = "n1uk81ADePRoX1dVwrGK6RNN3SudSFmS3qX";
+        // const contractAddress = "n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
         const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
         neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
         $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
@@ -147,7 +148,15 @@
         // var explorer = "https://explorer.nebulas.io/#/address/";
    
 
-   
+        function distributeReward(){
+            var to = contractAddress;
+            var value = 0;// need to change
+            var callFunction = "reward";
+            var callArgs = "";
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: updateListener,        //设置listener, 处理交易返回信息
+            });
+        }
 
 
 
@@ -191,6 +200,7 @@
                         if (receipt.status ==1){
                             console.log("tx success")
                             clearInterval(setQuery);
+                            getTotalToken();
                         }
 
                     if (receipt.status ==0){
@@ -213,7 +223,7 @@
     var database;
     function init(){
         console.log("in the initial function");
-        
+        getTotalPrize();
         $.getJSON('./players.json', function (data) {
             database = data;
                 // var playerCard = $('#randomPlayerCard');
@@ -288,10 +298,33 @@
                   
                        
         function getPoints(player){
-            return player.time*player.talent+player.goal*200+player.win*100;
+            return player.time*player.talent+player.goal*300+player.win*100;
         }                
         
 
+// check the prize pool
+function getTotalPrize() {
+                var testcontract;
+                var callJSONs = {
+                    from: ownerAddress, // get address string
+                    to: contractAddress, // get the contract string
+                    value: "0",
+                    nonce: 0,
+                    gasPrice: "200000",
+                    gasLimit: "1000000",
+                    contract: testcontract
+                }
+
+                // get the token Id owned by the address
+                testcontract = { "function": "getPrizePool", "args": "" };
+                callJSONs.contract = testcontract;
+                neb.api.call(callJSONs)
+                .then(function (resp){
+                    // $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
+                    $("#pool").show().text(String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS in pool");
+                    }   
+                )
+        };
 
         
         $(window).load(function () {

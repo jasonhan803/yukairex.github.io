@@ -41,7 +41,7 @@
 
     .sectionTitle {
         font-weight: bold;
-        padding: 50px;
+        padding: 10px;
     }
 
     .navbar {
@@ -71,19 +71,31 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
     }
+    /* Create two equal columns that floats next to each other */
+    .column {
+        float: left;
+        width: 50%;
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+
+    /* ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    } */
+
+    li{
+    margin: 10px 0;
+    }
 </style>
 
 <body>
-    <!-- Sidebar (hidden by default) -->
-    <!-- <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left" style="display:none;z-index:2;width:40%;min-width:300px"
-        id="mySidebar">
-        <a href="javascript:void(0)" onclick="w3_close()" class="w3-bar-item w3-button">Close</a>
-        <a href="./players.html" onclick="w3_close()" class="w3-bar-item w3-button">Players</a>
-        <a href="#howToPlay" onclick="w3_close()" class="w3-bar-item w3-button">How to Play</a>
-        <a href="#about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
-        <a href="#FAQ" onclick="w3_close()" class="w3-bar-item w3-button">FAQ</a>
-    </nav> -->
-
     <div class="container">
         <div class="w3-white w3-xlarge" style="max-width:1200px;">
             <div class="w3-bar">
@@ -92,68 +104,128 @@
                 <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
                 <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
                 <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
+                <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
             </div>
         </div>
 
         <header class="w3-display-container w3-content w3-wide" style="max-width:2000px;min-width:500px" id="home">
             <img class="w3-image" src="./img/banner0.png">
-           
         </header>
 
 
         <div style="max-width:2000px;margin-top:50px">
-            <div class="w3-center"><h3><span id="prize"></span></h3></div>
-            <div class="buyPlayer">
-                <div>
-                    <img class="img-center" id="randomPlayerCard" style="width:50%; height:50%;" src="./img/default card.png">
-                    <button id="claimButton" type="button" class="btn btn-primary" style="display: block; margin: 20px auto;">
-                        <h4> 0.1 NAS to CLAIM</h4>
-                    </button>
-                    <div class="loader"></div>
+            <h2 class="sectionTitle">Player Lottery</h2>
+                <div class="row">
+                    <div class="column">
+                            <div class="buyPlayer">
+                               
+                                    <img class="img-center" id="randomPlayerCard" style="width:100%; height:100%;" src="./img/default card.png">
+                                    <button id="claimButton" type="button" class="btn btn-primary" style="display: block; margin: 20px auto;">
+                                        <h4> CLAIM</h4>
+                                    </button>
+                                    <!-- <div class="loader"></div> --> 
+                            </div>
+                    </div>
+                    <div class="column">
+                            <div class="board">
+                                    <h4>
+                                        <h2 style="text-align: center">Claim Your Player!</h2>
+                                        <br>
+                                        <ul>
+                                            <li>You need a Chrome Extension to load your <a href="https://chrome.google.com/webstore/detail/nebulas-wallet/magbanejlegnbcppjljfhnmfmghialkl">Nebulas Wallet</a> </li>
+                                            <li>Spend as low as 0.1 NAS to claim a random player (NRC721 token)</li>
+                                            <li>Your player will be created with a random talent (1-5 stars)</li>
+                                            <li>Your Payment will be deposited into the total prize pool</li>
+                                            <li>Player accumulates points based on performance in real World Cup game</li>
+                                            <li>Free transfer your player anytime</li>
+                                            <li>Trade your player for a higher price</li>
+                                            <li>Reward will be distributed according to the player points rank (after World Cup ends)</li>
+                                            <li>Desire a specific player? go to <a href="./market.html">open market</a> and pay a premium</li>
+                                        </ul>
+                                    </h4>
+                            </div>
+                    </div>
                 </div>
+       </div>
+       
+
+        <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title">Nebulas Transaction</h3>
+                </div>
+                <div class="modal-body" >
+                    <div>
+                        
+                        <h5 id="modal-status"></h5>
+                        <div id="modal-txresult">
+                            <h5> Talent: <span id="talent"  class="stars-container stars-5">★★★★★</span></h5>
+                        </div>
+                        <div class="loader" style="display:hide;margin:auto"></div>
+                        
+                    </div>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="confirm" data-dismiss="modal">OK</button>
+                </div>
+            </div>
             </div>
         </div>
 
-
-
         <!-- About Section -->
-        <div class="w3-padding-32 w3-center">
+        <div  style="max-width:2000px;margin-top:50px">
             <h2 class="sectionTitle">How To Play</h2>
-            <div>
+            <div class="row">
                 <div class="col-md-4">
-                    <h4 class="howtoplay"> Claim Players</h4>
+                    
                     <img class="img-center" src="./img/home/create.png">
                     <br/>
-                    <h5> You can either claim a random player, or pay premium to obtain your desired star. The amount of NAS you
-                        pay will enter into the prize pool</h5>
+                    <h4 class="howtoplay"> Step1: Claim</h4>
+                    <ul>
+                        <li>claim a random or specific player with NAS </li>
+                        <li>NAS will be deposited into prize pool </li>
+                    </ul>
+                  
                 </div>
                 <div class="col-md-4">
-                    <h4 class="howtoplay">Accumulate Points</h4>
+                    
                     <img class="img-center" src="./img/home/game.png">
                     <br/>
-                    <h5> your players will gain experience points with real performance in the World Cup, e.g. 300pts for a winning
-                        game, 300pts for a goal.More points, More chance to win</h5>
+                    <h4 class="howtoplay">Step2: Score</h4>
+                    <ul>
+                        <li>your players score points based on real game performance </li>
+                        <li>accumulate points with playing time, winning game and gol</li>
+                    </ul>
                 </div>
                 <div class="col-md-4">
-                    <h4 class="howtoplay">Get Reward</h4>
                     <img class="img-center" src="./img/home/win.png">
                     <br/>
-                    <h5> When the World Cup ends, players with top 20 scores split the prize pool</h5>
+                    <h4 class="howtoplay">Step3: Reward</h4>
+                    <ul>
+                        <li>top 20 players with highest points share prize pool </li>
+                        <li>payment is distributed in NAS, by smart contract </li>
+                    </ul>
                 </div>
             </div>
         </div>
 
 
         <br/>
-        <div class="w3-container w3-padding-48 w3-center">
-
+        <div  style="max-width:2000px;margin-top:50px">
             <h2 class="sectionTitle">What is Nebulas Fantasy?</h2>
             <br>
-            <p>here is some random words here is some random words here is some random words here is some random words here
-                is some random words here is some random words</p>
-                
+            <ul>
+                    <li><h4> Nebulas Fantasy is a decentralized application that operates on the Nebulas Network.</h4></li>                  
+                    <li><h4> We setup a fantasy platform for soccer fans to enjoy World Cup 2018 in a unique way </h4></li>
+                    <li><h4> Soccer fans can own soccer players on Nebulas blockchain, gain points according to the players’ performance in the real World Cup matches, and win NAS as prize!</h4></li>
+                    <li><h4> see <a href="./about.html">ABOUT</a> page for more information</h4></li>
+                    <li><h4> contact nebulas.fantasy@gmail.com for further information</h4></li>
+            </ul> 
         </div>
 
+        <div  style="max-width:2000px;margin-top:50px">
+        </div>
         <!-- End page content -->
     </div>
     <script src=./lib/jquery-3.3.1.min.js></script>
@@ -162,7 +234,8 @@
     <script src=../lib/nebpay.js></script>
     <script src=../lib/nebulas.js></script>
     <script src='../lib/bignumber.min.js'></script>
-
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src='address.js'></script>
     <script>
 
         var nebulas = require("nebulas"),
@@ -175,7 +248,8 @@
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
             testnetUrl = "https://pay.nebulas.io/api/pay";
 
-        const contractAddress = "n1uk81ADePRoX1dVwrGK6RNN3SudSFmS3qX";
+
+        // const contractAddress =  require("address");//"n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
         const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
         neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
         $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
@@ -224,7 +298,8 @@
                 callJSONs.contract = testcontract;
                 neb.api.call(callJSONs)
                 .then(function (resp){
-                    $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
+                    // $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
+                    $("#pool").show().text(String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS in pool");
                     }   
                 )
         };
@@ -265,16 +340,23 @@
                     console.log(receipt)
                     if (receipt.status == 1) {
                         console.log("tx success")
-                        var playerId = JSON.parse(receipt.execute_result);
-                        console.log(playerId)
+                        var result = JSON.parse(receipt.execute_result);
+                        console.log(result.playerId)
                         getTotalPrize();
-                        loadPlayerPicsById(playerId);
+                        loadPlayerPicsById(result.playerId);
                         clearInterval(setQuery);
                         spinOff();
+
+                        $.getJSON('./players.json', function (data) {
+                            $("#modal-status").show().text("Congratulations! You just claimed " + data[result.playerId].name)
+                            $("#talent").attr('class',showStars(result.talent));
+                            $("#modal-txresult").show();
+                        }); 
                     }
 
                     if (receipt.status == 0) {
                         console.log("tx fail")
+                        $("#modal-status").show().text("Sorry, your transaction failed")
                         clearInterval(setQuery);
                         spinOff();
                     }
@@ -296,18 +378,21 @@
         }
 
         function spinOn() {
+            $("#myModal").modal();
+            $("#modal-status").show().text("Please wait for your transaction to be completed")
             $(".loader").css("display","block");
-            $("#claimButton").hide();
+            $("#confirm").hide();
+            $("#modal-txresult").hide();
+            $("#modal").show();
         }
 
         function spinOff() {
             $(".loader").css("display","none");
-            $("#claimButton").show();
+            $("#confirm").show();
         }
 
-
-        function showStars(number){
-                    return "/&#9733".repeat(number);
+      function showStars(number){
+            return "stars-container stars-"+number;
         }
 
 

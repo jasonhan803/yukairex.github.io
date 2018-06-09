@@ -44,6 +44,8 @@
                         <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
                         <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
                         <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
+                        <a href="./ch/about.html" class="w3-bar-item w3-button w3-mobile" style="float:right">中文</a>
+                        <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
                 </div>
         </div>
 
@@ -75,12 +77,12 @@
             <h2 class="sectionTitle"> What is a player</h2>
             <ul>
                 <li><h3> A player in Nebulas Fantasy is a NRC721 token on Nebulas blockchain. We selected the top-tier soccer stars for game simplicity. Once claimed, the player (or this NRC721) token will be associated with your NAS address, and recorded on the Nebulas Blockchain. You can transfer this player to others as you like.</h3></li>
-                <li><h3> There are two ways to claim a player. You can spend 0.1 NAS to claim a random player. Or you can claim a specific superstar on the open market, for a cost of 0.5 NAS. You can claim players through the World Cup, but your player won’t be able to receive points before the player is generated. </h3></li>   
+                <li><h3> There are two ways to claim a player. You can spend 0.1 NAS to claim a random player. Or you can claim a specific superstar on the open market, for a cost of 0.3 NAS. You can claim players through the World Cup, but your player won’t be able to receive points before the player is generated. </h3></li>   
                 <li><h3> Each player has a talent value. For the same performance, a player with a higher talent will score more points.</h3></li>
                 <li><h3> For every minute a player plays, he will score 1points x his talent. </h3></li>
                 <li><h3> For every winning game, a player will score 100 pts; </h3></li>
-                <li><h3> For every goal a player made, he will score 200 pts </h3></li>
-                <li><h3> The total score of a player  = minutes he played * talent + # of winning game*100 + # of goals *200 </h3></li>
+                <li><h3> For every goal a player made, he will score 300 pts </h3></li>
+                <li><h3> The total score of a player  = minutes he played * talent + # of winning game*100 + # of goals *300 </h3></li>
             </ul>
 
             <br>
@@ -113,7 +115,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src=../lib/nebpay.js></script>
 <script src=../lib/nebulas.js></script>
-
+<script src='address.js'></script>
 
 <script>
         var nebulas = require("nebulas"),
@@ -127,7 +129,7 @@
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
         testnetUrl = "https://pay.nebulas.io/api/pay";
 
-        const contractAddress = "n1uk81ADePRoX1dVwrGK6RNN3SudSFmS3qX";
+        // const contractAddress = "n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
         const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
         neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
         $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
@@ -204,63 +206,35 @@
 
     function init(){
         console.log("in the initial function");
-        setInterval(function(){
-            loadPlayersByUser(account)
-        }
-        ,1000);
-        
+        getTotalPrize();        
     }
 
 
-        var tokenIds;   
-        function loadPlayersByUser(address) {
-
-            var testcontract;
-            var callJSONs = {
-                from: ownerAddress, // get address string
-                to: contractAddress, // get the contract string
-                value: "0",
-                nonce: 0,
-                gasPrice: "200000",
-                gasLimit: "1000000",
-                contract: testcontract
-            }
-
-            // get the token Id owned by the address
-            testcontract = { "function": "getPlayersByOwner", "args": "[\"" + address + "\"]" };
-            callJSONs.contract = testcontract;
-            neb.api.call(callJSONs)
-                .then(function (resp) {
-                    tokenIds = JSON.parse(resp.result);
-                    console.log(tokenIds);
-                   
-                    if (tokenIds.length>0){
-                        $.getJSON('./players.json', function(data) {
-                                var playersRow = $('#playersRow');
-                                var playersTemplate = $('#playersTemplate');
-                        
-                                playersRow.empty();
-                                for (i = 0; i < tokenIds.length; i ++) {
-                                let id = tokenIds[i];
-                                playersTemplate.find('#name').text(data[id].name);
-                                playersTemplate.find('img').attr('src', data[id].picture);
-                                //   playersTemplate.find('.pet-breed').text(data[i].breed);
-                                //   playersTemplate.find('.pet-age').text(data[i].age);
-                                //   playersTemplate.find('.pet-location').text(data[i].location);
-                                //   playersTemplate.find('.btn-adopt').attr('data-id', data[i].id);
-                                playersRow.append(playersTemplate.html());
-                                }
-                        });
-                    }
-
-                })
-                .catch(function (err) {
-                    console.log(JSON.stringify(err));
-                });
-       }
-
+       
         
+        // check the prize pool
+        function getTotalPrize() {
+                var testcontract;
+                var callJSONs = {
+                    from: ownerAddress, // get address string
+                    to: contractAddress, // get the contract string
+                    value: "0",
+                    nonce: 0,
+                    gasPrice: "200000",
+                    gasLimit: "1000000",
+                    contract: testcontract
+                }
 
+                // get the token Id owned by the address
+                testcontract = { "function": "getPrizePool", "args": "" };
+                callJSONs.contract = testcontract;
+                neb.api.call(callJSONs)
+                .then(function (resp){
+                    // $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
+                    $("#pool").show().text(String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS in pool");
+                    }   
+                )
+        };
 
         
         $(window).load(function () {
