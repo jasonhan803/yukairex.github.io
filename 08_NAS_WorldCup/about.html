@@ -43,6 +43,7 @@
                         <a href="./players.html" class="w3-bar-item w3-button w3-mobile">Portfolio</a>
                         <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
                         <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
+                        <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
                 </div>
         </div>
 
@@ -57,33 +58,38 @@
             <ul>
                 <li><h3> Nebulas Fantasy is a decentralized application that operates on the Nebulas Network.</h3></li>                  
                 <li><h3> We setup a fantasy platform for soccer fans to enjoy World Cup 2018 in a unique way </h3></li>
+                <li><h3> Soccer fans can own soccer players on Nebulas blockchain, gain points according to the players’ performance in the real World Cup matches, and win NAS as prize!</h3></li>
             </ul>
            
     
             <br>
             <h2 class="sectionTitle"> How to play Nebulas Fantasy</h2>
             <ul>
-                <li><h3>Claim: user can claim ownership of real-world players on Nebulas blockchain before World Cup starts on 06/14. The amount of NAS as costs will enter the total prize pool, visible on the Nebulas Blockchain</h3></li>
-                <li><h3>Perform: players will accumulate experience points based on his performance in the real games. A winning game, a goal and every playing minutes can add up to the players value.</h3></li>
-                <li><h3>Reward: After World Cup ends on 07/15, the total prize will be splited according to the player experience points ranking.</h3></li>
-                <li><h3>Trade: During the World Cup, you can trade players on an open market.</h3></li>
+                <li><h3>Step1: You claim ownership of soccer players on Nebulas blockchain. The amount of NAS as claim fee will enter the total prize pool.</h3></li>
+                <li><h3>Step2: Players will accumulate experience points based on their performance in the real World Cup games. For example, a player gains 300pts for every goal in the real match.</h3></li>
+                <li><h3>Step3: After World Cup ends on 07/15, owners of players with the top 20 highest scores will be able to share the total prize.</h3></li>
+                <li><h3>Extra: During the World Cup, you can transfer your player to your friends/family, or trade players on an open market.</h3></li>
             </ul>
 
             <br>
             <h2 class="sectionTitle"> What is a player</h2>
             <ul>
-                <li><h3> A player in Nebulas Fantasy is a NRC721 token on Nebulas blockchain. We selected the top-tier soccer stars. Once claimed, you can trace your players on the blockchain.</h3></li>
-                <li><h3> You can spend 0.1 NAS to get a random player, or you can claim a specific superstar on the open market. No more players will be generated after World Cup begins 6/14</h3></li>   
-                <li><h3> Players earn 1pt for every minutes he plays. A bonus 200pts for every goal and a bonus 200pts for every game he wins</h3></li>
-                <li><h3> to add variation, each players will be genrated with a "talent". </h3></li>>
+                <li><h3> A player in Nebulas Fantasy is a NRC721 token on Nebulas blockchain. We selected the top-tier soccer stars for game simplicity. Once claimed, the player (or this NRC721) token will be associated with your NAS address, and recorded on the Nebulas Blockchain. You can transfer this player to others as you like.</h3></li>
+                <li><h3> There are two ways to claim a player. You can spend 0.1 NAS to claim a random player. Or you can claim a specific superstar on the open market, for a cost of 0.5 NAS. You can claim players through the World Cup, but your player won’t be able to receive points before the player is generated. </h3></li>   
+                <li><h3> Each player has a talent value. For the same performance, a player with a higher talent will score more points.</h3></li>
+                <li><h3> For every minute a player plays, he will score 1points x his talent. </h3></li>
+                <li><h3> For every winning game, a player will score 100 pts; </h3></li>
+                <li><h3> For every goal a player made, he will score 200 pts </h3></li>
+                <li><h3> The total score of a player  = minutes he played * talent + # of winning game*100 + # of goals *200 </h3></li>
             </ul>
 
             <br>
             <h2 class="sectionTitle"> Reward Rule</h2>
             <ul>
-                <li><h3> Once the World Cup ends on 7/15, players will be ranked according to the experience points </h3></li>
-                <li><h3> top 5 players </h3></li>   
-                <li><h3> To be updated</h3></li>
+                <li><h3> Once the World Cup ends on 7/15, players will be ranked according to the points </h3></li>
+                <li><h3> The top 3 players will receive 30%, 20% and 10% of the total prize pool, correspondingly. </h3></li>   
+                <li><h3> The 4-20th players will split the remaining prize pool equally.</h3></li>
+                <li><h3> The Nebulas Fantasy Team will get 10% of the total prize pool as maintenance fee.</h3></li>
             </ul>
 
             
@@ -107,16 +113,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src=../lib/nebpay.js></script>
 <script src=../lib/nebulas.js></script>
-<script>
-// Script to open and close sidebar
-function w3_open() {
-    document.getElementById("mySidebar").style.display = "block";
-}
- 
-function w3_close() {
-    document.getElementById("mySidebar").style.display = "none";
-}
-</script>
+
 
 <script>
         var nebulas = require("nebulas"),
@@ -130,10 +127,10 @@ function w3_close() {
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
         testnetUrl = "https://pay.nebulas.io/api/pay";
 
-        const contractAddress = "n1yfeTXC8gMs2bJytb1nW2DnxUbgi911mm4";
+        const contractAddress = "n1uk81ADePRoX1dVwrGK6RNN3SudSFmS3qX";
         const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
         neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
-        $("#address").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
+        $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
         var chainId = 1001;// test net
         var callbackUrl = testnetUrl;
         var explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
@@ -142,13 +139,14 @@ function w3_close() {
         // //main net 
         // const contractAddress = "n1kU44RRFoFvQbe8A6FAHDCC5APnfn89m2P";
         // const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
-        // $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr("target","_blank");
+        //  $("#contractAddress").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr("target","_blank");
         // neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         // var chainId = 1;// mainnet net
         // var callbackUrl = mainnetUrl;
         // //2ff9c00e3050f44dad190b1f5a6eb296ae6cdbed9007569db56fe2a054fc451c
         // var explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
         // var explorer = "https://explorer.nebulas.io/#/address/";
+   
 
    
 

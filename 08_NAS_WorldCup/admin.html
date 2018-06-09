@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<title>Nebulas Fantasy</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<style>
+        body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+        .w3-bar-block .w3-bar-item {padding:20px}
+        .buyPlayer {
+            margin: auto;
+            width: 50%;
+            padding: 10px;
+        }
+        img {
+            display:block;
+            margin:auto;
+        }
+        .sectionTitle {
+        font-weight: bold;
+        padding: 20px; 
+    }
+</style>
+<body>
+
+        <!-- Sidebar (hidden by default)
+        <nav class="w3-sidebar w3-bar-block w3-card w3-top w3-xlarge w3-animate-left" style="display:none;z-index:2;width:40%;min-width:300px" id="mySidebar">
+                <a href="javascript:void(0)" onclick="w3_close()"
+        class="w3-bar-item w3-button">Close</a>
+        <a href="./index.html" onclick="w3_close()" class="w3-bar-item w3-button">Home</a>
+        <a href="./index.html#howToPlay" onclick="w3_close()" class="w3-bar-item w3-button">How to Play</a>
+        <a href="./index.html#about" onclick="w3_close()" class="w3-bar-item w3-button">About</a>
+        <a href="./index.html#FAQ" onclick="w3_close()" class="w3-bar-item w3-button">FAQ</a>
+        </nav> -->
+
+    <div class="container">
+        <div class="w3-white w3-xlarge" style="max-width:1200px;">
+                <div class="w3-bar">
+                        <a href="./index.html" class="w3-bar-item w3-button w3-mobile">Home</a>
+                        <a href="./players.html" class="w3-bar-item w3-button w3-mobile">Portfolio</a>
+                        <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
+                        <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
+                        <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
+                </div>
+        </div>
+
+        <header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
+            <img class="w3-image" src="./img/banner0.png">
+        </header>
+
+       
+        
+
+        <div class=class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
+
+            <form>
+                    <div class="form-row">
+                        <div class="col col-md-3">
+                            <label for="playgoal">player IDs</label>
+                            <input type="text" class="form-control" id="playerid" placeholder="Player ID">
+                        </div>
+                        <div class="col col-md-3" >
+                            <label for="playwin">wins</label>
+                            <input type="text" class="form-control" id="playerwin" placeholder="Win">
+                        </div>
+                        <div class="col col-md-3">
+                                <label for="playgoal">player goals</label>
+                                <input type="text" class="form-control" id="playergoal" placeholder="Goal">
+                        </div>
+                        <div class="col col-md-3">
+                            <label for="playtime">player time [min]</label>
+                            <input type="text" class="form-control" id="playertime" placeholder="Minutes">
+                        </div>
+                        <button type="button" class="btn btn-primary" onClick="update()">Submit</button>
+                    </div>
+
+                    <div class="form-row" style="margin-top:30px"></div>
+                        <button type="button" class="btn btn-primary"> Stop Token Distribution</button>
+                        <button type="button" class="btn btn-primary"> Distribute Reward</button>
+                    </div>
+            </form>
+
+
+
+
+            <br>
+            <div><span id="totalTokens"></span></div>
+            <table class="table table-striped table-hover" id="here_table" style="margin:30px"> 
+                <thead>
+                    <tr>
+                        <th scope="col">token Id</th>
+                        <th scope="col"> player</th>
+                        <th scope="col"> points</th>
+                        <th scope="col"> talent</th>
+                        <th scope="col"> min</th>
+                        <th scope="col"> win</th>
+                        <th scope="col"> goal</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                </tbody>
+            </table>
+        </div>
+
+<!-- End page content -->
+</div>
+<script src=./lib/jquery-3.3.1.min.js></script>
+<script src= "bootstrap.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src=../lib/nebpay.js></script>
+<script src=../lib/nebulas.js></script>
+
+
+<script>
+        var nebulas = require("nebulas"),
+        neb = new nebulas.Neb();
+        var NebPay = require("nebpay");
+        var nebPay = new NebPay();
+        var serialNumber;
+        Account = nebulas.Account;
+        var account;
+
+        var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
+        testnetUrl = "https://pay.nebulas.io/api/pay";
+
+        const contractAddress = "n1uk81ADePRoX1dVwrGK6RNN3SudSFmS3qX";
+        const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+        $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
+        var chainId = 1001;// test net
+        var callbackUrl = testnetUrl;
+        var explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+
+
+        // //main net 
+        // const contractAddress = "n1kU44RRFoFvQbe8A6FAHDCC5APnfn89m2P";
+        // const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
+        //  $("#contractAddress").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr("target","_blank");
+        // neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+        // var chainId = 1;// mainnet net
+        // var callbackUrl = mainnetUrl;
+        // //2ff9c00e3050f44dad190b1f5a6eb296ae6cdbed9007569db56fe2a054fc451c
+        // var explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
+        // var explorer = "https://explorer.nebulas.io/#/address/";
+   
+
+   
+
+
+
+        function update() {
+
+            var id = $('#playerid').val().trim();
+            var win = $('#playerwin').val().trim();
+            var goal = $('#playergoal').val().trim();
+            var min = $('#playertime').val().trim();
+            
+            var to = contractAddress;
+            var value = 0;// need to change
+            var callFunction = "updatePlayerStatus";
+            var callArgs = "[\"" + id + "\"," + "\""+min +"\"," + "\""+win+"\"," + "\""+goal+"\"]"
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: updateListener,        //设置listener, 处理交易返回信息
+            });
+        }
+
+                var txhash;
+
+                function updateListener(resp) {
+                    txhash = resp.txhash;
+                    neb.api.getTransactionReceipt({
+                        hash: resp.txhash
+                    })
+                        .then(function (receipt) {
+                            console.log("receipt is:" + JSON.stringify(receipt))
+                            setQuery = setInterval(function () {
+                                setTxQuery();
+                            }, 10000);
+                        })
+                }
+
+                function setTxQuery() {
+                neb.api.getTransactionReceipt({
+                    hash: txhash
+                })
+                    .then(function (receipt) {
+                        console.log(receipt)
+                        if (receipt.status ==1){
+                            console.log("tx success")
+                            clearInterval(setQuery);
+                        }
+
+                    if (receipt.status ==0){
+                            console.log("tx fail")
+                            clearInterval(setQuery);
+                        }
+                        
+                    })
+                    .catch(function (err) {
+                        console.log("didn't get a receipt")
+                    })
+                }
+
+        
+  
+
+
+
+
+    var database;
+    function init(){
+        console.log("in the initial function");
+        
+        $.getJSON('./players.json', function (data) {
+            database = data;
+                // var playerCard = $('#randomPlayerCard');
+                // playerCard.attr('src', data[id].picture);
+        }).then(
+            function (){
+                getTotalToken();
+            }
+        )  
+    }
+
+
+    function getTotalToken(){
+            var testcontract;
+            var callJSONs = {
+                from: ownerAddress, // get address string
+                to: contractAddress, // get the contract string
+                value: "0",
+                nonce: 0,
+                gasPrice: "200000",
+                gasLimit: "1000000",
+                contract: testcontract
+            }
+            // get the token Id owned by the address
+            testcontract = { "function": "getTotalTokens", "args": "" };
+            callJSONs.contract = testcontract;
+            neb.api.call(callJSONs).
+            then(function (resp){
+                $("#totalTokens").show().text("Total tokens:  " + resp.result);
+                return resp.result; 
+              } 
+            ).then(function(resp){
+                var N = resp; 
+                var IDs = [];
+                for(var i=0;i<N;i++){
+                    IDs.push(i);
+                }
+                console.log(IDs);        
+                getTokenInfoByIds(IDs)
+            })
+    }
+
+
+
+            function getTokenInfoByIds(tokenIds){
+                        var testcontract;
+                        var callJSONs = {
+                            from: ownerAddress, // get address string
+                            to: contractAddress, // get the contract string
+                            value: "0",
+                            nonce: 0,
+                            gasPrice: "200000",
+                            gasLimit: "1000000",
+                            contract: { "function": "getPlayersInfoByTokenId", "args": "[\"" + JSON.stringify(tokenIds) + "\"]" }
+                        }
+                    
+                    neb.api.call(callJSONs).then(function (resp) {
+                        playerInfo = JSON.parse(resp.result);   
+                        console.log(playerInfo);     
+                        
+                        for (var i=0;i<playerInfo.length;i++){
+                            $('#here_table').append('<tr><th scope="row">'+i+'</th>'+'<td>'+database[playerInfo[i].id].name +'</td>'
+                                +'<td>'+getPoints(playerInfo[i]) +'</td>'
+                                +'<td>'+playerInfo[i].talent +'</td>'
+                                +'<td>'+playerInfo[i].time +'</td>'
+                                +'<td>'+playerInfo[i].win +'</td>'
+                                +'<td>'+playerInfo[i].goal +'</td>'+'</tr>');
+                        }
+                    })
+            }
+
+                  
+                       
+        function getPoints(player){
+            return player.time*player.talent+player.goal*200+player.win*100;
+        }                
+        
+
+
+        
+        $(window).load(function () {
+            // executes when complete page is fully loaded, including all frames, objects and images
+                // window.postMessage({
+                // "target": "contentscript",
+                // "data":{},
+                // "method": "getAccount",
+                // }, "*");
+     
+                // window.addEventListener('message', function(e) {
+                //     if(!!e.data.data.account){
+                //         account = e.data.data.account;
+                //     } 
+                //     // console.log(account)
+                // });  
+                
+                init();
+        });
+    </script>
+
+</body>
+</html>

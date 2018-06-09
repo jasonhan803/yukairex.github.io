@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<title>Nebulas Batch Transfer</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<meta charset="utf-8">
+
+<style>
+.fa {
+    cursor: pointer;
+    font-size: 50px;
+}
+
+.fa-hide {
+    display: none
+}
+.q{
+        font-weight:bold;
+    }
+</style>
+
+
+<body>
+
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-wide w3-padding w3-card">
+    <a href="#home" class="w3-bar-item w3-button"><b>NAS</b> BATCH TRANSFER</a>
+    <!-- Float links to the right. Hide them on small screens -->
+    <div class="w3-right w3-hide-small">
+      <a href="#about" class="w3-bar-item w3-button">FAQ</a>
+      <a href="#contact" id="address" class="w3-bar-item w3-button">Contact</a>
+    </div>
+  </div>
+</div>
+
+<!-- Header -->
+<header class="w3-display-container w3-content w3-wide" style="max-width:1500px;" id="home">
+  <img class="w3-image" src="./img/architect.jpg" alt="Architecture" width="1500" height="400">
+  <div class="w3-display-middle w3-margin-top w3-center">
+    <h1 class="w3-xxlarge w3-text-white"><span class="w3-padding w3-black w3-opacity-min"><b>NAS BATCH TRANSFER</b></span> </h1>
+  </div>
+</header>
+
+<!-- Page content -->
+<div class="w3-content w3-padding" style="max-width:1564px">
+
+    <div class="w3-container w3-padding-32" id="addresses">
+        <div style="margin:20px; ">
+        <br><br>
+        <h3>Load Nebulas Addresses</h3>
+        <div>
+            <form>
+                <div class="form-row">
+                    <div class="col">
+                        <label style="font-weight:bold">Step 0: </label><br>
+                        <label style="font-weight:bold"><a target="_blank" href="https://chrome.google.com/webstore/detail/nebula/hlmflgnnmmojlnbmaokpfcjdkhkjbnok?hl=en-US">Install Nebulas Wallet Chrome Extension First</a></label><br>
+                    </div>
+                    <div class="col">
+                        <label style="font-weight:bold">Step 1: </label><br>
+                        <label style="font-weight:bold">Load your addresses in a csv file </label><br>
+                        <label style="font-weight:bold">max transfer 15 addresses at a time </label>
+                        <br>
+                        <input type="file" name="filename" id="filename" style="text-align: center">
+                        <button id="upload" type="button" onClick="uploads()">upload</button>
+                    </div>
+                    <div class="col">
+                        <label style="font-weight:bold">Step 2: </label><br>
+                        <label style="font-weight:bold"> type in the amount of NAS and click distribute</label>
+                        <br>
+                        <input type="text" id="amount" placeholder="0" style="margin-bottom: 10px">  NAS <br>                      
+                        <button type="button" id="button1" onClick="distribute()">Distribute</button><br>
+                        <i class="fa fa-hide"></i>
+                        <p><span style="color:brown;" id="txstatus"></span> <a id="txonexplorer"> </a></p>
+                       
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div>
+            <table class="table table-striped table-hover" id="here_table" style="margin-top:50px"> 
+                <div><p><span style="color:brown;" id="csvLoad"></span></p></div>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col"> Nebulas Address</th>
+                        <th scope="col"> Verified?</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+  <!-- About Section -->
+  <div class="w3-container w3-padding-32" id="about">
+    <div style="margin:20px; ">
+        <br><br><br><br>
+        <hr>
+        <h3>FAQ</h3>
+        <div style="text-align: left">
+        <p class="q">Q: What is Nebulas Batch Transfer Machine?</p>
+        <p>A: This a tool for Nebulas users to send NAS to multiple addresses within one transaction. A smart contract is deployed on the nebulas mainnet, which evenly distributes the amount received by the contract to the targeted addresses. </p>
+        <p class="q">Q: Why use this tool? </p>
+        <p>A: It is trivial to send NAS to multiple addresses. This might be useful for developers to send NAS to multiple testing addresses. This can also be useful if someone would like to airdrop NAS to a list of addresses.</p>
+        <p class="q">Q: How to use this tool?</p>
+        <p>A: Follow the steps as shown at the top of the page. load the addresses using CSV format.</p>
+        <p class="q">Q: Why the maxiumum addresses is only 15?</p>
+        <p>A: The addresses are sent to the contract as argument. Currently, there is a size limit for the arguments.</p>
+        <p class="q">Q: Can you have a feature to distribute NRC-20 token as well?</p>
+        <p>A: This feature will be added in the future.</p>
+        <p class="q">Q: Why my received NAS is not displayed on Nebulas Explorer?</p>
+        <p>A: Currently, the internal NAS transfer is not supported by Nebulas Explorer. However, your NAS amount that received in the target addresses should be correct</p>
+        <p class="q">Q: Why not use a script for a batch transfer?</p>
+        <p>A: One can make a script to realize similar functionality, but it needs multiple transactions and extra gas costs. Using this dapp enables significant gas reduction</p>     
+        </div>
+    </div>
+  </div>
+
+
+  <!-- Contact Section -->
+  <div class="w3-container w3-padding-32" id="contact">
+    <h3 class="w3-border-bottom w3-border-light-grey w3-padding-16">Contact</h3>
+    <p>Please contact kewell@live.com for any question.</p>
+  </div>
+  
+<!-- End page content -->
+</div>
+
+    <script src=../lib/jquery-3.3.1.min.js></script>
+    <script src=../lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+    <script src=../lib/js-beautify-1.7.5/beautify.js></script>
+    <script src=../lib/nebpay.js></script>
+    <script src=../lib/nebulas.js></script>   
+    <script src='../lib/bignumber.min.js'></script>       
+    <script>
+        var nebulas = require("nebulas"),
+            neb = new nebulas.Neb();
+        var NebPay = require("nebpay");
+        var nebPay = new NebPay();
+        var serialNumber;
+        Account = nebulas.Account;
+
+        var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
+        testnetUrl = "https://pay.nebulas.io/api/pay";
+       
+        
+
+        // test net
+        // const contractAddress = "n1xCzXP4UHK1KsvWxfVJdv8LAsNRDFugxry";
+        // const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+        // neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+        // $("#address").attr('href','https://explorer.nebulas.io/#/testnet/address/'+contractAddress).attr('target',"_blank");
+        // var chainId = 1001;// test net
+        // var callbackUrl = testnetUrl;
+        // var explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+        // var explorer = "https://explorer.nebulas.io/#/testnet/address/";
+
+        //main net 
+        const contractAddress = "n1kU44RRFoFvQbe8A6FAHDCC5APnfn89m2P";
+        const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
+        $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr("target","_blank");
+        neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
+        var chainId = 1;// mainnet net
+        var callbackUrl = mainnetUrl;
+        //2ff9c00e3050f44dad190b1f5a6eb296ae6cdbed9007569db56fe2a054fc451c
+        var explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
+        var explorer = "https://explorer.nebulas.io/#/address/";
+        
+        $("#csvExample").attr('href','https://drive.google.com/open?id=1KXhRC8IBjcFHcPvU3o_unAY0KDrgC-dh').attr('target',"_blank");
+
+        var csvResult;
+        var isVerified;
+        var readytoTransfer;
+
+        function uploads(){
+            // $("#txstatus").val(); 
+                console.log("in upload()")
+                var csv = $('#filename');
+                var csvFile = csv[0].files[0];
+                var ext = csv.val().split(".").pop().toLowerCase();
+                if($.inArray(ext, ["csv"]) === -1){
+                    alert('not CSV file');
+                    return false;
+                }
+                if(csvFile != undefined){
+                    reader = new FileReader();
+                    reader.onload = function(e){
+                        $("#csvLoad").text(""); 
+                        csvResult = e.target.result.split(/\r|\n|\r/);
+                       // remove all the empty result
+                       for (var i = 0; i < csvResult.length; i++) {
+                            if (csvResult[i] == "") {         
+                                csvResult.splice(i, 1);
+                                i--;
+                            }
+                        }
+                        if(csvResult.length>15){
+                            alert("Sorry, the max addresses you can load is 15!")
+                            return;
+                        }
+                        showAddress(csvResult);
+                    }
+                    reader.readAsText(csvFile);
+                }
+        }
+
+
+        // function removeElement(arrayName,arrayElement)
+        // {
+        //     for(var i=0; i<arrayName.length;i++ )
+        //     { 
+        //         if(arrayName[i]==arrayElement)
+        //             arrayName.splice(i,1); 
+        //     } 
+        // }
+
+
+    
+        function showAddress(address){
+            $("#tbody").empty(); 
+            table_idx = 0;
+
+            var statuses = [];
+            
+            
+            for (i=0;i<address.length;i++)
+            {  
+                if(Account.isValidAddress(address[i])){
+                    isVerified = "Yes"
+                    statuses[i] = true;
+                }else{
+                    isVerified = "No"
+                    statuses[i] = false;
+                }
+                console.log(isVerified)
+
+                $('#here_table').append('<tr><th scope="row">'+table_idx+'</th>'+'<td>'+'<a target=_blank href='+explorer+address[i]+'>'+address[i]+'</a>' +'</td>'+'<td>'+isVerified +'</td></tr>');
+                table_idx++;
+             }
+
+
+             if (statuses.every(element => element === true)){
+                 $("#csvLoad").text("Great! all addresses are verified. Ready to batch transfer");
+                 readytoTransfer = true;
+             }
+             else{
+                $("#csvLoad").text("Sorry, some of your addresses do not look right")
+                readytoTransfer = false;
+             }
+        }
+        
+
+
+
+        function distribute(){
+            $("#txstatus").text(""); 
+            if(csvResult==undefined){
+                alert("please upload your addresses csv file and click upload button");
+                return false;
+            }
+            // check if all the addresses are valid
+            showAddress(csvResult);
+            if(readytoTransfer === false){
+                alert("Some of your addresses do not look right");
+                return false;
+            }
+            
+
+            var amount = $('#amount').val().trim();
+            //
+            // check amount
+            if (isNaN(amount)) 
+                {
+                    alert("The amount you send is NOT a number!");
+                    return false;
+                }
+
+            if (amount<=0) 
+                {
+                    alert("The amount you send needs to be more than zero!");
+                    return false;
+                }
+
+            addresses = csvResult;
+            var to = contractAddress;
+            var value = amount;// need to change
+            var callFunction = "distribute"
+            var callArgs1="[\"[";
+            for (var i=0;i<addresses.length;i++){
+                callArgs1 = callArgs1+"\\\""+addresses[i]+"\\\",";
+            }
+            callArgs1=callArgs1.substring(0,callArgs1.length-1);
+            callArgs1 = callArgs1+"]\"]";
+            console.log(callArgs1)
+            serialNumber = nebPay.call(to, value, callFunction, callArgs1, {    //使用nebpay的call接口去调用合约,
+                listener: distributeListner,        //设置listener, 处理交易返回信息
+                callback: callbackUrl
+            });
+        }
+
+
+        var txhash;
+        function distributeListner(resp) {
+            spin();
+            txhash = resp.txhash;
+            neb.api.getTransactionReceipt({
+                hash: resp.txhash
+            })
+                .then(function (receipt) {
+                    console.log("receipt is:" + JSON.stringify(receipt))
+                    setQuery = setInterval(function () {
+                        setTxQuery();
+                    }, 10000);
+                })
+        }
+
+
+        function setTxQuery() {
+            neb.api.getTransactionReceipt({
+                hash: txhash
+            })
+                .then(function (receipt) {
+                    console.log(receipt.status);
+                    if (receipt.status == 1){
+                        clearInterval(setQuery);
+                         stopSpin();
+                        $("#txstatus").text("Success! ")
+                        $("#txonexplorer").text("check your transaction").attr("href",explorerTx+txhash).attr("target","_blank")
+                   
+                        
+                    } // transaction finished
+                    if (receipt.status == 0){
+                        clearInterval(setQuery);
+                        stopSpin();
+                        $("#txstatus").text("Transaction Failed!")
+                        $("#txonexplorer").text("check your transaction").attr("href",explorerTx+txhash).attr("target","_blank")
+                    } // transaction finished        
+                })
+                .catch(function (err){ 
+                    $("#txstatus").text("Transaction didn't go through, check the transaction!")
+                })
+        }
+
+
+
+        function spin() {
+            $(".fa").removeClass().addClass('fa fa-cog fa-spin')
+            $("#txstatus").text("waiting for transaction...")
+        }
+
+        function stopSpin() {
+            $(".fa").removeClass().addClass('fa fa-hide')
+        }
+
+</script>
+
+
+
+</body>
+</html>

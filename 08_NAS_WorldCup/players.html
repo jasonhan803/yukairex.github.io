@@ -57,6 +57,7 @@
                         <a href="./players.html" class="w3-bar-item w3-button w3-mobile">Portfolio</a>
                         <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
                         <a href="./about.html"  class="w3-bar-item w3-button w3-mobile">About</a>
+                        <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
                 </div>
         </div>
 
@@ -66,7 +67,7 @@
                 <h1 class="w3-xxlarge">Le Catering</h1>
             </div> -->
             
-            <div class="form-group" align="center" style="display:flex; float:right;width: 500px; margin:30px 30px; margin-left:auto margin-right:auto">
+            <div class="form-group" align="center" style="display:flex; float:right;width: 500px; margin:30px 30px; margin-left:auto; margin-right:auto">
                     <input class="form-control" type="text" id="address" placeholder="your NAS address">
                     <br>
                     <button id="check" class="btn btn-primary" onClick="check()" style="display: inline-block;">check</button>
@@ -92,6 +93,7 @@
                         <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
                         <br/>
                         <strong>Talent</strong>:    <span id="talent"  class="stars-container stars-5">★★★★★</span><br/>
+                       
                         <strong>Play Time</strong>: <span id="playtime"></span><br/>
                         <strong>WIN</strong>:       <span id="win"></span><br/>
                         <strong>GOAL</strong>:      <span id="goal"></span><br/>
@@ -166,10 +168,10 @@
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
         testnetUrl = "https://pay.nebulas.io/api/pay";
 
-        const contractAddress = "n22iCUBEWLNZSAr4AucFvPfK27J4ecbUjDP";
+        const contractAddress = "n1uk81ADePRoX1dVwrGK6RNN3SudSFmS3qX";
         const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
         neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
-        $("#address").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
+        $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
         var chainId = 1001;// test net
         var callbackUrl = testnetUrl;
         var explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
@@ -178,7 +180,7 @@
         // //main net 
         // const contractAddress = "n1kU44RRFoFvQbe8A6FAHDCC5APnfn89m2P";
         // const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
-        // $("#address").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr("target","_blank");
+        //  $("#contractAddress").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr("target","_blank");
         // neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
         // var chainId = 1;// mainnet net
         // var callbackUrl = mainnetUrl;
@@ -304,13 +306,16 @@
             playersRow.empty();
             $.getJSON('./players.json', function(data) {
                     for (var i=0;i<info.length;i++){
-                        console.log("inside display" +info[i].id);
+                        console.log(i)
+                        console.log("player name: " +data[(info[i].id)].name);
+                        console.log("player talent: " +info[i].talent);
                         playersTemplate.find('#name').text(data[(info[i].id)].name);
                         playersTemplate.find('img').attr('src', data[(info[i].id)].picture);
-                        $('#talent').attr('class',showStars(info[i].talent))
-                        $('#goal').text(info[i].goal);
-                        $('#win').text(info[i].win);
-                        $('#playtime').text(info[i].time);
+                        playersTemplate.find('#talent').attr('class',showStars(info[i].talent))
+                       // $('#talent').attr('class',showStars(info[i].talent))
+                       playersTemplate.find('#goal').text(info[i].goal);
+                       playersTemplate.find('#win').text(info[i].win);
+                       playersTemplate.find('#playtime').text(info[i].time);
                       
                         playersTemplate.find('button').attr("id","Button"+tokenIds[i])
                         playersRow.append(playersTemplate.html());
