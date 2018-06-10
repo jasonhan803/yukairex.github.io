@@ -5,10 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/star.css" rel="stylesheet">
-<link href="css/NF.css" rel="stylesheet">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/star.css" rel="stylesheet">
+<link href="../css/NF.css" rel="stylesheet">
 <style>
     .buyPlayer {
         margin: auto;
@@ -50,52 +49,53 @@
     li{
     margin: 20px 0;
     }
+
 </style>
 
 <body>
     <div class="container">
             <div class="w3-white w3-xlarge" style="max-width:1200px;">
                     <div class="w3-bar">
-                            <a href="./index.html" class="w3-bar-item w3-button w3-mobile">Home</a>
-                            <a href="./players.html" class="w3-bar-item w3-button w3-mobile">Portfolio</a>
-                            <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
-                            <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
-                            <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
-                            <a href="./ch/index.html" class="w3-bar-item w3-button w3-mobile" style="float:right">中文</a>
+                            <a href="./index.html" class="w3-bar-item w3-button w3-mobile">主页</a>
+                            <a href="./players.html" class="w3-bar-item w3-button w3-mobile">我的球员</a>
+                            <a href="./market.html" class="w3-bar-item w3-button w3-mobile">市场</a>
+                            <a href="./about.html" class="w3-bar-item w3-button w3-mobile">介绍</a>
+                            <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">合约</a>
+                            <a href="../index.html" class="w3-bar-item w3-button w3-mobile" style="float:right">English</a>
                             <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
                     </div>
             </div>
     
             <header class="w3-display-container w3-content w3-wide" style="max-width:1200px;min-width:500px" id="home">
-                <img class="w3-image" src="./img/banner0.png">
+                <img class="w3-image" src="../img/banner0.png">
             </header>
 
 
         <div style="max-width:2000px;margin-top:50px">
                 <div class="row">
                     <div class="column1">
-                            <h2 class="sectionTitle">Avatar Lottery</h2>
+                            <h2 class="sectionTitle">球员彩票</h2>
                             <div class="buyPlayer">
-                                <img class="img-center" id="randomPlayerCard" style="width:90%; height:90%;" src="./img/default card.png">
+                                <img class="img-center" id="randomPlayerCard" style="width:90%; height:90%;" src="../img/default card.png">
                                 <button id="claimButton" type="button" class="btn btn-primary" style="display: block; margin: 20px auto;">
-                                     CLAIM
-                                </button> 
+                                     开始
+                                </button>
                             </div>
                             <h3 style="text-align: center" id="currentPrice"></h3>
                     </div>
                     <div class="column2">
-                            <h2 class="sectionTitle">What is an Avatar?</h2>
+                            <h2 class="sectionTitle">什么是Nebulas Fantasy 球员?</h2>
                             <div class="board" style="margin-right:20px">
                                     <h4>
-                                        <!-- <h2 style="text-align: center" id="currentPrice"></h2> -->
+                                        <br>
                                         <ul>
-                                            <li>An "Avatar" on Nebulas Fantasy is a NRC 721 token on Nebulas Blockchain and an embodiment of soccer players in World Cup 2018</li>
-                                            <li>Avatars are created with a random talent level (1-5 stars)</li>
-                                            <li>Avatars accumulate points according to real world performance and talents</li>
-                                            <li>Spend as low as 0.1 NAS to claim your first Avartar! Lottery price will increase 0.1 NAS every 50 players</li>
-                                            <li>Lottery payment will be deposited into the total prize pool directly</li>
-                                            <li>Desire a specific Avatar? go to the <a href="./market.html"> Avatars Market</a> and pay a premium</li>
-                                            <li>You need a Chrome Extension to load your <a href="https://chrome.google.com/webstore/detail/nebulas-wallet/magbanejlegnbcppjljfhnmfmghialkl">Nebulas Wallet</a> </li>
+                                            <li>每个球员都是一个存在于星云链上的独立的NRC721 token</li>
+                                            <li>每个球员诞生时将被赋予（1-5）的天赋值</li>
+                                            <li>每个球员将根据实际比赛中的表现获得相应积分</li>
+                                            <li>每通过抽奖方式产生50位球员,抽奖的成本将提高0.1NAS</li>
+                                            <li>抽奖的花费会自动进入奖池</li>
+                                            <li>想要一个特定的球员?去 <a href="./market.html"> 球员市场</a> 看看</li>
+                                            <li>你需要一个 <a href="https://chrome.google.com/webstore/detail/nebulas-wallet/magbanejlegnbcppjljfhnmfmghialkl">星云链钱包</a> </li>
                                         </ul>
                                     </h4>
                             </div>
@@ -108,14 +108,14 @@
             <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Nebulas Transaction</h3>
+                    <h3 class="modal-title">Nebulas 合约交互</h3>
                 </div>
                 <div class="modal-body" >
                     <div>
                         
                         <h5 id="modal-status"></h5>
                         <div id="modal-txresult">
-                            <h5> Talent: <span id="talent"  class="stars-container stars-5">★★★★★</span></h5>
+                            <h5> 天赋: <span id="talent"  class="stars-container stars-5">★★★★★</span></h5>
                         </div>
                         <div class="loader" style="display:hide;margin:auto"></div>
                         
@@ -130,40 +130,30 @@
 
         <!-- About Section -->
         <div  style="max-width:2000px;margin-top:50px">
-            <h2 class="sectionTitle">How To Play</h2>
+            <h2 class="sectionTitle">怎么玩Nebulas Fantasy</h2>
             <div class="row">
                 <div class="col-md-4">
                     
-                    <img class="img-center" src="./img/home/create.png">
+                    <img class="img-center" src="../img/home/create.png">
                     <br/>
-                    <h3 class="howtoplay">Claim Your Avatar</h4>
+                    <h3 class="howtoplay">获得球员</h4>
                 </div>
                 <div class="col-md-4">
                     
-                    <img class="img-center" src="./img/home/game.png">
+                    <img class="img-center" src="../img/home/game.png">
                     <br/>
-                    <h3 class="howtoplay">Accumulate Points</h4>
+                    <h3 class="howtoplay">获得积分</h4>
                 </div>
                 <div class="col-md-4">
-                    <img class="img-center" src="./img/home/win.png">
+                    <img class="img-center" src="../img/home/win.png">
                     <br/>
-                    <h3 class="howtoplay">Watch and Win</h4>
+                    <h3 class="howtoplay">获得奖励</h4>
                 </div>
             </div>
         </div>
 
 
-        <!-- <br/>
-        <div  style="max-width:2000px;margin-top:50px">
-            <h2 class="sectionTitle">What is Nebulas Fantasy?</h2>
-            <br>
-            <ul>
-                    <li><h4> Nebulas Fantasy is a decentralized application that operates on the Nebulas Network.</h4></li>                  
-                    <li><h4> We setup a fantasy platform for soccer fans to enjoy World Cup 2018 in a unique way </h4></li>
-                    <li><h4> Soccer fans can own soccer players on Nebulas blockchain, gain points according to the players’ performance in the real World Cup matches, and win NAS as prize!</h4></li>
-                    <li><h4> see <a href="./about.html">ABOUT</a> page for more information</h4></li>
-            </ul> 
-        </div> -->
+
 
     <!-- Footer -->
     <footer class="w3-container w3-padding-64 w3-center w3-large"> 
@@ -173,14 +163,13 @@
 
         <!-- End page content -->
     </div>
-    <script src=./lib/jquery-3.3.1.min.js></script>
-    <script src="bootstrap.min.js"></script>
+    <script src=../../lib/jquery-3.3.1.min.js></script>
+    <script src= "../bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src=../lib/nebpay.js></script>
-    <script src=../lib/nebulas.js></script>
-    <script src='../lib/bignumber.min.js'></script>
+    <script src=../../lib/nebpay.js></script>
+    <script src=../../lib/nebulas.js></script>
+    <script src=../address.js></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src='address.js'></script>
     <script>
 
         var nebulas = require("nebulas"),
@@ -252,7 +241,7 @@
                 .then(function (resp){
                     console.log(resp)
                     // $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
-                    $("#currentPrice").show().text("current price: "+ String(parseFloat(JSON.parse(resp.result)))+ " NAS");
+                    $("#currentPrice").show().text("当前价格: "+ String(parseFloat(JSON.parse(resp.result)))+ " NAS");
                     }   
                 )
             }
@@ -324,7 +313,7 @@
                 .then(function (receipt) {
                     spinOn();
                     var playerCard = $('#randomPlayerCard');
-                    playerCard.attr('src', "./img/default card.png");
+                    playerCard.attr('src', "../img/default card.png");
                     console.log("receipt is:" + JSON.stringify(receipt))
                     setQuery = setInterval(function () {
                         setTxQuery();
@@ -347,8 +336,8 @@
                         clearInterval(setQuery);
                         spinOff();
 
-                        $.getJSON('./players.json', function (data) {
-                            $("#modal-status").show().text("Congratulations! You just claimed " + data[result.playerId].name)
+                        $.getJSON('../players.json', function (data) {
+                            $("#modal-status").show().text("你刚刚成功获得了 " + data[result.playerId].name)
                             $("#talent").attr('class',showStars(result.talent));
                             $("#modal-txresult").show();
                         }); 
@@ -356,7 +345,7 @@
 
                     if (receipt.status == 0) {
                         console.log("tx fail")
-                        $("#modal-status").show().text("Sorry, your transaction failed")
+                        $("#modal-status").show().text("对不起, 和智能合约的交互失败了")
                         clearInterval(setQuery);
                         spinOff();
                     }
@@ -370,16 +359,16 @@
         function loadPlayerPicsById(id) {
             // Load pets.
             console.log(id);
-            $.getJSON('./players.json', function (data) {
+            $.getJSON('../players.json', function (data) {
                 var playerCard = $('#randomPlayerCard');
-                playerCard.attr('src', data[id].picture);
+                playerCard.attr('src', "../"+data[id].picture);
             });
             
         }
 
         function spinOn() {
             $("#myModal").modal();
-            $("#modal-status").show().text("Please wait for your transaction to be completed")
+            $("#modal-status").show().text("与智能合约交互中...请等待")
             $(".loader").css("display","block");
             $("#confirm").hide();
             $("#modal-txresult").hide();

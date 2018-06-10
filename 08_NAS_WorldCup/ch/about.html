@@ -17,6 +17,15 @@
         font-weight: bold;
         padding: 20px;
         } 
+
+            ul{
+        font-size:16pt;
+    }
+        
+    .content{
+        font-size:16pt;
+        padding: 20px; 
+    }
     
 </style>
 <body>
@@ -25,12 +34,12 @@
     <div class="container">
         <div class="w3-white w3-xlarge" style="max-width:1200px;">
                 <div class="w3-bar">
-                        <a href="../index.html" class="w3-bar-item w3-button w3-mobile">主页</a>
-                        <a href="../players.html" class="w3-bar-item w3-button w3-mobile">我的球员</a>
-                        <a href="../market.html" class="w3-bar-item w3-button w3-mobile">市场</a>
-                        <a href="../about.html" class="w3-bar-item w3-button w3-mobile">介绍</a>
+                        <a href="./index.html" class="w3-bar-item w3-button w3-mobile">主页</a>
+                        <a href="./players.html" class="w3-bar-item w3-button w3-mobile">我的球员</a>
+                        <a href="./market.html" class="w3-bar-item w3-button w3-mobile">市场</a>
+                        <a href="./about.html" class="w3-bar-item w3-button w3-mobile">介绍</a>
                         <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">合约</a>
-                        <a href="./about.html" class="w3-bar-item w3-button w3-mobile" style="float:right">English</a>
+                        <a href="../about.html" class="w3-bar-item w3-button w3-mobile" style="float:right">English</a>
                         <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
                 </div>
         </div>
@@ -42,48 +51,58 @@
 
 
         <div class=class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px;font-family:Microsoft JhengHei">
-            <h2 class="sectionTitle"> Nebulas Fantasy 是什么</h2>
-            <ul>
-                <li><h3> Nebulas Fantasy 是在星云链上的去中心化应用(dAPP）</h3></li>                  
-                <li><h3> 我们在星云链上搭建了一个2018世界杯范特西平台 </h3></li>
-                <li><h3> 球迷能够拥有在星云链上的世界杯球星，并根据球星在实际比赛中的表现而获得积分，最终分享星云大奖!</h3></li>
-            </ul>
-           
+            <h2 class="sectionTitle"> Nebulas Fantasy 是什么</h2>   
+            <div class="content">
+                 <p>Nebulas Fantasy 是在星云链上的去中心化应用(dAPP).我们在星云链上搭建了一个2018世界杯范特西平台。球迷能够拥有在星云链上的世界杯球星，并根据球星在实际比赛中的表现而获得积分，最终分享星云大奖! </p>
+            </div>
     
             <br>
             <h2 class="sectionTitle"> Nebulas Fantasy 怎么玩</h2>
             <ul>
-                <li><h3>第一步：获得球员. 你可以通过花费一定的NAS获得Nebulas Fantasy上的球员。这一笔花费会自动进入最终奖池.</h3></li>
-                <li><h3>第二步：获得积分. 每个球员将根据实际比赛中的表现获得相应积分(比如上场时间，赢球，进球).</h3></li>
-                <li><h3>第三步:获得奖励. 在世界杯结束以后，积分最高的20位球员的拥有者将分享奖池.</h3></li>
-                <li><h3>另外，拥有的球员可以在星云链上自由交易(trade)和发送(transfer)</h3></li>
+                <li>第一步: 获得球员. 你可以通过花费一定的NAS获得Nebulas Fantasy上的球员。这一笔花费会自动进入奖池.</li>
+                <li>第二步: 获得积分. 每个球员将根据实际比赛中的表现获得相应积分(比如上场时间，赢球，进球).</li>
+                <li>第三步: 获得奖励. 在世界杯结束以后，积分最高的50位球员的拥有者将分享奖池。</li>
+                <li>另外，拥有的球员可以在星云链上自由交易(trade)和发送(transfer)</li>
             </ul>
 
             <br>
             <h2 class="sectionTitle"> Nebulas Fantasy 球员</h2>
-            <ul>
-                <li><h3> 每个球员都是一个存在于星云链上的独立的NRC721 token。就像普通的token一样, 球员拥有者可以在星云链上查看自己球员的记录。球员可以在星云链上自由转移.</h3></li>
-                <li><h3> 我们提供了两种办法来获得球员。你可以花较少的NAS来参与一次随机球员抽奖，也可以花费较多的NAS来选择你喜欢的球员。 </h3></li>   
-                <li><h3> 每通过抽奖方式产生50位球员,抽奖的成本将提高0.1NAS </h3></li>  
-                <li><h3> 每通过市场产生1位球员,该球员的出售价格将上升0.02NAS </h3></li>    
-                <li><h3> 可以在世界杯结束前任意时刻获得球员。不过球员无法得到在其被创造之前的积分</h3></li>   
-                <li><h3> 每个球员诞生时将被赋予（1-5）的天赋值.</h3></li>
-                <li><h3> 每个球员将获得天赋x出场时间的积分 </h3></li>
-                <li><h3> 每个球员将额外获得100分的赢球奖励 </h3></li>
-                <li><h3> 每个球员将额外获得300分的赢球奖励 </h3></li>
-                <li><h3> 最终，球员的得分 = 进球数×300+赢球数×100+出场时间×天赋 </h3></li>
-            </ul>
+
+            <div class="content">
+                <p> 每个球员都是一个存在于星云链上的独立的NRC721 token。就像普通的token一样, 球员拥有者可以在星云链上查看自己球员的记录。球员可以在星云链上自由转移 </p>
+                <p> 我们提供了两种办法来获得球员: 
+                    <ul>
+                        <li> 花较少的NAS来参与一次随机球员抽奖 <a href="./index.html"> 参与抽奖</a> </li>
+                        <li> 花费较多的NAS来选择你喜欢的球员 <a href="./market.html"> 球员市场</a></li>
+                    </ul>
+                <p> 关于球员积分的规则在智能合约上锁定:</p>
+                <ul>
+                    <li> 可以在世界杯结束前任意时刻获得球员。不过球员无法得到在其被创造之前的积分 </li>   
+                    <li> 每个球员诞生时将被赋予（1-5）的天赋值</li>
+                    <li> 每通过抽奖方式产生50位球员,抽奖的成本将提高0.1NAS</li>
+                    <li> 每通过市场产生1位球员,该球员的出售价格将上升0.02NAS </li>
+                    <li> 每个球员将获得天赋×出场时间的积分 </li>
+                    <li> 每个球员将额外获得100分的赢球奖励 </li>
+                    <li> 每个球员将额外获得300分的赢球奖励 </li>
+                    <li> 最终，球员的得分 = 进球数×300+赢球数×100+出场时间×天赋 </li>
+                </ul>
+            </div>
 
             <br>
             <h2 class="sectionTitle"> 奖励规则</h2>
-            <ul>
-                <li><h3> 在世界杯结束以后，根据球员的积分进行分奖 </h3></li>
-                <li><h3> 总积分的前三名分别获得25%,15% 和10%的奖池 </h3></li>   
-                <li><h3> 第4-10名平分15%奖池</h3></li>
-                <li><h3> 第11-30名平分15%奖池</h3></li>
-                <li><h3> 第30-50名平分剩余奖池</h3></li>
-                <li><h3> Nebulas Fantasy 团队将获得10%的奖池作为管理费用.</h3></li>
-            </ul>
+            <div class="content">
+                <p> 在世界杯结束以后，合约会自动按照球员的积分分享奖池 </p>
+                <p> 以下分享规则制定在智能合约上</p>
+                <ul>
+                        
+                        <li> 总积分的前三名分别获得25%,15% 和10%的奖池: </li>   
+                        <li> 第4-10名平分15%奖池</li>
+                        <li> 第11-30名平分15%奖池</li>
+                        <li> 第30-50名平分剩余奖池</li>
+                        <li> Nebulas Fantasy 团队将获得10%的奖池作为管理费用</li>
+                </ul>
+        
+            </div>
         </div>
 
 
@@ -98,12 +117,13 @@
 
 <!-- End page content -->
 </div>
-<script src=../lib/jquery-3.3.1.min.js></script>
+<script src=../../lib/jquery-3.3.1.min.js></script>
 <script src= "../bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src=../lib/nebpay.js></script>
-<script src=../lib/nebulas.js></script>
-<script src=../address.js></script>
+<script src=../../lib/nebpay.js></script>
+<script src=../../lib/nebulas.js></script>
+<script src='../address.js'></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 <script>
         var nebulas = require("nebulas"),

@@ -308,7 +308,7 @@
                     neb.api.call(callJSONs).then(function (resp) {
                         playerInfo = JSON.parse(resp.result);   
                         console.log(playerInfo);     
-                        $('#here_table').empty()
+                        $("#tbody").empty();
                         for (var i=0;i<playerInfo.length;i++){
                             $('#here_table').append('<tr><th scope="row">'+i+'</th>'+'<td>'+database[playerInfo[i].id].name +'</td>'
                                 +'<td>'+getPoints(playerInfo[i]) +'</td>'

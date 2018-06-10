@@ -1,33 +1,5 @@
 'use strict';
 
-var Operator = function (obj) {
-    this.operator = {};
-    this.parse(obj);
-};
-
-Operator.prototype = {
-    toString: function () {
-        return JSON.stringify(this.operator);
-    },
-
-    parse: function (obj) {
-        if (typeof obj != "undefined") {
-            var data = JSON.parse(obj);
-            for (var key in data) {
-                this.operator[key] = data[key];
-            }
-        }
-    },
-
-    get: function (key) {
-        return this.operator[key];
-    },
-
-    set: function (key, value) {
-        this.operator[key] = value;
-    }
-};
-
 var Players = function () {
     LocalContractStorage.defineProperties(this, {
         totalTokens: null, // total token numbers that have been created
@@ -60,14 +32,6 @@ var Players = function () {
         
         "ownedTokensCount": null,
         "tokenApprovals": null,
-        "operatorApprovals": {
-            parse: function (value) {
-                return new Operator(value);
-            },
-            stringify: function (o) {
-                return o.toString();
-            }
-        },
         // a single player properties
         "playerId":null,
         "playerWin":null,
@@ -98,6 +62,7 @@ var Players = function () {
         "auctionValid":null,
         "auctionBuyer":null,
         // store the data to find 
+        "playerInAuction":null,
         
     });
 };
@@ -189,6 +154,7 @@ Players.prototype = {
         this.playerTime.set(tokenId,0);
         var talent = this._generateNewPlayerTalent();
         this.playerTalent.set(tokenId,talent);
+        this.playerInAuction.set(tokenId,false);
     },
 
 
@@ -380,7 +346,7 @@ Players.prototype = {
     
 //  ================== Game manager-only methods ======================
     increasePlayersNumber: function(addition){
-        if(Blockchain.transaction.from!==owner){
+        if(Blockchain.transaction.from!==this.owner){
             throw new Error("you are not game owner")
         }
         this.totalPlayers = this.totalPlayers + addition;
@@ -431,6 +397,10 @@ Players.prototype = {
             throw new Error("not the token owner")
         }
 
+        if(this.playerInAuction.get(tokenId)==true){
+            throw new Error("this player is already in Auction");
+        }
+
         var AuctionPrice = new BigNumber(price);
 
         var auctionId = this.totalAuctions;
@@ -440,6 +410,7 @@ Players.prototype = {
         this.auctionPrice.set(auctionId,AuctionPrice);
         this.auctionValid.set(auctionId,true);
 
+        this.playerInAuction.set(tokenId,true);
         this.totalAuctions = this.totalAuctions+1;
     },
 
@@ -454,6 +425,9 @@ Players.prototype = {
             throw new Error("not the auction seller")
         }
         this.auctionValid.set(auctionId,false);
+
+        var id = this.auctionToken.get(auctionId);
+        this.playerInAuction.set(id,false);
     },
 
     buyAuction:function(auctionId){
@@ -465,16 +439,19 @@ Players.prototype = {
         var value = Blockchain.transaction.value;
         var sellerPrice = this.auctionPrice.get(auctionId);
 
-        if (value.div(1e18).t(sellerPrice)){
+        if (value.div(1e18).lt(sellerPrice)){
             throw new Error("not enough NAS");
         }
 
         var seller = this.auctionSeller.get(auctionId);
         var tokenId = this.auctionToken.get(auctionId);
-        _transferFrom(seller, buyer, tokenId);
+        this._transferFrom(seller, buyer, tokenId);
 
         this.auctionBuyer.set(auctionId,buyer);
         this.auctionValid.set(auctionId,false);
+
+        var id = this.auctionToken.get(auctionId);
+        this.playerInAuction.set(id,false);
     },
 
     //getter
@@ -518,16 +495,31 @@ Players.prototype = {
         return result;
     },
 
+    getValidAuctionByOwner:function(address){
+        var totalAuctionNumber = this.totalAuctions;
+        var result = [];
+        var counter = 0;
+        for(var i=0;i<totalAuctionNumber;i++){
+            if((this.auctionValid.get(i)==true)&&(this.auctionSeller.get(i)==address)){
+                result[counter]=i;
+                counter++;
+            }
+        }
+        return result;
+    },
+
 
 
 
 //  ================== Prize Pool Management========================
-    withdraw: function() { // need to comment for the final versioin
+    withdraw: function(amount) { // just in case fund get stucked
         var from = Blockchain.transaction.from;
         if (from !== this.owner){
-            throw new Error("your are not game owner")
+            throw new Error("your are not the game owner")
         }
-        Blockchain.transfer(from,this.prizePool)
+        var amountNumber = new BigNumber(amount)
+
+        Blockchain.transfer(from,amountNumber.mul(1e18))
     },
 
     isClaimable: function(status) {
@@ -549,9 +541,10 @@ Players.prototype = {
         var winners = this.sortTokensByPoints();
 
         var amount=[];
-        amount[0]= pool.mul(0.2); // take 25%
+        amount[0]= pool.mul(0.25); // take 25%
         amount[1]= pool.mul(0.15); // take 15%
         amount[2]= pool.mul(0.1);// take 10%
+        
         
         // remaining 15%
         for (var i=3;i<10;i++){
@@ -608,7 +601,7 @@ Players.prototype = {
             throw new Error("invalid address in approve.");
         }
         // msg.sender == owner || isApprovedForAll(owner, msg.sender)
-        if (owner == from || this.isApprovedForAll(owner, from)) {
+        if (owner == from) {
             this.tokenApprovals.set(_tokenId, _to);
             this.approveEvent(true, owner, _to, _tokenId);
         } else {
@@ -620,26 +613,6 @@ Players.prototype = {
         return this.tokenApprovals.get(_tokenId);
     },
 
-    setApprovalForAll: function(_to, _approved) {
-        var from = Blockchain.transaction.from;
-        if (from == _to) {
-            throw new Error("invalid address in setApprovalForAll.");
-        }
-        var operator = this.operatorApprovals.get(from) || new Operator();
-        operator.set(_to, _approved);
-        this.operatorApprovals.set(from, operator);
-    },
-
-    isApprovedForAll: function(_owner, _operator) {
-        var operator = this.operatorApprovals.get(_owner);
-        if (operator != null) {
-            if (operator.get(_operator) === "true") {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    },
 
     isApprovedOrOwner: function(_spender, _tokenId) {
         var owner = this.ownerOf(_tokenId);
@@ -723,7 +696,7 @@ Players.prototype = {
                 tokenId: _tokenId
             }
         });
-    }
+    },
 
 };
 

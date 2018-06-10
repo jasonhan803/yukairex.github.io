@@ -1,2 +1,2 @@
-const contractAddress = "n1f2AouN2cqwXpBUTNTja1ciH3yT126rbem";
+const contractAddress = "n1thkzf3FhSbXbqpQ7X3jUZiMTzoW8VDoTn";
 const mainnet = false;

@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/star.css" rel="stylesheet">
-<link href="css/NF.css" rel="stylesheet">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/star.css" rel="stylesheet">
+<link href="../css/NF.css" rel="stylesheet">
 <style>
         img {
             display:block;
@@ -19,19 +19,19 @@
     <div class="container">
         <div class="w3-white w3-xlarge" style="max-width:1200px;">
                 <div class="w3-bar">
-                        <a href="./index.html" class="w3-bar-item w3-button w3-mobile">Home</a>
-                        <a href="./players.html" class="w3-bar-item w3-button w3-mobile">Portfolio</a>
-                        <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
-                        <a href="./about.html"  class="w3-bar-item w3-button w3-mobile">About</a>
-                        <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
-                        <a href="./ch/players.html" class="w3-bar-item w3-button w3-mobile" style="float:right">中文</a>
+                        <a href="./index.html" class="w3-bar-item w3-button w3-mobile">主页</a>
+                        <a href="./players.html" class="w3-bar-item w3-button w3-mobile">我的球员</a>
+                        <a href="./market.html" class="w3-bar-item w3-button w3-mobile">市场</a>
+                        <a href="./about.html"  class="w3-bar-item w3-button w3-mobile">介绍</a>
+                        <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">合约</a>
+                        <a href="../players.html" class="w3-bar-item w3-button w3-mobile" style="float:right">English</a>
                         <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
                 </div>
         </div>
 
         <header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
 
-            <img class="w3-image" src="./img/banner0.png">
+            <img class="w3-image" src="../img/banner0.png">
             <!-- <div class="w3-display-bottomleft w3-padding-large w3-opacity">
                 <h1 class="w3-xxlarge">Le Catering</h1>
             </div> -->
@@ -84,12 +84,12 @@
                 <div class="modal-content">
                     <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h3 class="modal-title">Nebulas Transaction</h3>
+                    <h3 class="modal-title">Nebulas 合约交互</h3>
                     </div>
                     <div class="modal-body" >
                         <div id="modal-input">
-                            <h4>type in the address you'd like to transfer your player to</h4>
-                            <input class="form-control" type="text" id="toAddress" placeholder="destination NAS address">
+                            <h4>输入你要发送球员的目的地址</h4>
+                            <input class="form-control" type="text" id="toAddress" placeholder="目标NAS地址">
                         </div>
                         <div>
                                 <h4 id="modal-status"></h4>
@@ -110,12 +110,13 @@
         </footer>
 <!-- End page content -->
 </div>
-<script src=./lib/jquery-3.3.1.min.js></script>
-<script src= "bootstrap.min.js"></script>
+<script src=../../lib/jquery-3.3.1.min.js></script>
+<script src= "../bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src=../lib/nebpay.js></script>
-<script src=../lib/nebulas.js></script>
-<script src='address.js'></script>
+<script src=../../lib/nebpay.js></script>
+<script src=../../lib/nebulas.js></script>
+<script src='../address.js'></script>
+
 
 <script>
         var nebulas = require("nebulas"),
@@ -206,7 +207,7 @@
                     function (resp) {
                         tokenIds = JSON.parse(resp.result);
                         console.log(tokenIds);
-                        $("#title").show().text(tokenIds.length + " avatar(s) found in your portfolio");
+                        $("#title").show().text("找到了您拥有的"+tokenIds.length +"球员");
                         if (tokenIds.length==0){
                             $("#noplayer").show();
                         }
@@ -242,13 +243,13 @@
             var playersRow = $('#playersRow');
             var playersTemplate = $('#playersTemplate');                    
             playersRow.empty();
-            $.getJSON('./players.json', function(data) {
+            $.getJSON('../players.json', function(data) {
                     for (var i=0;i<info.length;i++){
                         console.log(i)
                         console.log("player name: " +data[(info[i].id)].name);
                         console.log("player talent: " +info[i].talent);
                         playersTemplate.find('#name').text(data[(info[i].id)].name);
-                        playersTemplate.find('img').attr('src', data[(info[i].id)].picture);
+                        playersTemplate.find('img').attr('src', "../"+data[(info[i].id)].picture);
                         playersTemplate.find('#talent').attr('class',showStars(info[i].talent))
                        // $('#talent').attr('class',showStars(info[i].talent))
                        playersTemplate.find('#goal').text(info[i].goal);
@@ -322,13 +323,13 @@
                             clearInterval(setQuery);
                             init();
                             spinOff();
-                            $("#modal-status").text('Congratulations! You just made a successful transfer!')
+                            $("#modal-status").text('你成功地把球员转移到了目的地址!')
                         }
                         if (receipt.status ==0){
                             console.log("tx fail")
                             spinOff();
                             clearInterval(setQuery);
-                            $("#modal-status").text('Oops, something goes wrong. Transaction failed.')
+                            $("#modal-status").text("对不起, 和智能合约的交互失败了")
                         }
                     })
                     .catch(function (err) {
@@ -370,7 +371,7 @@
         function modalOn(){
             console.log('in modal On')
             $("#modal-status").hide();
-            $("#toAddress").attr("placeholder","NAS address");
+            $("#toAddress").attr("placeholder","目的NAS地址");
             $("#modal-input").show();
             $("#confirm").show();
         }
@@ -378,7 +379,7 @@
         function spinOn() {
             $(".loader").css("display","block");
             $("#modal-input").hide();
-            $("#modal-status").show().text('Please wait for your transaction to be completed');
+            $("#modal-status").show().text("与智能合约交互中...请等待");
             $("#confirm").hide();
            
             // $("#claimButton").hide();

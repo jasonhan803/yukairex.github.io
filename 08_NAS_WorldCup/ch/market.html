@@ -6,9 +6,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/star.css" rel="stylesheet">
-<link href="css/NF.css" rel="stylesheet">
+<link href="../css/bootstrap.min.css" rel="stylesheet">
+<link href="../css/star.css" rel="stylesheet">
+<link href="../css/NF.css" rel="stylesheet">
 <style>
         img {
             display:block;
@@ -23,18 +23,18 @@
     <div class="container">
         <div class="w3-white w3-xlarge" style="max-width:1200px;">
                 <div class="w3-bar">
-                        <a href="./index.html" class="w3-bar-item w3-button w3-mobile">Home</a>
-                        <a href="./players.html" class="w3-bar-item w3-button w3-mobile">Portfolio</a>
-                        <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
-                        <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
-                        <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
-                        <a href="./ch/market.html" class="w3-bar-item w3-button w3-mobile" style="float:right">中文</a>
+                        <a href="./index.html" class="w3-bar-item w3-button w3-mobile">主页</a>
+                        <a href="./players.html" class="w3-bar-item w3-button w3-mobile">我的球员</a>
+                        <a href="./market.html" class="w3-bar-item w3-button w3-mobile">市场</a>
+                        <a href="./about.html" class="w3-bar-item w3-button w3-mobile">介绍</a>
+                        <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">合约</a>
+                        <a href="../market.html" class="w3-bar-item w3-button w3-mobile" style="float:right">English</a>
                         <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
                 </div>
         </div>
 
         <header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:500px" id="home">
-            <img class="w3-image" src="./img/banner0.png">
+            <img class="w3-image" src="../img/banner0.png">
             <!-- <div class="w3-display-bottomleft w3-padding-large w3-opacity">
                 <h1 class="w3-xxlarge">Le Catering</h1>
             </div> -->
@@ -43,7 +43,7 @@
 
 
         <div class=class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
-            <h2 class="sectionTitle">Avatar Open Market</h2>
+            <h2 class="sectionTitle">公开球员市场</h2>
 
             <div id="playersRow" class="row">
             </div>
@@ -56,10 +56,10 @@
                         <h3 id="name"></h3>
                     </div>
                     <div class="panel-body">
-                        <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;margin-bottom: 10px" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
+                        <img alt="140x140" data-src="../holder.js/140x140" class="img-rounded img-center" style="width: 100%;margin-bottom: 10px" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
                         <br>
                         <span style="text-align:center;margin:auto" id="price">price</span>
-                        <button class="btn btn-default" type="button" style="display:block;margin:auto">CLAIM ME</button>
+                        <button class="btn btn-default" type="button" style="display:block;margin:auto">购买</button>
                     </div>
                     </div>
                 </div>
@@ -70,14 +70,14 @@
                 <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3 class="modal-title">Nebulas Transaction</h3>
+                        <h3 class="modal-title">Nebulas 合约交互</h3>
                     </div>
                     <div class="modal-body" >
                         <div>
                             
                             <h5 id="modal-status"></h5>
                             <div id="modal-txresult">
-                                <h5> Talent: <span id="talent"  class="stars-container stars-5">★★★★★</span></h5>
+                                <h5> 天赋: <span id="talent"  class="stars-container stars-5">★★★★★</span></h5>
                             </div>
                             <div class="loader" style="display:hide;margin:auto"></div>
                             
@@ -110,12 +110,12 @@
 
 <!-- End page content -->
 </div>
-<script src=./lib/jquery-3.3.1.min.js></script>
-<script src= "bootstrap.min.js"></script>
+<script src=../../lib/jquery-3.3.1.min.js></script>
+<script src= "../bootstrap.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src=../lib/nebpay.js></script>
-<script src=../lib/nebulas.js></script>
-<script src='address.js'></script>
+<script src=../../lib/nebpay.js></script>
+<script src=../../lib/nebulas.js></script>
+<script src='../address.js'></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script>
         var nebulas = require("nebulas"),
@@ -222,8 +222,8 @@
                             console.log(result.playerId)
                             clearInterval(setQuery);
                             spinOff();
-                            $.getJSON('./players.json', function (data) {
-                                $("#modal-status").show().text("Congratulations! You just claimed " + data[result.playerId].name)
+                            $.getJSON('../players.json', function (data) {
+                                $("#modal-status").show().text("你刚刚成功获得了 " + data[result.playerId].name)
                                 $("#talent").attr('class',showStars(result.talent))
                                 $("#modal-txresult").show();
                             });
@@ -237,7 +237,7 @@
                             console.log("tx fail")
                             clearInterval(setQuery);
                             spinOff();
-                            $("#modal-status").show().text("Sorry, your transaction failed")
+                            $("#modal-status").show().text("对不起, 和智能合约的交互失败了")
                         }
                         
                     })
@@ -262,14 +262,14 @@
         var temp = [];
         var priceLocation;
         function loadAllPlayers(){
-            $.getJSON('./players.json', function(data) {
+            $.getJSON('../players.json', function(data) {
                     var playersRow = $('#playersRow');
                     var playersTemplate = $('#playersTemplate');
                     playersRow.empty();
                     totalPlayer = data.length;
                     for (var i = 0; i < data.length; i ++) {
                         playersTemplate.find('#name').text(data[i].name);
-                        playersTemplate.find('img').attr('src', data[i].picture);
+                        playersTemplate.find('img').attr('src', "../"+data[i].picture);
                        playersTemplate.find('button').attr("id","Button"+i);
                        playersTemplate.find('#price').text("price: "+playerPrice[i]+" NAS");
                         playersRow.append(playersTemplate.html());
@@ -342,7 +342,7 @@
 
          function spinOn() {
             $("#myModal").modal();
-            $("#modal-status").show().text("Please wait for your transaction to be completed")
+            $("#modal-status").show().text("与智能合约交互中...请等待")
             $(".loader").css("display","block");
             $("#confirm").hide();
             $("#modal-txresult").hide();
