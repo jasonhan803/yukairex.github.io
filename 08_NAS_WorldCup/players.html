@@ -35,10 +35,11 @@
                 <h1 class="w3-xxlarge">Le Catering</h1>
             </div> -->
             
-            <div class="form-group" align="center" style="display:flex; float:right;width: 500px; margin:30px 30px; margin-left:auto; margin-right:auto">
+            <div class="form-group" style="display:inline-flex; float:right;width: 500px; margin:30px 30px; margin-left:auto; margin-right:auto">
+                    
                     <input class="form-control" type="text" id="address" placeholder="your NAS address">
                     <br>
-                    <button id="check" class="btn btn-primary" onClick="check()" style="display: inline-block;">check</button>
+                    <button id="check" class="btn btn-primary" onClick="check()" style="display: inline-block;">CHECK</button>
                     <br> 
             </div>
            
@@ -47,8 +48,8 @@
 
 
         <div class=class="w3-main w3-content w3-padding" style="max-width:1200px;margin-top:100px">
-                <div style="display:block; margin:20px auto;text-align: center"> <h3 id="title"></h3> </div>
-                <div style="display:block; margin:20px auto;text-align: center"> <h4 id="noplayer" style="display:none">Check your address again, or claim a player first</h4> </div>
+                <div> <h3 id="title"></h3> </div>
+                <div> <h4 id="noplayer" style="display:none">check your address again, or claim a avatar first</h4> </div>
                 <div id="playersRow" class="row">
                     <!-- PETS LOAD HERE -->
             </div>
@@ -102,7 +103,7 @@
                 </div>
         </div>
 
-        <footer class="w3-container w3-padding-64 w3-light-grey w3-center w3-large"> 
+        <footer class="w3-container w3-padding-64 w3-center w3-large"> 
             <p>Powered by Nebulas Fantasy Team</p>
             <p>nebulas.fantasy@gmail.com</p>
         </footer>
@@ -204,7 +205,7 @@
                     function (resp) {
                         tokenIds = JSON.parse(resp.result);
                         console.log(tokenIds);
-                        $("#title").show().text("you have " + tokenIds.length + " players");
+                        $("#title").show().text(tokenIds.length + " avatar(s) found in your portfolio");
                         if (tokenIds.length==0){
                             $("#noplayer").show();
                         }

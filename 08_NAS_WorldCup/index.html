@@ -21,6 +21,7 @@
     }
     .howtoplay {
         font-weight: bold;
+        text-align: center;
     }
     .sectionTitle {
         font-weight: bold;
@@ -41,56 +42,55 @@
     }
 
     li{
-    margin: 10px 0;
+    margin: 20px 0;
+    }
+
+    .sticky{
+        position: fixed;
     }
 </style>
 
 <body>
     <div class="container">
-        <div class="w3-white w3-xlarge" style="max-width:1200px;">
-            <div class="w3-bar">
-                <a href="./index.html" class="w3-bar-item w3-button w3-mobile">Home</a>
-                <a href="./players.html" class="w3-bar-item w3-button w3-mobile">Portfolio</a>
-                <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
-                <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
-                <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
-                <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
+            <div class="w3-white w3-xlarge" style="max-width:1200px;">
+                    <div class="w3-bar">
+                            <a href="./index.html" class="w3-bar-item w3-button w3-mobile">Home</a>
+                            <a href="./players.html" class="w3-bar-item w3-button w3-mobile">Portfolio</a>
+                            <a href="./market.html" class="w3-bar-item w3-button w3-mobile">Market</a>
+                            <a href="./about.html" class="w3-bar-item w3-button w3-mobile">About</a>
+                            <a href="" id="contractAddress" class="w3-bar-item w3-button w3-mobile">Contract</a>
+                            <span class="w3-bar-item w3-mobile" id="pool" style="float:right"></span>
+                    </div>
             </div>
-        </div>
-
-        <header class="w3-display-container w3-content w3-wide" style="max-width:2000px;min-width:500px" id="home">
-            <img class="w3-image" src="./img/banner0.png">
-        </header>
+    
+            <header class="w3-display-container w3-content w3-wide" style="max-width:1200px;min-width:500px" id="home">
+                <img class="w3-image" src="./img/banner0.png">
+            </header>
 
 
         <div style="max-width:2000px;margin-top:50px">
-            <h2 class="sectionTitle">Player Lottery</h2>
                 <div class="row">
                     <div class="column">
+                            <h2 class="sectionTitle">Avatar Lottery</h2>
                             <div class="buyPlayer">
-                               
-                                    <img class="img-center" id="randomPlayerCard" style="width:100%; height:100%;" src="./img/default card.png">
-                                    <button id="claimButton" type="button" class="btn btn-primary" style="display: block; margin: 20px auto;">
-                                        <h4> CLAIM</h4>
-                                    </button>
-                                    <!-- <div class="loader"></div> --> 
+                                <img class="img-center" id="randomPlayerCard" style="width:80%; height:80%;" src="./img/default card.png">
+                                <button id="claimButton" type="button" class="btn btn-primary" style="display: block; margin: 20px auto;">
+                                    <h4> CLAIM</h4>
+                                </button>
                             </div>
                     </div>
                     <div class="column">
+                            <h2 class="sectionTitle">What is a Avatar?</h2>
                             <div class="board">
                                     <h4>
-                                        <h2 style="text-align: center">Claim Your Player!</h2>
-                                        <h2 style="text-align: center" id="currentPrice"></h2>
-                                        <br>
+                                        <!-- <h2 style="text-align: center" id="currentPrice"></h2> -->
                                         <ul>
-                                            <li>Spend as low as 0.1 NAS to claim a random player (NRC721 token)</li>
-                                            <li>Your player will be created with a random talent (1-5 stars)</li>
-                                            <li>Your payment will be deposited into the total prize pool directly</li>
-                                            <li>Lottery price will increase 0.1NAS every 50 players </li>
-                                            <li>Player accumulates points based on real world performance</li>
-                                            <li>Free transfer your player anytime</li>
-                                            <li>Reward will be distributed according to the player points rank (after World Cup ends)</li>
-                                            <li>Desire a specific player? go to <a href="./market.html">open market</a> and pay a premium</li>
+                                            <li>An "Avatar" on Nebulas Fantasy is a NRC 721 token on Nebulas Blockchain and an embodiment of soccer players in World Cup 2018</li>
+                                            <li>Avatars are created with a random talent (1-5 stars)</li>
+                                            <li>Avatars accumulate points according to real world performance and talents</li>
+                                            <li>Spend as low as 0.1 NAS to claim your first Avartar! Lottery price will increase 0.1 NAS every 50 players</li>
+                                            <li>Lottery payment will be deposited into the total prize pool directly</li>
+                                            <li>Desire a specific Avatar? go to the <a href="./market.html"> Avatars Market</a> and pay a premium</li>
                                             <li>You need a Chrome Extension to load your <a href="https://chrome.google.com/webstore/detail/nebulas-wallet/magbanejlegnbcppjljfhnmfmghialkl">Nebulas Wallet</a> </li>
                                         </ul>
                                     </h4>
@@ -132,37 +132,24 @@
                     
                     <img class="img-center" src="./img/home/create.png">
                     <br/>
-                    <h4 class="howtoplay"> Step1: Claim</h4>
-                    <ul>
-                        <li>claim a random or specific player with NAS </li>
-                        <li>NAS will be deposited into prize pool </li>
-                    </ul>
-                  
+                    <h3 class="howtoplay">Claim Your Avatar</h4>
                 </div>
                 <div class="col-md-4">
                     
                     <img class="img-center" src="./img/home/game.png">
                     <br/>
-                    <h4 class="howtoplay">Step2: Score</h4>
-                    <ul>
-                        <li>your players score points based on real game performance </li>
-                        <li>accumulate points with playing time, winning game and goals</li>
-                    </ul>
+                    <h3 class="howtoplay">Accumulate Points</h4>
                 </div>
                 <div class="col-md-4">
                     <img class="img-center" src="./img/home/win.png">
                     <br/>
-                    <h4 class="howtoplay">Step3: Reward</h4>
-                    <ul>
-                        <li>top 50 players with highest points share prize pool </li>
-                        <li>payment is distributed in NAS, by smart contract </li>
-                    </ul>
+                    <h3 class="howtoplay">Watch and Win</h4>
                 </div>
             </div>
         </div>
 
 
-        <br/>
+        <!-- <br/>
         <div  style="max-width:2000px;margin-top:50px">
             <h2 class="sectionTitle">What is Nebulas Fantasy?</h2>
             <br>
@@ -172,10 +159,10 @@
                     <li><h4> Soccer fans can own soccer players on Nebulas blockchain, gain points according to the players’ performance in the real World Cup matches, and win NAS as prize!</h4></li>
                     <li><h4> see <a href="./about.html">ABOUT</a> page for more information</h4></li>
             </ul> 
-        </div>
+        </div> -->
 
     <!-- Footer -->
-    <footer class="w3-container w3-padding-64 w3-light-grey w3-center w3-large"> 
+    <footer class="w3-container w3-padding-64 w3-center w3-large"> 
         <p>Powered by Nebulas Fantasy Team</p>
         <p>nebulas.fantasy@gmail.com</p>
     </footer>
