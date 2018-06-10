@@ -168,7 +168,6 @@
       
 
         function init(){
-            console.log("in the initial function");
             if (account!=="undefined"){
                 $('#title').hide();
                 $('#noplayer').hide(); 
@@ -386,28 +385,39 @@
         }
         
         $(window).load(function () {
-            // executes when complete page is fully loaded, including all frames, objects and images
-                
-            // var getAccount = function (e) {
-            //         e.preventDefault();
-            //         if(!!e.data.data.account){
-            //             account = e.data.data.account;
-            //             console.log(account)
-            //             window.removeEventListener("message", getAccount, false);
-            //             init();
-            //         } // console.log(account)
-            //         else{
-            //             $("#title").text("Hey there, please load your wallet or check your address");
-            //             init();
-            //         }
-            //     };
-            //     window.addEventListener('message', getAccount); 
-            //     window.postMessage({
-            //     "target": "contentscript",
-            //     "data":{},
-            //     "method": "getAccount",
-            //     }, "*");       
-            init();
+            // executes before complete page is fully loaded, including all frames, objects and images
+                var counter = 3;
+
+                var getAccount = function (e) {
+                    e.preventDefault();
+                    if(!!e.data.data.account){
+                        account = e.data.data.account;
+                        console.log(account)
+                        window.removeEventListener("message", getAccount, false);
+                        init();
+                    } // console.log(account)
+                    else{
+                        if(counter>0){
+                            counter--;
+                        }else{
+                            console.log('did not find the account')
+                            init();
+                        }
+                        
+                    }
+                };
+              
+                window.addEventListener('message', getAccount); 
+
+               
+                    window.postMessage({
+                        "target": "contentscript",
+                        "data":{},
+                        "method": "getAccount",
+                        }, "*");     
+                   
+   
+            
         });
     </script>
 
