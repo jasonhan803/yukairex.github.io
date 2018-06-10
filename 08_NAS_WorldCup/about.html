@@ -69,7 +69,7 @@
             <ul>
                 <li><h3>Step1: You claim ownership of soccer players on Nebulas blockchain. The amount of NAS as claim fee will enter the total prize pool.</h3></li>
                 <li><h3>Step2: Players will accumulate experience points based on their performance in the real World Cup games. For example, a player gains 300pts for every goal in the real match.</h3></li>
-                <li><h3>Step3: After World Cup ends on 07/15, owners of players with the top 20 highest scores will be able to share the total prize.</h3></li>
+                <li><h3>Step3: After World Cup ends on 07/15, owners of players with the top 50 highest scores will be able to share the total prize.</h3></li>
                 <li><h3>Extra: During the World Cup, you can transfer your player to your friends/family, or trade players on an open market.</h3></li>
             </ul>
 
@@ -77,8 +77,10 @@
             <h2 class="sectionTitle"> What is a player</h2>
             <ul>
                 <li><h3> A player in Nebulas Fantasy is a NRC721 token on Nebulas blockchain. We selected the top-tier soccer stars for game simplicity. Once claimed, the player (or this NRC721) token will be associated with your NAS address, and recorded on the Nebulas Blockchain. You can transfer this player to others as you like.</h3></li>
-                <li><h3> There are two ways to claim a player. You can spend 0.1 NAS to claim a random player. Or you can claim a specific superstar on the open market, for a cost of 0.3 NAS. You can claim players through the World Cup, but your player won’t be able to receive points before the player is generated. </h3></li>   
-                <li><h3> Each player has a talent value. For the same performance, a player with a higher talent will score more points.</h3></li>
+                <li><h3> There are two ways to claim a player. You can spend a little NAS to claim a random player. Or you can pay premium to claim a specific superstar on the open market. You can claim players through the World Cup, but your player won’t be able to receive points before the player is generated. </h3></li>   
+                <li><h3> Each player has a talent value (1-5). For the same performance, a player with a higher talent will score more points.</h3></li>
+                <li><h3> For every 50 players generated via lottery, the lottery price will increase by 0.1NAS. </h3></li>
+                <li><h3> For every specific player generated via open market, the price for that specific player will increase by 0.02NAS. </h3></li>
                 <li><h3> For every minute a player plays, he will score 1points x his talent. </h3></li>
                 <li><h3> For every winning game, a player will score 100 pts; </h3></li>
                 <li><h3> For every goal a player made, he will score 300 pts </h3></li>
@@ -89,8 +91,10 @@
             <h2 class="sectionTitle"> Reward Rule</h2>
             <ul>
                 <li><h3> Once the World Cup ends on 7/15, players will be ranked according to the points </h3></li>
-                <li><h3> The top 3 players will receive 30%, 20% and 10% of the total prize pool, correspondingly. </h3></li>   
-                <li><h3> The 4-20th players will split the remaining prize pool equally.</h3></li>
+                <li><h3> The top 3 players will receive 25%,150% and 10% of the total prize pool, correspondingly. </h3></li>   
+                <li><h3> The 4-10th players will evenly share 15% of prize pool.</h3></li>
+                <li><h3> The 11-30th players will evenly share 15% of prize pool.</h3></li>
+                <li><h3> The 31-50th players will evenly share 10% of prize pool.</h3></li>
                 <li><h3> The Nebulas Fantasy Team will get 10% of the total prize pool as maintenance fee.</h3></li>
             </ul>
 
@@ -210,7 +214,7 @@
     }
 
 
-       
+       var temp
         
         // check the prize pool
         function getTotalPrize() {
@@ -230,6 +234,7 @@
                 callJSONs.contract = testcontract;
                 neb.api.call(callJSONs)
                 .then(function (resp){
+                    
                     // $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
                     $("#pool").show().text(String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS in pool");
                     }   

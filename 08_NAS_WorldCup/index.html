@@ -130,17 +130,18 @@
                             <div class="board">
                                     <h4>
                                         <h2 style="text-align: center">Claim Your Player!</h2>
+                                        <h2 style="text-align: center" id="currentPrice"></h2>
                                         <br>
                                         <ul>
-                                            <li>You need a Chrome Extension to load your <a href="https://chrome.google.com/webstore/detail/nebulas-wallet/magbanejlegnbcppjljfhnmfmghialkl">Nebulas Wallet</a> </li>
                                             <li>Spend as low as 0.1 NAS to claim a random player (NRC721 token)</li>
                                             <li>Your player will be created with a random talent (1-5 stars)</li>
-                                            <li>Your Payment will be deposited into the total prize pool</li>
-                                            <li>Player accumulates points based on performance in real World Cup game</li>
+                                            <li>Your Payment will be deposited into the total prize pool directly</li>
+                                            <li>Lottery price will increase 0.1NAS every 50 players </li>
+                                            <li>Player accumulates points based on real world performance</li>
                                             <li>Free transfer your player anytime</li>
-                                            <li>Trade your player for a higher price</li>
                                             <li>Reward will be distributed according to the player points rank (after World Cup ends)</li>
                                             <li>Desire a specific player? go to <a href="./market.html">open market</a> and pay a premium</li>
+                                            <li>You need a Chrome Extension to load your <a href="https://chrome.google.com/webstore/detail/nebulas-wallet/magbanejlegnbcppjljfhnmfmghialkl">Nebulas Wallet</a> </li>
                                         </ul>
                                     </h4>
                             </div>
@@ -203,7 +204,7 @@
                     <br/>
                     <h4 class="howtoplay">Step3: Reward</h4>
                     <ul>
-                        <li>top 20 players with highest points share prize pool </li>
+                        <li>top 50 players with highest points share prize pool </li>
                         <li>payment is distributed in NAS, by smart contract </li>
                     </ul>
                 </div>
@@ -276,9 +277,34 @@
                 buy();
             });
             getTotalPrize();
-            $('#test').show().text(showStars(5));
+            getCurrentPrice();
         };
 
+
+
+        function getCurrentPrice(){
+            var testcontract;
+                var callJSONs = {
+                    from: ownerAddress, // get address string
+                    to: contractAddress, // get the contract string
+                    value: "0",
+                    nonce: 0,
+                    gasPrice: "200000",
+                    gasLimit: "1000000",
+                    contract: testcontract
+                }
+
+                // get the token Id owned by the address
+                testcontract = { "function": "getDrawPrice", "args": "" };
+                callJSONs.contract = testcontract;
+                neb.api.call(callJSONs)
+                .then(function (resp){
+                    console.log(resp)
+                    // $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
+                    $("#currentPrice").show().text("current price: "+ String(parseFloat(JSON.parse(resp.result)))+ " NAS");
+                    }   
+                )
+            }
 
         // check the prize pool
         function getTotalPrize() {
@@ -298,6 +324,7 @@
                 callJSONs.contract = testcontract;
                 neb.api.call(callJSONs)
                 .then(function (resp){
+                    
                     // $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
                     $("#pool").show().text(String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS in pool");
                     }   
@@ -305,13 +332,35 @@
         };
 
         function buy() {
-            var to = contractAddress;
-            var value = 0.01;// need to change
-            var callFunction = "mint";
-            var callArgs = "";
-            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
-                listener: mintListener,        //设置listener, 处理交易返回信息
-            });
+                // read the price first
+                var testcontract;
+                var callJSONs = {
+                    from: ownerAddress, // get address string
+                    to: contractAddress, // get the contract string
+                    value: "0",
+                    nonce: 0,
+                    gasPrice: "200000",
+                    gasLimit: "1000000",
+                    contract: testcontract
+                }
+
+                // get the token Id owned by the address
+                testcontract = { "function": "getDrawPrice", "args": "" };
+                callJSONs.contract = testcontract;
+                neb.api.call(callJSONs)
+                .then(function (resp){
+                    var to = contractAddress;
+                    var value = parseFloat(JSON.parse(resp.result));// need to change
+                    var callFunction = "mint";
+                    var callArgs = "";
+                    console.log(value)
+                    serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                        listener: mintListener,        //设置listener, 处理交易返回信息
+                    });
+                
+                    }   
+                )
+           
         }
 
         var txhash;

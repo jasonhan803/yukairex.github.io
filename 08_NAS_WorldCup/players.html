@@ -191,44 +191,7 @@
                 init();
             }
         }
-
-
-        // function checkAddressTokens(address) {
-        //         var testcontract;
-        //         var callJSONs = {
-        //             from: ownerAddress, // get address string
-        //             to: contractAddress, // get the contract string
-        //             value: "0",
-        //             nonce: 0,
-        //             gasPrice: "200000",
-        //             gasLimit: "1000000",
-        //             contract: testcontract
-        //         }
-
-        //         // get the token Id owned by the address
-        //         testcontract = { "function": "balanceOf", "args": "[\"" + address + "\"]" };
-        //         callJSONs.contract = testcontract;
-        //         neb.api.call(callJSONs)
-        //         .then(function (resp){
-        //             console.log("resp is"+resp.result);
-        //             $("#title").show().text("currently you own " + resp.result + " players");
-        //             }   
-        //         )
-        // }
-
-
-
-//         function buy() {
-//             var to = contractAddress;
-//             var value = 0;// need to change
-//             var callFunction = "mint";
-//             var callArgs = "";
-//             serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
-//                 listener: mintListener,        //设置listener, 处理交易返回信息
-//             });
-//         }
-
-//       
+      
 
         function init(){
             console.log("in the initial function");

@@ -92,7 +92,8 @@
                     <div class="panel-body">
                         <img alt="140x140" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;margin-bottom: 10px" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
                         <br>
-                        <button class="btn btn-default" type="button" style="display:block;margin:auto">CLAIM</button>
+                        <span style="text-align:center;margin:auto" id="price">price</span>
+                        <button class="btn btn-default" type="button" style="display:block;margin:auto">CLAIM ME</button>
                     </div>
                     </div>
                 </div>
@@ -125,7 +126,7 @@
 
 
   <!-- Pagination -->
-  <div class="w3-center w3-padding-32">
+  <!-- <div class="w3-center w3-padding-32">
     <div class="w3-bar">
       <a href="#" class="w3-bar-item w3-button w3-hover-black">«</a>
       <a href="#" class="w3-bar-item w3-black w3-button">1</a>
@@ -134,7 +135,7 @@
       <a href="#" class="w3-bar-item w3-button w3-hover-black">4</a>
       <a href="#" class="w3-bar-item w3-button w3-hover-black">»</a>
     </div>
-  </div>
+  </div> -->
   
  
 
@@ -185,16 +186,36 @@
 
 
                 function claim(id){
-                    console.log("in buy, id=",id)
-                    var to = contractAddress;
-                    var value = 0.01;// need to change
-                    // var callFunction = "mint";
-                    // var callArgs = "";
-                    var callFunction = "mintPlayerById";
-                    var callArgs = "[\"" + id + "\"]";
-                    serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
-                        listener: mintListener,        //设置listener, 处理交易返回信息
-                    });
+                        var testcontract;
+                        var callJSONs = {
+                            from: ownerAddress, // get address string
+                            to: contractAddress, // get the contract string
+                            value: "0",
+                            nonce: 0,
+                            gasPrice: "200000",
+                            gasLimit: "1000000",
+                            contract: testcontract
+                        }
+                        testcontract = { "function": "getPlayerMarketPrice", "args": "[" + id + "]" };
+                        callJSONs.contract = testcontract;
+                        neb.api.call(callJSONs)
+                        .then(function (resp){
+                            
+            
+                           var price = parseFloat(JSON.parse(resp.result));
+                           console.log("in buy, id=",id)
+                            var to = contractAddress;
+                            var value = price;// need to change
+                            // var callFunction = "mint";
+                            // var callArgs = "";
+                            var callFunction = "mintPlayerById";
+                            var callArgs = "[\"" + id + "\"]";
+                            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                                listener: mintListener,        //设置listener, 处理交易返回信息
+                            });
+                           
+                            }   
+                        )                  
                 }
             
 
@@ -231,6 +252,10 @@
                                 $("#talent").attr('class',showStars(result.talent))
                                 $("#modal-txresult").show();
                             });
+                            for(var i=0;i<26;i++){
+                                getCurrentPriceById(i); 
+                            }
+                            setTimeout(loadAllPlayers,1000);
 
                         }
 
@@ -251,13 +276,17 @@
         
         function init(){
             console.log("in the initial function");
-            loadAllPlayers();
+            for(var i=0;i<26;i++){
+                getCurrentPriceById(i); 
+            }
+            setTimeout(loadAllPlayers,1000);
             getTotalPrize();
         }
         
 
         var totalPlayer;
         var temp = [];
+        var priceLocation;
         function loadAllPlayers(){
             $.getJSON('./players.json', function(data) {
                     var playersRow = $('#playersRow');
@@ -267,18 +296,10 @@
                     for (var i = 0; i < data.length; i ++) {
                         playersTemplate.find('#name').text(data[i].name);
                         playersTemplate.find('img').attr('src', data[i].picture);
-                       // $('#claimButton').attr("id","claimButton"+i);
-                       console.log("Button"+i)
                        playersTemplate.find('button').attr("id","Button"+i);
-                      
-                        // $('#claimButton'+i).click(function(){console.log('here')});
-                        
-                        //   playersTemplate.find('.pet-breed').text(data[i].breed);
-                        //   playersTemplate.find('.pet-age').text(data[i].age);
-                        //   playersTemplate.find('.pet-location').text(data[i].location);
-                        //   playersTemplate.find('.btn-adopt').attr('data-id', data[i].id);
+                       playersTemplate.find('#price').text("price: "+playerPrice[i]+" NAS");
                         playersRow.append(playersTemplate.html());
-                       
+              
                     }
                     
                     
@@ -293,52 +314,34 @@
             
         }
 
-    //     var tokenIds;   
-    //     function loadPlayersByUser(address) {
+ 
+        var playerPrice=[];
+        function getCurrentPriceById(id){
+                var testcontract;
+                var callJSONs = {
+                    from: ownerAddress, // get address string
+                    to: contractAddress, // get the contract string
+                    value: "0",
+                    nonce: 0,
+                    gasPrice: "200000",
+                    gasLimit: "1000000",
+                    contract: testcontract
+                }
+                testcontract = { "function": "getPlayerMarketPrice", "args": "[" + id + "]" };
+                callJSONs.contract = testcontract;
+                neb.api.call(callJSONs)
+                .then(function (resp){
+                     console.log(parseFloat(JSON.parse(resp.result)))
+    
+                    playerPrice[id]=parseFloat(JSON.parse(resp.result));
+                    // $("#prize").show().text("Total prize pool:  " + String(parseInt(JSON.parse(resp.result)) / 1e18) + " NAS");
+                    }   
+                )
+        }
+           
 
-    //         var testcontract;
-    //         var callJSONs = {
-    //             from: ownerAddress, // get address string
-    //             to: contractAddress, // get the contract string
-    //             value: "0",
-    //             nonce: 0,
-    //             gasPrice: "200000",
-    //             gasLimit: "1000000",
-    //             contract: testcontract
-    //         }
 
-    //         // get the token Id owned by the address
-    //         testcontract = { "function": "getPlayersByOwner", "args": "[\"" + address + "\"]" };
-    //         callJSONs.contract = testcontract;
-    //         neb.api.call(callJSONs)
-    //             .then(function (resp) {
-    //                 tokenIds = JSON.parse(resp.result);
-    //                 console.log(tokenIds);
-                   
-    //                 if (tokenIds.length>0){
-    //                     $.getJSON('./players.json', function(data) {
-    //                             var playersRow = $('#playersRow');
-    //                             var playersTemplate = $('#playersTemplate');
-                        
-    //                             playersRow.empty();
-    //                             for (i = 0; i < tokenIds.length; i ++) {
-    //                             let id = tokenIds[i];
-    //                             playersTemplate.find('#name').text(data[id].name);
-    //                             playersTemplate.find('img').attr('src', data[id].picture);
-    //                             //   playersTemplate.find('.pet-breed').text(data[i].breed);
-    //                             //   playersTemplate.find('.pet-age').text(data[i].age);
-    //                             //   playersTemplate.find('.pet-location').text(data[i].location);
-    //                             //   playersTemplate.find('.btn-adopt').attr('data-id', data[i].id);
-    //                             playersRow.append(playersTemplate.html());
-    //                             }
-    //                     });
-    //                 }
 
-    //             })
-    //             .catch(function (err) {
-    //                 console.log(JSON.stringify(err));
-    //             });
-    //    }
 
         // check the prize pool
         function getTotalPrize() {

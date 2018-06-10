@@ -79,7 +79,8 @@
                     </div>
 
                     <div class="form-row" style="margin-top:30px"></div>
-                        <button type="button" class="btn btn-primary"> Stop Token Distribution</button>
+                        <button type="button" class="btn btn-primary" onClick="moveon()"> Continue Token Distribution</button>
+                        <button type="button" class="btn btn-primary" onClick="stop()"> Stop Token Distribution</button>
                         <button type="button" class="btn btn-primary" onClick="distributeReward()"> Distribute Reward</button>
                     </div>
             </form>
@@ -153,6 +154,27 @@
             var value = 0;// need to change
             var callFunction = "reward";
             var callArgs = "";
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: updateListener,        //设置listener, 处理交易返回信息
+            });
+        }
+
+
+        function stop(){
+            var to = contractAddress;
+            var value = 0;// need to change
+            var callFunction = "isClaimable";
+            var callArgs = "["+false+"]";
+            serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
+                listener: updateListener,        //设置listener, 处理交易返回信息
+            });
+        }
+
+        function moveon(){
+            var to = contractAddress;
+            var value = 0;// need to change
+            var callFunction = "isClaimable";
+            var callArgs = "["+true+"]";
             serialNumber = nebPay.call(to, value, callFunction, callArgs, {    //使用nebpay的call接口去调用合约,
                 listener: updateListener,        //设置listener, 处理交易返回信息
             });
@@ -283,7 +305,7 @@
                     neb.api.call(callJSONs).then(function (resp) {
                         playerInfo = JSON.parse(resp.result);   
                         console.log(playerInfo);     
-                        
+                        $('#here_table').empty()
                         for (var i=0;i<playerInfo.length;i++){
                             $('#here_table').append('<tr><th scope="row">'+i+'</th>'+'<td>'+database[playerInfo[i].id].name +'</td>'
                                 +'<td>'+getPoints(playerInfo[i]) +'</td>'

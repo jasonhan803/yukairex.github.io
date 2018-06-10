@@ -61,7 +61,15 @@ var Players = function () {
         totalPlayers:null, // unique players that has been added
         _name:null,
         claimable:null,
-        deadline:null
+        deadline:null,
+        drawPrice:{
+            parse: function (value) {
+                return new BigNumber(value);
+            },
+            stringify: function (o) {
+                return o.toString(10);
+            }
+        },
     });
 
     LocalContractStorage.defineMapProperties(this, {
@@ -83,6 +91,15 @@ var Players = function () {
         "playerGoal":null,
         "playerTime":null,
         "playerTalent":null,
+        "playerAmountByMarket":null,
+        "playerPrice":{
+            parse: function (value) {
+                return new BigNumber(value);
+            },
+            stringify: function (o) {
+                return o.toString(10);
+            }
+        }
 
         // store the data to find 
         
@@ -93,11 +110,16 @@ Players.prototype = {
     init: function () {
         this.totalTokens = 0;
         this.owner = Blockchain.transaction.from;
-        this.totalPlayers = 10; // this is how manu unique players that we create, need to be able to modifiy
+        this.totalPlayers = 26; // this is how manu unique players that we create, need to be able to modifiy
         this._name ="Players";
         this.prizePool = new BigNumber(0);
         this.claimable = true;
-        this.deadline = new Date('June 14, 2018 15:00:00'); // GMT time 6.14
+        // this.deadline = new Date('June 14, 2018 15:00:00'); // GMT time 6.14
+        this.drawPrice = new BigNumber(0.01);// initial drawing price
+
+        for(var i=0;i<this.totalPlayers;i++){
+            this.playerPrice.set(i,new BigNumber(0.02));
+        }
     },
 
     name:function() {
@@ -120,6 +142,14 @@ Players.prototype = {
         return this.tokenOwner.get(id);
     },
 
+    getDrawPrice:function(){
+        return this.drawPrice;
+    },
+
+    getPlayerMarketPrice:function(id){
+        return this.playerPrice.get(id);
+    },
+
     getPlayersInfoByTokenId: function(tokenId){
         //token Id is an array;
         var data = JSON.parse(tokenId)
@@ -137,6 +167,7 @@ Players.prototype = {
                 "time":min,
                 "talent":talent,
                 "owner":this.ownerOf(data[i]),
+                
             };
             result.push(player);
         }
@@ -147,7 +178,7 @@ Players.prototype = {
 
 
 //  =============== function to create a new Player =============================
-    _createPlayer: function() {
+    _createPlayer: function() {// create a random player
         
         var playerId = this._generateNewPlayerId();
         this._initializePlayer(this.totalTokens,playerId);
@@ -188,17 +219,24 @@ Players.prototype = {
     },
 
 
+
+
+
     mint: function() {
         // overwrite the mint function, not using tokenId
         var from = Blockchain.transaction.from;
         // need to add payment requirement here
         var value = Blockchain.transaction.value;
 
+
         if (this.claimable==false){
             throw new Error("market has been closed");
         }
+
+
+
        
-        if (value.lt(0.01)){
+        if (value.div(1e18).lt(this.drawPrice)){
             throw new Error("not enough NAS to claim");
         }
 
@@ -208,8 +246,17 @@ Players.prototype = {
         
         this.totalTokens = this.totalTokens+1; 
         this.prizePool = this.prizePool.plus(value);
+        
+
+        //check the current token price
+        var temp = new BigNumber(0.01);
+        var number = new BigNumber(this.totalTokens)
+        this.drawPrice = new BigNumber(0.01*(parseInt(this.totalTokens/5)+1));
+
         return {"playerId":playerId,"talent":this.playerTalent.get(this.totalTokens-1)};
     },
+
+
 
 // ========== function to create a specific player
     _createPlayerById: function(playerId) {
@@ -223,6 +270,16 @@ Players.prototype = {
 
         var playerId = parseInt(id);
 
+        // set the number of this player by Id
+        // var amount = this.playerAmountByMarket.get(playerId);
+        // if (amount==null){
+        //     var temp = new BigNumber(0.2)
+        //     this.playerPrice.set(playerId,temp);
+        // }else{
+        //     var price = this.playerPrice.get(playerId);
+        //     this.playerPrice.set(playerId,price.add(0.02)); // increase by 0.2 every transaction made
+        // }
+
         if (this.claimable==false){
             throw new Error("market has been closed");
         }
@@ -231,7 +288,12 @@ Players.prototype = {
             throw new Error("this player does not exist")
         }
 
-        if (value < 0.01){
+        // if(this.playerPrice.get(playerId)){
+        //     this.playerPrice.set(playerId,0.2);
+        // }
+
+
+        if (value.div(1e18).lt(this.playerPrice.get(playerId)) ){
             throw new Error("not enough NAS to claim");
         }
 
@@ -241,6 +303,9 @@ Players.prototype = {
         this.totalTokens = this.totalTokens+1;
 
         this.prizePool = this.prizePool.plus(value);
+
+        var price = this.playerPrice.get(playerId);
+        this.playerPrice.set(playerId,price.plus(0.002)); // increase by 0.2 every transaction made
         return {"playerId":playerId,"talent":this.playerTalent.get(this.totalTokens-1)};
     },
 
@@ -304,16 +369,16 @@ Players.prototype = {
     sortTokensByPoints:function(){
        var result= this.calculatePointsForAllTokens();
        var sortResult = this.bubbleSort(result);
-       var top20Owners = [];
-       for (var i=0;i<20;i++){
+       var top50Owners = [];
+       for (var i=0;i<50;i++){
            if (i>=this.totalTokens){
-            top20Owners[i] = this.owner; // fill the blank with owner address;
+            top50Owners[i] = this.owner; // fill the blank with owner address;
            }
            else{
-            top20Owners[i] = this.ownerOf(sortResult[i].tokenId);
+            top50Owners[i] = this.ownerOf(sortResult[i].tokenId);
            } 
        }
-       return top20Owners;
+       return top50Owners;
     },
 
 
@@ -387,37 +452,47 @@ Players.prototype = {
             throw new Error("you are not game owner")
         }
 
+        var pool = this.prizePool;
+
         var winners = this.sortTokensByPoints();
-        var balance = this.prizePool;
-        var amount = this.prizePool.div(100).mul(10);
 
-        Blockchain.transfer(this.owner,amount);
-        balance = balance.sub(amount);
-
-        var amount = this.prizePool.div(100).mul(30);
-        Blockchain.transfer(winners[0],amount);
-        balance = balance.sub(amount);
-
-        var amount = this.prizePool.div(100).mul(20);
-        Blockchain.transfer(winners[1],amount);
-        balance = balance.sub(amount);
-
-        var amount = this.prizePool.div(100).mul(10);
-        Blockchain.transfer(winners[2],amount);
-        balance = balance.sub(amount);
-
-        var amount = this.prizePool.div(100).mul(30).div(17);
-
-        for (var i=3;i<19;i++){
-            Blockchain.transfer(winners[i],amount);
-            balance = balance.sub(amount);
+        var amount=[];
+        amount[0]= pool.mul(0.2); // take 25%
+        amount[1]= pool.mul(0.15); // take 15%
+        amount[2]= pool.mul(0.1);// take 10%
+        
+        // remaining 15%
+        for (var i=3;i<10;i++){
+           amount[i] = pool.mul(0.15).div(7);
         }
 
-        this.prizePool = 0;
-        Blockchain.transfer(winners[19],balance);
+        // remaining 15%
+        for (var i=10;i<30;i++){
+        amount[i] = pool.mul(0.15).div(20);
+        }
 
+        // remainging 10%
+        for (var i=30;i<50;i++){
+            amount[i] = pool.mul(0.10).div(20);
+        }
         
+        var amount_owner = pool.mul(0.1);
+        
+        Blockchain.transfer(this.owner,amount_owner);
+
+
+         var result=[];
+         for (var i=0;i<50;i++){
+            result[i]={"address":winners[i],"amount":amount[i]}
+            Blockchain.transfer(winners[i],amount[i]);
+         }
+
+        this.prizePool = 0;
+
+        return result;
     },
+
+
 
     balanceOf: function (_owner) {
         var balance = this.ownedTokensCount.get(_owner);
