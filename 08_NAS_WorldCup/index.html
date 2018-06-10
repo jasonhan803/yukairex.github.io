@@ -17,7 +17,7 @@
     h4,
     h5,
     h6 {
-        font-family: "Karma", sans-serif
+        font-family: sans-serif, Arial, Helvetica
     }
 
     .w3-bar-block .w3-bar-item {
@@ -135,7 +135,7 @@
                                         <ul>
                                             <li>Spend as low as 0.1 NAS to claim a random player (NRC721 token)</li>
                                             <li>Your player will be created with a random talent (1-5 stars)</li>
-                                            <li>Your Payment will be deposited into the total prize pool directly</li>
+                                            <li>Your payment will be deposited into the total prize pool directly</li>
                                             <li>Lottery price will increase 0.1NAS every 50 players </li>
                                             <li>Player accumulates points based on real world performance</li>
                                             <li>Free transfer your player anytime</li>
@@ -196,7 +196,7 @@
                     <h4 class="howtoplay">Step2: Score</h4>
                     <ul>
                         <li>your players score points based on real game performance </li>
-                        <li>accumulate points with playing time, winning game and gol</li>
+                        <li>accumulate points with playing time, winning game and goals</li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -246,29 +246,36 @@
         var serialNumber;
         Account = nebulas.Account;
 
+
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
             testnetUrl = "https://pay.nebulas.io/api/pay";
 
 
-        // const contractAddress =  require("address");//"n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
-        const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
-        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
-        $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
-        var chainId = 1001;// test net
-        var callbackUrl = testnetUrl;
-        var explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+        var ownerAddress;
+        var explorerTex, explorer, chainId, callbackUrl, NebHttpRequest;    
 
+        if(mainnet==false){ // test net
+            // const contractAddress =  require("address");//"n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
+            ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+            NebHttpRequest = "https://testnet.nebulas.io";
+            chainId = 1001;// test net
+            callbackUrl = testnetUrl;
+            explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+            explorer = "https://explorer.nebulas.io/#/testnet/address/";
+        }else
+        {
+            // //main net 
+            ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
+            NebHttpRequest = "https://mainnet.nebulas.io";
+            chainId = 1;// mainnet net
+            callbackUrl = mainnetUrl;
+            explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
+            explorer = "https://explorer.nebulas.io/#/mainnet/address/";
+        }
 
-        // //main net 
-        // const contractAddress = "n1kU44RRFoFvQbe8A6FAHDCC5APnfn89m2P";
-        // const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
-        // $("#contractAddress").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr("target","_blank");
-        // neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
-        // var chainId = 1;// mainnet net
-        // var callbackUrl = mainnetUrl;
-        // //2ff9c00e3050f44dad190b1f5a6eb296ae6cdbed9007569db56fe2a054fc451c
-        // var explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
-        // var explorer = "https://explorer.nebulas.io/#/address/";
+            neb.setRequest(new nebulas.HttpRequest(NebHttpRequest));
+            $("#contractAddress").attr('href', explorer + contractAddress).attr('target', "_blank");
+
 
         function init() {
             var claim = $('#claimButton');

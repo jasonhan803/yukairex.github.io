@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Karma">
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <style>
-        body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+        body,h1,h2,h3,h4,h5,h6 {font-family: sans-serif, Arial, Helvetica,宋体}
         .w3-bar-block .w3-bar-item {padding:20px}
         .buyPlayer {
             margin: auto;
@@ -59,8 +59,8 @@
             <h2 class="sectionTitle"> What is Nebulas Fantasy</h2>
             <ul>
                 <li><h3> Nebulas Fantasy is a decentralized application that operates on the Nebulas Network.</h3></li>                  
-                <li><h3> We setup a fantasy platform for soccer fans to enjoy World Cup 2018 in a unique way </h3></li>
-                <li><h3> Soccer fans can own soccer players on Nebulas blockchain, gain points according to the players’ performance in the real World Cup matches, and win NAS as prize!</h3></li>
+                <li><h3> We setup a fantasy platform for everyone to enjoy World Cup 2018 in a unique manner </h3></li>
+                <li><h3> You can own soccer players on Nebulas blockchain, gain points according to the their performance in the real World Cup matches, and reward NAS as prize!</h3></li>
             </ul>
            
     
@@ -78,10 +78,10 @@
             <ul>
                 <li><h3> A player in Nebulas Fantasy is a NRC721 token on Nebulas blockchain. We selected the top-tier soccer stars for game simplicity. Once claimed, the player (or this NRC721) token will be associated with your NAS address, and recorded on the Nebulas Blockchain. You can transfer this player to others as you like.</h3></li>
                 <li><h3> There are two ways to claim a player. You can spend a little NAS to claim a random player. Or you can pay premium to claim a specific superstar on the open market. You can claim players through the World Cup, but your player won’t be able to receive points before the player is generated. </h3></li>   
-                <li><h3> Each player has a talent value (1-5). For the same performance, a player with a higher talent will score more points.</h3></li>
+                <li><h3> Each player is generated with a talent value (i.e. 1-5). For the same performance, a player with a higher talent score more points.</h3></li>
                 <li><h3> For every 50 players generated via lottery, the lottery price will increase by 0.1NAS. </h3></li>
                 <li><h3> For every specific player generated via open market, the price for that specific player will increase by 0.02NAS. </h3></li>
-                <li><h3> For every minute a player plays, he will score 1points x his talent. </h3></li>
+                <li><h3> For every minute a player plays, he will score 1 points x his talent. </h3></li>
                 <li><h3> For every winning game, a player will score 100 pts; </h3></li>
                 <li><h3> For every goal a player made, he will score 300 pts </h3></li>
                 <li><h3> The total score of a player  = minutes he played * talent + # of winning game*100 + # of goals *300 </h3></li>
@@ -97,11 +97,6 @@
                 <li><h3> The 31-50th players will evenly share 10% of prize pool.</h3></li>
                 <li><h3> The Nebulas Fantasy Team will get 10% of the total prize pool as maintenance fee.</h3></li>
             </ul>
-
-            
-           
-
-
 
         </div>
 
@@ -133,25 +128,30 @@
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
         testnetUrl = "https://pay.nebulas.io/api/pay";
 
-        // const contractAddress = "n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
-        const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
-        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
-        $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
-        var chainId = 1001;// test net
-        var callbackUrl = testnetUrl;
-        var explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+        var ownerAddress;
+        var explorerTex, explorer, chainId, callbackUrl, NebHttpRequest;    
 
+        if(mainnet==false){ // test net
+            // const contractAddress =  require("address");//"n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
+            ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+            NebHttpRequest = "https://testnet.nebulas.io";
+            chainId = 1001;// test net
+            callbackUrl = testnetUrl;
+            explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+            explorer = "https://explorer.nebulas.io/#/testnet/address/";
+        }else
+        {
+            // //main net 
+            ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
+            NebHttpRequest = "https://mainnet.nebulas.io";
+            chainId = 1;// mainnet net
+            callbackUrl = mainnetUrl;
+            explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
+            explorer = "https://explorer.nebulas.io/#/mainnet/address/";
+        }
 
-        // //main net 
-        // const contractAddress = "n1kU44RRFoFvQbe8A6FAHDCC5APnfn89m2P";
-        // const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
-        //  $("#contractAddress").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr("target","_blank");
-        // neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
-        // var chainId = 1;// mainnet net
-        // var callbackUrl = mainnetUrl;
-        // //2ff9c00e3050f44dad190b1f5a6eb296ae6cdbed9007569db56fe2a054fc451c
-        // var explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
-        // var explorer = "https://explorer.nebulas.io/#/address/";
+            neb.setRequest(new nebulas.HttpRequest(NebHttpRequest));
+            $("#contractAddress").attr('href', explorer + contractAddress).attr('target', "_blank");
    
 
    

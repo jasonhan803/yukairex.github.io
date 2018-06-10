@@ -9,7 +9,7 @@
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/star.css" rel="stylesheet">
 <style>
-        body,h1,h2,h3,h4,h5,h6 {font-family: "Karma", sans-serif}
+        body,h1,h2,h3,h4,h5,h6 {font-family: sans-serif, Arial, Helvetica,宋体}
         .w3-bar-block .w3-bar-item {padding:20px}
         .buyPlayer {
             margin: auto;
@@ -158,26 +158,34 @@
         var mainnetUrl = "https://pay.nebulas.io/api/mainnet/pay",
         testnetUrl = "https://pay.nebulas.io/api/pay";
 
-        // const contractAddress = "n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
-        const ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
-        neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
-        $("#contractAddress").attr('href', 'https://explorer.nebulas.io/#/testnet/address/' + contractAddress).attr('target', "_blank");
-        var chainId = 1001;// test net
-        var callbackUrl = testnetUrl;
-        var explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+        var ownerAddress;
+        var explorerTex, explorer, chainId, callbackUrl, NebHttpRequest;    
 
+        if(mainnet==false){ // test net
+            // const contractAddress =  require("address");//"n1wtjL3KMVNTV3gsWhJibnNMmr6HJHKwBW2";
+            ownerAddress = "n1RQYWMLqy1twJhfYxPk4SFx7wdfeq31pMX";
+            NebHttpRequest = "https://testnet.nebulas.io";
+            chainId = 1001;// test net
+            callbackUrl = testnetUrl;
+            explorerTx = "https://explorer.nebulas.io/#/testnet/tx/";
+            explorer = "https://explorer.nebulas.io/#/testnet/address/";
+        }else
+        {
+            // //main net 
+            ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
+            NebHttpRequest = "https://mainnet.nebulas.io";
+            chainId = 1;// mainnet net
+            callbackUrl = mainnetUrl;
+            explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
+            explorer = "https://explorer.nebulas.io/#/mainnet/address/";
+        }
 
-        // //main net 
-        // const contractAddress = "n1kU44RRFoFvQbe8A6FAHDCC5APnfn89m2P";
-        // const ownerAddress = "n1bveJ8tkb1DDECgHvknRFZesJqeaL2iKNt";
-        //  $("#contractAddress").attr('href','https://explorer.nebulas.io/#/mainnet/address/'+contractAddress).attr("target","_blank");
-        // neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
-        // var chainId = 1;// mainnet net
-        // var callbackUrl = mainnetUrl;
-        // //2ff9c00e3050f44dad190b1f5a6eb296ae6cdbed9007569db56fe2a054fc451c
-        // var explorerTx = "https://explorer.nebulas.io/#/mainnet/tx/";
-        // var explorer = "https://explorer.nebulas.io/#/address/";
+            neb.setRequest(new nebulas.HttpRequest(NebHttpRequest));
+            $("#contractAddress").attr('href', explorer + contractAddress).attr('target', "_blank");
    
+
+
+            
         function check() {
             var address = $('#address').val().trim();
             if (address.substring(0, 2) !== "n1" || address.length !== 35) {
