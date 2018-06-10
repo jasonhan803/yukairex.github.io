@@ -1,21 +1,3 @@
-// Copyright (C) 2017 go-nebulas authors
-//
-// This file is part of the go-nebulas library.
-//
-// the go-nebulas library is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// the go-nebulas library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You should have received a copy of the GNU General Public License
-// along with the go-nebulas library.  If not, see <http://www.gnu.org/licenses/>.
-//
-
 'use strict';
 
 var Operator = function (obj) {
@@ -70,6 +52,7 @@ var Players = function () {
                 return o.toString(10);
             }
         },
+        totalAuctions:null,
     });
 
     LocalContractStorage.defineMapProperties(this, {
@@ -99,8 +82,21 @@ var Players = function () {
             stringify: function (o) {
                 return o.toString(10);
             }
-        }
+        },
 
+        // auctions
+        "auctionToken":null,
+        "auctionSeller":null,
+        "auctionPrice":{
+            parse: function (value) {
+                return new BigNumber(value);
+            },
+            stringify: function (o) {
+                return o.toString(10);
+            }
+        },
+        "auctionValid":null,
+        "auctionBuyer":null,
         // store the data to find 
         
     });
@@ -108,17 +104,18 @@ var Players = function () {
 
 Players.prototype = {
     init: function () {
-        this.totalTokens = 0;
         this.owner = Blockchain.transaction.from;
+        this.totalTokens = 0;
+        this.totalAuctions = 0;
         this.totalPlayers = 26; // this is how manu unique players that we create, need to be able to modifiy
         this._name ="Players";
         this.prizePool = new BigNumber(0);
         this.claimable = true;
         // this.deadline = new Date('June 14, 2018 15:00:00'); // GMT time 6.14
-        this.drawPrice = new BigNumber(0.01);// initial drawing price
-
+        this.drawPrice = new BigNumber(0.01);// initial drawing price  // CHANGE TO 0.1 NAS
+        
         for(var i=0;i<this.totalPlayers;i++){
-            this.playerPrice.set(i,new BigNumber(0.02));
+            this.playerPrice.set(i,new BigNumber(0.02)); // initial lize the player for 0.2, CHANGE TO 0.2 NAS
         }
     },
 
@@ -233,9 +230,6 @@ Players.prototype = {
             throw new Error("market has been closed");
         }
 
-
-
-       
         if (value.div(1e18).lt(this.drawPrice)){
             throw new Error("not enough NAS to claim");
         }
@@ -427,6 +421,104 @@ Players.prototype = {
         return tokenIds
     },
 
+// trade market
+    startAuction:function(tokenId, price) {
+        // check ownership
+        // increase auction id
+        var from = Blockchain.transaction.from;
+        var owner = this.ownerOf(tokenId);
+        if (from!==owner){
+            throw new Error("not the token owner")
+        }
+
+        var AuctionPrice = new BigNumber(price);
+
+        var auctionId = this.totalAuctions;
+
+        this.auctionToken.set(auctionId,tokenId);
+        this.auctionSeller.set(auctionId,from);
+        this.auctionPrice.set(auctionId,AuctionPrice);
+        this.auctionValid.set(auctionId,true);
+
+        this.totalAuctions = this.totalAuctions+1;
+    },
+
+    stopAuction:function(auctionId){
+        if((this.auctionValid.get(auctionId)==false)||(auctionId>this.totalAuctions)){
+            throw new Error("not a valid auction Id");
+        }
+
+        var from = Blockchain.transaction.from;
+        var owner = this.auctionSeller.get(auctionId);
+        if (from!==owner){
+            throw new Error("not the auction seller")
+        }
+        this.auctionValid.set(auctionId,false);
+    },
+
+    buyAuction:function(auctionId){
+        if((this.auctionValid.get(auctionId)==false)||(auctionId>this.totalAuctions)){
+            throw new Error("not a valid auction Id");
+        }
+
+        var buyer = Blockchain.transaction.from;
+        var value = Blockchain.transaction.value;
+        var sellerPrice = this.auctionPrice.get(auctionId);
+
+        if (value.div(1e18).t(sellerPrice)){
+            throw new Error("not enough NAS");
+        }
+
+        var seller = this.auctionSeller.get(auctionId);
+        var tokenId = this.auctionToken.get(auctionId);
+        _transferFrom(seller, buyer, tokenId);
+
+        this.auctionBuyer.set(auctionId,buyer);
+        this.auctionValid.set(auctionId,false);
+    },
+
+    //getter
+    getTotalAuctions:function(){
+        return this.totalAuctions;
+    },
+
+    getValidAuctions:function(){
+        var totalAuctionNumber = this.totalAuctions;
+        var result = [];
+        var counter = 0;
+        for(var i=0;i<totalAuctionNumber;i++){
+            if(this.auctionValid.get(i)==true){
+                result[counter]=i;
+                counter++;
+            }
+        }
+        return result;
+    },
+
+    getAuctionByIds:function(ids){
+        var data = JSON.parse(ids)
+        var result=[];
+        for (var i=0;i<data.length;i++){
+            var id = this.auctionToken.get(data[i]);
+            var seller = this.auctionSeller.get(data[i]);
+            var price = this.auctionPrice.get(data[i]);
+            var valid = this.auctionValid.get(data[i]);
+            var buyer = this.auctionBuyer.get(data[i]);
+            var auction =  {
+                "id":id,
+                "seller":seller,
+                "price":price,
+                "valid":valid,
+                "buyer":buyer,
+            };
+            result.push(auction);
+        }
+
+        // return a object array
+        return result;
+    },
+
+
 
 
 //  ================== Prize Pool Management========================
@@ -554,10 +646,15 @@ Players.prototype = {
         return _spender == owner || this.getApproved(_tokenId) == _spender || this.isApprovedForAll(owner, _spender);
     },
 
+    _transferFrom: function (_from, _to, _tokenId) {
+            this.removeTokenFrom(_from, _tokenId);
+            this._addTokenTo(_to, _tokenId);
+            this.transferEvent(true, _from, _to, _tokenId); 
+    },
+
     transferFrom: function (_from, _to, _tokenId) {
         var from = Blockchain.transaction.from;
         if (this.isApprovedOrOwner(from, _tokenId)) {
-            this.clearApproval(_from, _tokenId);
             this.removeTokenFrom(_from, _tokenId);
             this._addTokenTo(_to, _tokenId);
             this.transferEvent(true, _from, _to, _tokenId);
