@@ -77,10 +77,10 @@ Players.prototype = {
         this.prizePool = new BigNumber(0);
         this.claimable = true;
         // this.deadline = new Date('June 14, 2018 15:00:00'); // GMT time 6.14
-        this.drawPrice = new BigNumber(0.01);// initial drawing price  // CHANGE TO 0.1 NAS
+        this.drawPrice = new BigNumber(0.1);// initial drawing price  // CHANGE TO 0.1 NAS
         
         for(var i=0;i<this.totalPlayers;i++){
-            this.playerPrice.set(i,new BigNumber(0.02)); // initial lize the player for 0.2, CHANGE TO 0.2 NAS
+            this.playerPrice.set(i,new BigNumber(0.2)); // initial lize the player for 0.2, CHANGE TO 0.2 NAS
         }
     },
 
@@ -209,9 +209,8 @@ Players.prototype = {
         
 
         //check the current token price
-        var temp = new BigNumber(0.01);
         var number = new BigNumber(this.totalTokens)
-        this.drawPrice = new BigNumber(0.01*(parseInt(this.totalTokens/5)+1));
+        this.drawPrice = new BigNumber(0.1*(parseInt(this.totalTokens/50)+1));
 
         return {"playerId":playerId,"talent":this.playerTalent.get(this.totalTokens-1)};
     },
@@ -265,7 +264,7 @@ Players.prototype = {
         this.prizePool = this.prizePool.plus(value);
 
         var price = this.playerPrice.get(playerId);
-        this.playerPrice.set(playerId,price.plus(0.002)); // increase by 0.2 every transaction made
+        this.playerPrice.set(playerId,price.plus(0.02)); // increase by 0.2 every transaction made
         return {"playerId":playerId,"talent":this.playerTalent.get(this.totalTokens-1)};
     },
 
@@ -544,7 +543,7 @@ Players.prototype = {
         amount[0]= pool.mul(0.25); // take 25%
         amount[1]= pool.mul(0.15); // take 15%
         amount[2]= pool.mul(0.1);// take 10%
-        
+
         
         // remaining 15%
         for (var i=3;i<10;i++){
