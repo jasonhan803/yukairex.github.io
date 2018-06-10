@@ -29,9 +29,15 @@
     }
 
     /* Create two equal columns that floats next to each other */
-    .column {
+    .column1 {
         float: left;
-        width: 50%;
+        width: 40%;
+        padding:20px;
+    }
+    .column2 {
+        float: left;
+        width: 60%;
+        padding:20px;
     }
 
     /* Clear floats after the columns */
@@ -70,7 +76,7 @@
 
         <div style="max-width:2000px;margin-top:50px">
                 <div class="row">
-                    <div class="column">
+                    <div class="column1">
                             <h2 class="sectionTitle">Avatar Lottery</h2>
                             <div class="buyPlayer">
                                 <img class="img-center" id="randomPlayerCard" style="width:80%; height:80%;" src="./img/default card.png">
@@ -79,14 +85,14 @@
                                 </button>
                             </div>
                     </div>
-                    <div class="column">
+                    <div class="column2">
                             <h2 class="sectionTitle">What is an Avatar?</h2>
-                            <div class="board">
+                            <div class="board" style="margin-right:20px">
                                     <h4>
                                         <!-- <h2 style="text-align: center" id="currentPrice"></h2> -->
                                         <ul>
                                             <li>An "Avatar" on Nebulas Fantasy is a NRC 721 token on Nebulas Blockchain and an embodiment of soccer players in World Cup 2018</li>
-                                            <li>Avatars are created with a random talent (1-5 stars)</li>
+                                            <li>Avatars are created with a random talent level (1-5 stars)</li>
                                             <li>Avatars accumulate points according to real world performance and talents</li>
                                             <li>Spend as low as 0.1 NAS to claim your first Avartar! Lottery price will increase 0.1 NAS every 50 players</li>
                                             <li>Lottery payment will be deposited into the total prize pool directly</li>
