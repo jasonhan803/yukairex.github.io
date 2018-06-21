@@ -378,9 +378,9 @@ Players.prototype = {
             var index;
             for (var i=0;i<tokenIds.length;i++){
                 index = tokenIds[i];
-             this.playerWin.set(index,this.playerWin.get(index)+parseInt(addWins));
-             this.playerGoal.set(index,this.playerGoal.get(index)+parseInt(addGoals));
-             this.playerTime.set(index,this.playerTime.get(index)+parseInt(addTimes)); // needs to modify here
+                this.playerWin.set(index,this.playerWin.get(index)+parseInt(addWins));
+                this.playerGoal.set(index,this.playerGoal.get(index)+parseInt(addGoals));
+                this.playerTime.set(index,this.playerTime.get(index)+parseInt(addTimes)); // needs to modify here
             }          
         }
         return tokenIds

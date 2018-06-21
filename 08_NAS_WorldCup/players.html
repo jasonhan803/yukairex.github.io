@@ -68,6 +68,7 @@
                         <strong>Play Time</strong>: <span id="playtime"></span><br/>
                         <strong>WIN</strong>:       <span id="win"></span><br/>
                         <strong>GOAL</strong>:      <span id="goal"></span><br/>
+                        <strong>POINTS</strong>:      <span id="points"></span><br/>
                         <button class="btn btn-default" type="button" style="display:block;margin:auto" data-toggle="modal" data-target="#myModal">TRANSFER</button>
                             
                             <!-- Modal -->
@@ -254,7 +255,7 @@
                        playersTemplate.find('#goal').text(info[i].goal);
                        playersTemplate.find('#win').text(info[i].win);
                        playersTemplate.find('#playtime').text(info[i].time);
-                      
+                       playersTemplate.find('#points').text("a");
                         playersTemplate.find('button').attr("id","Button"+tokenIds[i])
                         playersRow.append(playersTemplate.html());
                     }

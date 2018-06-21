@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Batch Transfer</title>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<style>
+    .myheader {
+        text-align: center;
+        color: black;
+        font-size: 40px;
+        margin: 30px;
+        color: brown
+    }
+
+    .ownercontainer {
+        overflow: hidden;
+        margin: 0;
+        padding: 20px;
+        list-style: none;
+        text-align: center;
+    }
+
+    .fa {
+        cursor: pointer;
+        font-size: 50px;
+    }
+
+    .fa-hide {
+        display: none
+    }
+
+    .q {
+        font-weight: bold;
+    }
+</style>
+
+
+<body>
+
+    <div class="container">
+        <div class="myheader">
+            <h1>KR Token Batch Transfer Machine </h1>
+        </div>
+
+        <div class="ownercontainer">
+            <a id="address"> 在Etherscan上查找这个合约 </a>
+            <div>你的账户地址: <span id="user"></span></div>
+            <div>你拥有: <span id="balance"></span> KR Token</div>
+
+
+
+            <div style="margin:20px; ">
+
+                <p class="q">weibo account: crypto_investor</p>
+                <p class="q">如果你觉得这个工具对你有用，请考虑给以下ether地址一点捐赠。谢谢</p>
+                <p class="q">consider donation: 0xACcb02cd5d0fF27858Ed279c676bE242d1431BDe</p>
+
+        </div>
+           
+
+        <br>
+        <br>
+
+            <div class="row" style="margin-bottom: 20px">
+                <br>
+                <br>
+                <br>
+                <div class="col-md-6">
+                    <div>
+                        <strong> Step0: 先授权总共要发送的Token </strong>
+                        <p> 这一步不会从你的账户里扣除代币，仅仅授权</p>
+                        总共要发送<input type="input"  id="totalToken" style="text-align: center">
+                        <button id="approve" onClick="approve()">授权</button>
+
+                    </div>
+                    <br>
+                    <br>
+
+                    <div>
+                        <strong>
+                            Step1: 上传要批量发送的ethereum地址
+                        </strong>
+                        <p>
+                            <span> 把地址像这个例子一样整合在一个csv文件里</span>
+                            <a id="csvExample">csv文件例子</a>
+                        </p>
+                    </div>
+                    <center style="border: blue; margin-bottom: 10px">
+                        <input type="file" name="filename" id="filename" style="text-align: center">
+                        <button id="upload" onClick="upload()">上传</button>
+                    </center>
+                    <div>
+                        <p>
+                            <span style="color:brown;" id="csvLoad"></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div>
+                        <strong>
+                            Step2: 输入这一批要发送的token，以及每个地址应收到的token数
+                        </strong>
+                        <p>
+                            <span> 比如一共发送2000个地址，但是分20批发放，每批地址就是100个地址</span>
+                            <br>
+                        </p>
+                    </div>
+                    这批要发送 <input type="text" id="batchAmount" placeholder="0" style="margin-bottom: 10px"> KR Token <br>
+                    每个地址应获得<input type="text" id="batchDistr" placeholder="0" style="margin-bottom: 10px"> KR Token
+                    <div>
+                        <button type="button" id="button1" onClick="distribute()">Distribute</button>
+                    </div>
+
+                    
+
+                </div>
+            </div>
+
+
+            <div style="margin:10px">
+                    <i class="fa fa-hide"></i>
+                    <br>
+                    <p>
+                        <span style="color:brown;" id="txstatus"></span>
+                    </p>
+                    <a id="txonexplorer"> </a>
+            </div>
+
+
+
+
+            <br>
+
+
+            <table class="table table-striped table-hover" id="here_table" style="margin:30px">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col"> Ethereum Address</th>
+                        <th scope="col"> Verified?</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+
+        <!-- <script src=../lib/bootstrap-4.0.0-dist/js/bootstrap.bundle.min.js data-depends=jquery.slim></script>
+        <script src=../lib/js-beautify-1.7.5/beautify.js></script> -->
+        <!-- <script src='../lib/bignumber.min.js'></script> -->
+        <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+        <script src="common.js"></script>
+        <script src="ERC20_contract_ABI.js"></script>
+        <script src="BTcontract_ABI.js"></script>
+        <script>
+             var ERC20Contract = web3.eth.contract(ERC20_Contract_ABI);
+             var BTContract = web3.eth.contract(BT_Contract_ABI);
+            var ERC20Instance = ERC20Contract.at(ERC20_CONTRACT_ADDRESSES);
+            var BTInstance = BTContract.at(BT_CONTRACT_ADDRESSES);
+            var accounts;
+
+        $("#address").attr('href', explorer + BT_CONTRACT_ADDRESSES).attr("target", "_blank");
+        window.addEventListener('load', function () {
+            // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+            if (typeof web3 !== 'undefined') {
+                // Use Mist/MetaMask's provider    
+              //  if (web3.version.network == "1") {
+                    web3 = new Web3(web3.currentProvider);
+                    accounts = web3.eth.accounts;
+                    init();
+                    // init();
+              //  }
+                // else (
+                //     alert("switch to mainnet first")
+                // )
+            }
+            else {
+                alert('Please install/load your Metamask First')
+                // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+            }
+        })
+
+
+        function init(){
+            // method to get user account
+            $('#user').text(accounts[0]);
+
+             ERC20Instance.balanceOf.call(accounts[0], {
+                from: accounts[0]
+            }
+                , function (err, amount) {
+                    $("#balance").show().text(amount*toToken);
+                })
+        }
+
+
+
+            // change the google example
+            $("#csvExample").attr('href', 'https://drive.google.com/file/d/1zZxuwlaRJH2bT-_S2fU_ltnAFWKSgH0b/view?usp=sharing').attr('target', "_blank");
+
+       
+       var txhash;
+
+        async function approve() {
+
+            // get the total approve amount of token
+            var totalAmount = $('#totalToken').val().trim();
+            if (totalAmount<=0){
+                alert("输入token数量需要大于零");
+                return;
+            }
+
+            ERC20Instance.approve.sendTransaction(BT_CONTRACT_ADDRESSES, totalAmount * toWei, {
+                from: accounts[0],
+                value: 0
+            }, function (err, result) {
+                if (err) {
+                    console.log(err)
+                }
+                else {
+                    spin();
+                    txhash = result;
+                    setQuery = setInterval(function () {
+                        setTxQuery();
+                    }, 10000);
+                    $("#txonexplorer").text("在这里查看这笔交易").attr("href", explorerTx + txhash).attr("target", "_blank")
+                }
+            })
+
+        }
+
+
+
+
+            var csvResult;
+            var isVerified;
+            var readytoTransfer;
+            function upload() {
+                $("#txstatus").val();
+                var csv = $('#filename');
+                var csvFile = csv[0].files[0];
+                var ext = csv.val().split(".").pop().toLowerCase();
+                if ($.inArray(ext, ["csv"]) === -1) {
+                    alert('not CSV file');
+                    return false;
+                }
+                if (csvFile != undefined) {
+                    reader = new FileReader();
+                    reader.onload = function (e) {
+                        $("#csvLoad").text("");
+                        csvResult = e.target.result.split(/\r|\n|\r/);
+
+                        // remove all the empty result
+                        for (var i = 0; i < csvResult.length; i++) {
+                            if (csvResult[i] == "") {
+                                csvResult.splice(i, 1);
+                                i--;
+                            }
+                        }
+                        showAddress(csvResult);
+                    }
+                    reader.readAsText(csvFile);
+                }
+            }
+
+
+            function removeElement(arrayName, arrayElement) {
+                for (var i = 0; i < arrayName.length; i++) {
+                    if (arrayName[i] == arrayElement)
+                        arrayName.splice(i, 1);
+                }
+            }
+
+
+
+            function showAddress(address) {
+                $("#tbody").empty();
+                table_idx = 0;
+                var statuses = new Array(address.length);
+
+                for (i = 0; i < address.length; i++) {
+                    if (web3.isAddress(address[i])) {
+                        isVerified = "Yes"
+                        statuses[i] = true;
+                    }
+                    else {
+                        isVerified = "No"
+                        statuses[i] = false;
+                    }
+                    console.log(isVerified)
+
+                    $('#here_table').append('<tr><th scope="row">' + table_idx + '</th>' + '<td>' + '<a target=_blank href=' + explorer + address[i] + '>' + address[i] + '</a>' + '</td>' + '<td>' + isVerified + '</td></tr>');
+                    table_idx++;
+                }
+
+
+                if (statuses.every(element => element === true)) {
+                    $("#csvLoad").text("上传成功！");
+                    readytoTransfer = true;
+                }
+                else {
+                    $("#csvLoad").text("上传失败")
+                    readytoTransfer = false;
+                }
+            }
+
+
+
+            var txhash;
+            async function distribute() {
+
+                $("#txstatus").text("");
+
+                // check if all the addresses are valid
+                showAddress(csvResult);
+                if (readytoTransfer === false) {
+                    alert("有地址不正确");
+                    return
+                }
+
+                var amount = $('#batchAmount').val().trim();
+                var dist = $('#batchDistr').val().trim();
+                //
+                // check amount
+                if (isNaN(amount)||isNaN(dist)) {
+                    alert("输入的发送数量错误!");
+                    return false;
+                }
+
+                if ((amount <= 0)||(dist<0)){
+                    alert("输入的发送数量需要大于零");
+                    return false;
+                }
+
+                var addresses = csvResult;
+
+                console.log(amount)
+       
+                BTInstance.distribute.sendTransaction(addresses, amount*toWei, dist*toWei,{
+                    from: accounts[0],
+                }, function (err, result) {
+                    if (err) {
+                        console.log(err)
+                    }
+                    else {
+                        spin();
+                        txhash = result;
+                        setQuery = setInterval(function () {
+                            setTxQuery();
+                        }, 10000);
+                        $("#txonexplorer").text("在这里查看交易").attr("href", explorerTx + txhash).attr("target", "_blank")
+                    }
+                })
+            }
+
+
+            function setTxQuery() {
+                web3.eth.getTransactionReceipt(txhash, function (err, receipt) {
+                    if (err) {
+                        console.log(err);
+                        stopSpin();
+                        $("#txstatus").text("交易出了问题")
+                    } else {
+                        console.log(receipt);
+                        if (receipt) { // get receipt
+                            clearInterval(setQuery);
+                            console.log(receipt.status);
+                            if (receipt.status == "0x1") { // success
+                                stopSpin();
+                                $("#txstatus").text("交易成功")
+                            }
+                            if (receipt.status == "0x0") {
+                                stopSpin();
+                                $("#txstatus").text("交易失败")
+                            }
+                            $("#csvLoad").text("");
+                        }
+                    }
+                })
+            }
+
+
+            function spin() {
+                $(".fa").removeClass().addClass('fa fa-cog fa-spin')
+                $("#txstatus").text("waiting for transaction...")
+            }
+
+            function stopSpin() {
+                $(".fa").removeClass().addClass('fa fa-hide')
+            }
+
+        </script>
+
+        </body
