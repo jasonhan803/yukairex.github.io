@@ -19,7 +19,7 @@
 
 
             const ERC20_CONTRACT_ADDRESSES = "0xe4fa597ab727fb2aed947fb64b6281e35ddb9ee6";
-            const BT_CONTRACT_ADDRESSES = "0x669eb22f92e4b6ec12b37a9dfbbd35be8681d32b";
+            const BT_CONTRACT_ADDRESSES = "0xebdef5c6e013266d21ec29c7c2ce848466da7f84";
             const explorerTx = "https://etherscan.io/tx/";
             const explorer = "https://etherscan.io/address/"
             const networkId = 1// main

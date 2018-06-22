@@ -17,7 +17,7 @@
     .myheader {
         text-align: center;
         color: black;
-        font-size: 40px;
+        font-size: 30px;
         margin: 30px;
         color: brown
     }
@@ -25,9 +25,8 @@
     .ownercontainer {
         overflow: hidden;
         margin: 0;
-        padding: 20px;
+        padding: 20px 20px;
         list-style: none;
-        text-align: center;
     }
 
     .fa {
@@ -50,23 +49,13 @@
     <div class="container">
         <div class="myheader">
             <h1>BCDT Token Batch Transfer Machine </h1>
+            <a id="address"> 在Etherscan上查找这个合约 </a>
         </div>
 
         <div class="ownercontainer">
-            <a id="address"> 在Etherscan上查找这个合约 </a>
-            <div>你的账户地址: <span id="user"></span></div>
-            <div>你拥有: <span id="balance"></span> BCDT Token</div>
-
-
-
-            <div style="margin:20px; ">
-
-                <p class="q">新浪微博: crypto_investor</p>
-                <p class="q">如果你觉得这个工具对你有用，请考虑给以下ether地址一点捐赠。谢谢</p>
-                <p class="q">0xA2b2100a51B80CcA1C9cC514150a910154EFC12e</p>
-
-        </div>
-           
+          
+            <div>你的账户地址: <span id="user">未找到</span></div>
+            <div>你拥有: <span id="balance">???</span> BCDT Token</div>
 
         <br>
         <br>
@@ -81,7 +70,6 @@
                         <p> 这一步不会从你的账户里扣除代币，仅仅授权而已</p>
                         总共要发送<input type="input"  id="totalToken" style="text-align: center">
                         <button id="approve" onClick="approve()">授权</button>
-
                     </div>
                     <br>
                     <br>
@@ -118,7 +106,7 @@
                     这批要发送 <input type="text" id="batchAmount" placeholder="0" style="margin-bottom: 10px"> BCDT Token <br>
                     每个地址应获得<input type="text" id="batchDistr" placeholder="0" style="margin-bottom: 10px"> BCDT Token
                     <div>
-                        <button type="button" id="button1" onClick="distribute()">Distribute</button>
+                        <button type="button" id="button1" onClick="distribute()">发送</button>
                     </div>
                     <div><p>每一批发送成功后刷新页面 应该看到你的余额减少相应数量</p></div>
 
@@ -154,6 +142,14 @@
                 <tbody id="tbody">
                 </tbody>
             </table>
+
+
+            <div style="margin:20px; ">
+                <p>新浪微博: crypto_investor</p>
+                <p>使用过程中遇到任何bug请联系我～</p>
+                <p>如果你觉得这个工具对你有用，请考虑给以下ether地址一点捐赠。谢谢</p>
+                <p>0xA2b2100a51B80CcA1C9cC514150a910154EFC12e</p>
+            </div>
 
 
 
@@ -374,7 +370,7 @@
                     if (err) {
                         console.log(err);
                         stopSpin();
-                        $("#txstatus").text("交易出了问题")
+                        $("#txstatus").text("合约交互出了点问题")
                     } else {
                         console.log(receipt);
                         if (receipt) { // get receipt
@@ -382,11 +378,11 @@
                             console.log(receipt.status);
                             if (receipt.status == "0x1") { // success
                                 stopSpin();
-                                $("#txstatus").text("交易成功")
+                                $("#txstatus").text("合约交互成功")
                             }
                             if (receipt.status == "0x0") {
                                 stopSpin();
-                                $("#txstatus").text("交易失败")
+                                $("#txstatus").text("合约交互失败")
                             }
                             $("#csvLoad").text("");
                         }
